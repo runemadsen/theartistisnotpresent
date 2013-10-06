@@ -5,6 +5,7 @@ class ArtWork
 
   ColorScheme colorScheme;
   Composition composition;
+  RShape art;
 
   // Constructor
   //----------------------------------------------------------------
@@ -40,7 +41,9 @@ class ArtWork
     composition.chooseShapeRotation();
     composition.choosePosition();
     composition.chooseFullShapeRotation();
-    composition.generateShape(colorScheme.colors);
+    art = composition.getShape(colorScheme.colors);
+
+    //RG.saveShape("myimage.svg", art);
   }
 
   // Display
@@ -48,7 +51,7 @@ class ArtWork
 
   void display()
   {
-    composition.theShape.draw();
+    art.draw();
   }
 
   // Convert ArtWork to Sample

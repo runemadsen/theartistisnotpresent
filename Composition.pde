@@ -24,14 +24,10 @@ class Composition
   int fullShapeRotation;
   int positionType;
 
-  RShape theShape;
-
   // Constructor
   //----------------------------------------------------------------
 
-  Composition() {
-    theShape = new RShape();
-  }
+  Composition() {}
 
   // Choose: Num Shapes
   //----------------------------------------------------------------
@@ -150,9 +146,13 @@ class Composition
   // Generate Shape
   //----------------------------------------------------------------
 
-  void generateShape(ColorList colors)
+  RShape getShape(ColorList colors)
   {
-    RShape newShape;
+    RShape theShape = new RShape();
+
+    // make sure the shape is correct dimensions
+
+    // colors background
   
     positionType = GRID;
   
@@ -162,7 +162,7 @@ class Composition
       for(int i = 0; i < numShapes; i++)
       {
         int x = (i * shapeSize) + (i * shapeSpacing);
-        newShape = getShapeType(shapeType);
+        RShape newShape = getShapeType(shapeType);
         newShape.translate(x, i * shapeDisplacementY);
         newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
         theShape.addChild(newShape);
@@ -178,7 +178,7 @@ class Composition
         {
           int x = (i * shapeSize) + (i * shapeSpacing);
           int y = (j * shapeSize) + (j * shapeSpacing);
-          newShape = getShapeType(shapeType);
+          RShape newShape = getShapeType(shapeType);
           newShape.translate(x, y);
           newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
           theShape.addChild(newShape);
@@ -197,7 +197,7 @@ class Composition
     {
   
     }
-  
+
     // set colors
     for(int i = 0; i < theShape.children.length; i++)
     {
@@ -210,6 +210,8 @@ class Composition
   
     // rotate
     theShape.rotate(radians(fullShapeRotation), new RPoint(theShape.getX() + (theShape.getWidth()/2), theShape.getY() + (theShape.getHeight ()/2)));
+    
+    return theShape;
   }
   
   // Choose: Helpers

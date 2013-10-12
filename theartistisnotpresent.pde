@@ -7,6 +7,13 @@ import de.looksgood.ani.*;
 import de.looksgood.ani.easing.*;
 import geomerative.*;
 
+// Setup
+//----------------------------------------------------------------
+
+String svgRoot = "/Users/rmadsen/Dropbox/Public";
+float svgRatio = 0.6;
+int svgWidth = 480;
+
 // Properties
 //----------------------------------------------------------------
 

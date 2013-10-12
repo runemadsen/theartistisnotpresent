@@ -12,11 +12,18 @@ class Composition
   int ELLIPSE = 1;
   int RECTANGLE = 2;
 
+  int DARKEST = 0;
+  int BRIGHTEST = 1;
+  int RANDOM = 2;
+  int DARKGRAY = 3;
+  int WHITE = 4;
+
   // Properties
   //----------------------------------------------------------------
 
   int w;
   int h;
+  ColorList colors;
 
   int shapeType;
   int shapeSize;
@@ -26,14 +33,40 @@ class Composition
   int numShapes;
   int fullShapeRotation;
   int positionType;
+  int backgroundType;
 
   // Constructor
   //----------------------------------------------------------------
 
-  Composition(int _w, int _h)
+  Composition(int _w, int _h, ColorList _colors)
   {
     w = _w;
     h = _h;
+    colors = _colors;
+
+    chooseBackground();
+    chooseNumShapes();
+    chooseShapeSize();
+    chooseShapeType();
+    chooseShapeSpacing();
+    chooseShapeDisplacementY();
+    chooseShapeRotation();
+    choosePosition();
+    chooseFullShapeRotation();
+  }
+
+  // Choose: Background
+  //----------------------------------------------------------------
+
+  void chooseBackground()
+  {
+    WeightedRandomSet<Integer> backgrounds = new WeightedRandomSet<Integer>();
+    backgrounds.add(DARKEST, 1);
+    backgrounds.add(BRIGHTEST, 1);
+    backgrounds.add(RANDOM, 1);
+    backgrounds.add(DARKGRAY, 1);
+    backgrounds.add(WHITE, 1);
+    backgroundType = backgrounds.getRandom();
   }
 
   // Choose: Num Shapes
@@ -153,15 +186,25 @@ class Composition
   // Generate Shape
   //----------------------------------------------------------------
 
-  RShape getShape(ColorList colors)
+  RShape getShape()
   {
-    RShape theShape = new RShape();
-
-    // make sure the shape is correct dimensions
-
-    // colors background
-  
     positionType = GRID;
+
+    RShape theShape = new RShape();
+    
+    // background
+    ReadonlyTColor bg;
+    RShape bgRect = RShape.createRectangle(0, 0, w, h);
+    bgRect.setStroke(false);
+    if(backgroundType == DARKEST)         bg = colors.getDarkest();
+    else if(backgroundType == BRIGHTEST)  bg = colors.getLightest();
+    else if(backgroundType == RANDOM)     bg = colors.getRandom();
+    else if(backgroundType == DARKGRAY)   bg = TColor.newHSV(0, 0, 0.1);
+    else                                  bg = TColor.newHSV(0, 0, 1);
+    bgRect.setFill(bg.toARGB());
+    println(colors.size());
+    colors = removeColor(colors, bg);
+    println(colors.size());
   
     // horizontal
     if(positionType == HORIZONTAL)
@@ -249,5 +292,18 @@ class Composition
     }
   
     return returnShape;
+  }
+
+  ColorList removeColor(ColorList cols, ReadonlyTColor col)
+  {
+    ColorList newCols = new ColorList();
+    for(int i = 0; i < cols.size(); i++)
+    {
+      if(!cols.get(i).equals(col))
+      {
+        newCols.add(cols.get(i));
+      }
+    }
+    return newCols;
   }
 }

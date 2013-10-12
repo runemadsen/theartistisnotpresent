@@ -1,13 +1,20 @@
 abstract class ColorScheme
 {
+  // Constants
+  //----------------------------------------------------------------
+
+  int BRI = 0;
+  int SAT = 1;
+  int BRISAT = 2;
+
   // Default Properties
   //----------------------------------------------------------------
 
 	int schemeType;
   float hue = 0;
   float angle = 0;
-  int   moreColorsSat = 0;
-  int   moreColorsBri = 0;
+  int   moreColors = 0;
+  int   moreColorsType = 0;
   float moreColorsSatLow = 1;
   float moreColorsBriLow = 1;
   int   moreColorsSatEasing = 0;
@@ -16,6 +23,16 @@ abstract class ColorScheme
   float scaleBri = 1;
 
 	ColorList colors = new ColorList();
+
+  ColorScheme() 
+  {
+    pickHue();
+    if(hasAngleColors())          pickAngleColors();
+    if(hasMoreColors())           pickMoreColors();
+    if(hasVariableSaturation())   pickVariableSaturation();
+    if(hasVariableBrightness())   pickVariableBrightness();
+    if(hasFewerColors())          pickFewerColors();
+  }
 
 	// Main
   //----------------------------------------------------------------
@@ -70,43 +87,29 @@ abstract class ColorScheme
 
 	void pickMoreColorsDisperse(int lowNum, int highNum)
 	{
-		boolean moreSat = false;
-		boolean moreBri = false;
-		float which = random(1);
-
-		if(which < 0.33)				moreSat = true;
-		else if (which < 0.66)	moreBri = true;
-		else {
-			moreSat = true;
-			moreBri = true;
-		}
-
+    WeightedRandomSet<Integer> typeChooser = new WeightedRandomSet<Integer>();
+    typeChooser.add(BRI, 1);
+    typeChooser.add(SAT, 1);
+    typeChooser.add(BRISAT, 1);
+    moreColorsType = typeChooser.getRandom();
+	
 		WeightedRandomSet<Float> lowChooser = new WeightedRandomSet<Float>();
 		lowChooser.add(0.2, 5);
 		lowChooser.add(0.3, 4);
 		lowChooser.add(0.5, 3);
 		lowChooser.add(0.6, 2);
 
-		int numColors = round(random(lowNum, highNum));
+		moreColors = round(random(lowNum, highNum));
 
-		if(moreSat)
-		{
-      moreColorsSat = numColors;
-      moreColorsSatLow = lowChooser.getRandom();
-		}
-
-		if(moreBri)
-		{
-      moreColorsBri = numColors;
-			moreColorsBriLow = lowChooser.getRandom();
-		}
+    if(moreColorsType == SAT || moreColorsType == BRISAT)   moreColorsSatLow = lowChooser.getRandom();
+		if(moreColorsType == BRI || moreColorsType == BRISAT)   moreColorsBriLow = lowChooser.getRandom();
 	}
 
 	void pickMoreColorsFromColor(TColor col)
 	{
 		ColorList mores = new ColorList();
 
-		for(int i = 0; i < moreColorsSat; i++)
+		for(int i = 0; i < moreColors; i++)
 		{
 			mores.add(new TColor(col));
 		}
@@ -116,13 +119,13 @@ abstract class ColorScheme
 			float lowest;
 			float val;
 
-			if(moreColorsSat > 0)
+			if(moreColorsType == SAT || moreColorsType == BRISAT)
 			{
 				val = Ani.LINEAR.calcEasing(i, moreColorsSatLow, 1-moreColorsSatLow, mores.size());
 				mores.get(i).setSaturation(val);
 			}
 
-			if(moreColorsBri > 0)
+			if(moreColorsType == BRI || moreColorsType == BRISAT)
 			{
 				val = Ani.LINEAR.calcEasing(i, moreColorsBriLow, 1-moreColorsBriLow, mores.size());
 				mores.get(i).setSaturation(val);

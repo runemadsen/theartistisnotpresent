@@ -19,37 +19,22 @@ class ArtWork
     h = _h;
     canvas = createGraphics(w, h);
 
-    ColorScheme[] schemes = {
-      new ColorSchemeMonoChrome(),
-      new ColorSchemeTriadic(),
-      new ColorSchemeComplementary(),
-      new ColorSchemeTetradic(),
-      new ColorSchemeAnalogous(),
-      new ColorSchemeAccentedAnalogous()
-    };
-  
-    int schemeIndex = floor(random(schemes.length));
-    colorScheme = schemes[schemeIndex];
+    // color scheme
+    int schemeIndex = 0;//round(random(5));
+    if(schemeIndex == 0)         colorScheme = new ColorSchemeMonoChrome();
+    else if(schemeIndex == 1)    colorScheme = new ColorSchemeTriadic();
+    else if(schemeIndex == 2)    colorScheme = new ColorSchemeComplementary();
+    else if(schemeIndex == 3)    colorScheme = new ColorSchemeTetradic();
+    else if(schemeIndex == 4)    colorScheme = new ColorSchemeAnalogous();
+    else if(schemeIndex == 5)    colorScheme = new ColorSchemeAccentedAnalogous();
+    println("scheme: " + schemeIndex);
     colorScheme.schemeType = schemeIndex;
   
-    colorScheme.pickHue();
-    if(colorScheme.hasAngleColors())          colorScheme.pickAngleColors();
-    if(colorScheme.hasMoreColors())           colorScheme.pickMoreColors();
-    if(colorScheme.hasVariableSaturation())   colorScheme.pickVariableSaturation();
-    if(colorScheme.hasVariableBrightness())   colorScheme.pickVariableBrightness();
-    if(colorScheme.hasFewerColors())          colorScheme.pickFewerColors();
-  
-    composition = new Composition(w, h);
-    composition.chooseNumShapes();
-    composition.chooseShapeSize();
-    composition.chooseShapeType();
-    composition.chooseShapeSpacing();
-    composition.chooseShapeDisplacementY();
-    composition.chooseShapeRotation();
-    composition.choosePosition();
-    composition.chooseFullShapeRotation();
-    art = composition.getShape(colorScheme.colors);
+    // composition
+    composition = new Composition(w, h, colorScheme.colors);
+    art = composition.getShape();
 
+    // draw to canvas
     canvas.beginDraw();
     canvas.colorMode(HSB, 1, 1, 1, 1);
     canvas.smooth();  
@@ -80,8 +65,8 @@ class ArtWork
       (double) scheme.schemeType,          // (int)    index number of color scheme
       (double) scheme.hue,                 // (float)  0-1
       (double) scheme.angle,               // (float)  0-1
-      (double) scheme.moreColorsSat,       // (int)    number of colors, 0 if none
-      (double) scheme.moreColorsBri,       // (int)    number of colors, 0 if none
+      (double) scheme.moreColors,          // (int)    number of colors, 0 if none
+      (double) scheme.moreColorsType,      // (int)    sat, bri or both satbri
       (double) scheme.moreColorsSatLow,    // (float)  multiplier
       (double) scheme.moreColorsBriLow,    // (float)  multiplier
       (double) scheme.moreColorsSatEasing, // (int)    index number of easing
@@ -92,5 +77,18 @@ class ArtWork
     };
   
     return new Sample(features, rating);
+  }
+
+  // Saving
+  //----------------------------------------------------------------
+
+  void saveSVG(String filename)
+  {
+    RG.saveShape(filename, art);
+
+    XML xml = loadXML(filename);
+    xml.setString("width", w + "px");
+    xml.setString("height", h + "px");
+    saveXML(xml, filename);
   }
 }

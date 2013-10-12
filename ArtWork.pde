@@ -20,14 +20,13 @@ class ArtWork
     canvas = createGraphics(w, h);
 
     // color scheme
-    int schemeIndex = 0;//round(random(5));
+    int schemeIndex = round(random(5));
     if(schemeIndex == 0)         colorScheme = new ColorSchemeMonoChrome();
     else if(schemeIndex == 1)    colorScheme = new ColorSchemeTriadic();
     else if(schemeIndex == 2)    colorScheme = new ColorSchemeComplementary();
     else if(schemeIndex == 3)    colorScheme = new ColorSchemeTetradic();
     else if(schemeIndex == 4)    colorScheme = new ColorSchemeAnalogous();
     else if(schemeIndex == 5)    colorScheme = new ColorSchemeAccentedAnalogous();
-    println("scheme: " + schemeIndex);
     colorScheme.schemeType = schemeIndex;
   
     // composition

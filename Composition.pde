@@ -190,21 +190,20 @@ class Composition
   {
     positionType = GRID;
 
-    RShape theShape = new RShape();
+    RShape frontShape = new RShape();
+    RShape backgroundShape = RShape.createRectangle(0, 0, w, h);
     
     // background
     ReadonlyTColor bg;
-    RShape bgRect = RShape.createRectangle(0, 0, w, h);
-    bgRect.setStroke(false);
     if(backgroundType == DARKEST)         bg = colors.getDarkest();
     else if(backgroundType == BRIGHTEST)  bg = colors.getLightest();
     else if(backgroundType == RANDOM)     bg = colors.getRandom();
     else if(backgroundType == DARKGRAY)   bg = TColor.newHSV(0, 0, 0.1);
     else                                  bg = TColor.newHSV(0, 0, 1);
-    bgRect.setFill(bg.toARGB());
-    println(colors.size());
+
+    backgroundShape.setStroke(false);
+    backgroundShape.setFill(bg.toARGB());
     colors = removeColor(colors, bg);
-    println(colors.size());
   
     // horizontal
     if(positionType == HORIZONTAL)
@@ -215,7 +214,7 @@ class Composition
         RShape newShape = getShapeType(shapeType);
         newShape.translate(x, i * shapeDisplacementY);
         newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
-        theShape.addChild(newShape);
+        frontShape.addChild(newShape);
       }
     }
   
@@ -231,7 +230,7 @@ class Composition
           RShape newShape = getShapeType(shapeType);
           newShape.translate(x, y);
           newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
-          theShape.addChild(newShape);
+          frontShape.addChild(newShape);
         }
       }
     }
@@ -249,20 +248,22 @@ class Composition
     }
 
     // set colors
-    for(int i = 0; i < theShape.children.length; i++)
+    for(int i = 0; i < frontShape.children.length; i++)
     {
       TColor col = colors.get(i % colors.size());
-      theShape.children[i].setFill(col.toARGB());
-      theShape.children[i].setStroke(false);
+      frontShape.children[i].setFill(col.toARGB());
+      frontShape.children[i].setStroke(false);
     }
   
     // place in center of screen - important this happens before rotation!
-    theShape.translate((w/2) - (theShape.getWidth()/2), (h/2) - (theShape.getHeight()/2));
+    frontShape.translate((w/2) - (frontShape.getWidth()/2), (h/2) - (frontShape.getHeight()/2));
   
     // rotate
-    theShape.rotate(radians(fullShapeRotation), new RPoint(theShape.getX() + (theShape.getWidth()/2), theShape.getY() + (theShape.getHeight ()/2)));
+    frontShape.rotate(radians(fullShapeRotation), new RPoint(frontShape.getX() + (frontShape.getWidth()/2), frontShape.getY() + (frontShape.getHeight ()/2)));
+
+    backgroundShape.addChild(frontShape);
     
-    return theShape;
+    return backgroundShape;
   }
   
   // Choose: Helpers

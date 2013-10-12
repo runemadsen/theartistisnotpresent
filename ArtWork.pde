@@ -6,12 +6,19 @@ class ArtWork
   ColorScheme colorScheme;
   Composition composition;
   RShape art;
+  PGraphics canvas;
+  int w;
+  int h;
 
   // Constructor
   //----------------------------------------------------------------
 
-  ArtWork()
+  ArtWork(int _w, int _h)
   {
+    w = _w;
+    h = _h;
+    canvas = createGraphics(w, h);
+
     ColorScheme[] schemes = {
       new ColorSchemeMonoChrome(),
       new ColorSchemeTriadic(),
@@ -32,7 +39,7 @@ class ArtWork
     if(colorScheme.hasVariableBrightness())   colorScheme.pickVariableBrightness();
     if(colorScheme.hasFewerColors())          colorScheme.pickFewerColors();
   
-    composition = new Composition();
+    composition = new Composition(w, h);
     composition.chooseNumShapes();
     composition.chooseShapeSize();
     composition.chooseShapeType();
@@ -43,7 +50,11 @@ class ArtWork
     composition.chooseFullShapeRotation();
     art = composition.getShape(colorScheme.colors);
 
-    //RG.saveShape("myimage.svg", art);
+    canvas.beginDraw();
+    canvas.colorMode(HSB, 1, 1, 1, 1);
+    canvas.smooth();  
+    art.draw(canvas);
+    canvas.endDraw();
   }
 
   // Display
@@ -51,7 +62,13 @@ class ArtWork
 
   void display()
   {
-    art.draw();
+    // draw bounding box
+    stroke(0, 0, 0.8);
+    noFill();
+    rect(0, 0, w, h);
+
+    // draw art
+    image(canvas, 0, 0);
   }
 
   // Convert ArtWork to Sample

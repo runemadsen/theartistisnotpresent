@@ -11,8 +11,8 @@ import geomerative.*;
 //----------------------------------------------------------------
 
 String svgRoot = "/Users/rmadsen/Dropbox/Public";
-float svgRatio = 0.6;
 int svgWidth = 480;
+int svgHeight = 288;
 
 // Properties
 //----------------------------------------------------------------
@@ -35,7 +35,7 @@ void setup()
   OpenCV opencv = new OpenCV(this, "test.jpg");
 
   forest = new RandomForest();
-  art = new ArtWork();
+  art = new ArtWork(svgWidth, svgHeight);
 }
 
 void draw()
@@ -51,6 +51,6 @@ void keyPressed()
 {
   if(key == 'r')
   {
-    art = new ArtWork();
+    art = new ArtWork(svgWidth, svgHeight);
   }
 }

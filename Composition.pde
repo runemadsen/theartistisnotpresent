@@ -15,6 +15,9 @@ class Composition
   // Properties
   //----------------------------------------------------------------
 
+  int w;
+  int h;
+
   int shapeType;
   int shapeSize;
   int shapeSpacing;
@@ -27,7 +30,11 @@ class Composition
   // Constructor
   //----------------------------------------------------------------
 
-  Composition() {}
+  Composition(int _w, int _h)
+  {
+    w = _w;
+    h = _h;
+  }
 
   // Choose: Num Shapes
   //----------------------------------------------------------------
@@ -46,7 +53,7 @@ class Composition
   
   void chooseShapeSize()
   {
-    shapeSize = round(random(40, 500));
+    shapeSize = round(random(w * 0.05, w));
   }
   
   // Choose: Shape Type
@@ -74,7 +81,7 @@ class Composition
     spacings.add(0, 1);
     spacings.add(round(shapeSize/2), 1);
     spacings.add(shapeSize, 1);
-    spacings.add(round(random(500)), 1);
+    spacings.add(round(random(w)), 1);
     shapeSpacing = spacings.getRandom();
   }
   
@@ -203,10 +210,11 @@ class Composition
     {
       TColor col = colors.get(i % colors.size());
       theShape.children[i].setFill(col.toARGB());
+      theShape.children[i].setStroke(false);
     }
   
     // place in center of screen - important this happens before rotation!
-    theShape.translate((width/2) - (theShape.getWidth()/2), (height/2) - (theShape.getHeight()/2));
+    theShape.translate((w/2) - (theShape.getWidth()/2), (h/2) - (theShape.getHeight()/2));
   
     // rotate
     theShape.rotate(radians(fullShapeRotation), new RPoint(theShape.getX() + (theShape.getWidth()/2), theShape.getY() + (theShape.getHeight ()/2)));

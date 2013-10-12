@@ -10,7 +10,6 @@ abstract class ColorScheme
   // Default Properties
   //----------------------------------------------------------------
 
-	int schemeType;
   float hue = 0;
   float angle = 0;
   int   moreColors = 0;

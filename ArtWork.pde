@@ -3,37 +3,18 @@ class ArtWork
   // Properties
   //----------------------------------------------------------------
 
-  ColorScheme colorScheme;
-  Composition composition;
   RShape art;
   PGraphics canvas;
-  int w;
-  int h;
 
   // Constructor
   //----------------------------------------------------------------
 
-  ArtWork(int _w, int _h)
+  ArtWork(Sample sample, int w, int h)
   {
-    w = _w;
-    h = _h;
+    art = sampleToRShape(sample);
     canvas = createGraphics(w, h);
 
-    // color scheme
-    int schemeIndex = round(random(5));
-    if(schemeIndex == 0)         colorScheme = new ColorSchemeMonoChrome();
-    else if(schemeIndex == 1)    colorScheme = new ColorSchemeTriadic();
-    else if(schemeIndex == 2)    colorScheme = new ColorSchemeComplementary();
-    else if(schemeIndex == 3)    colorScheme = new ColorSchemeTetradic();
-    else if(schemeIndex == 4)    colorScheme = new ColorSchemeAnalogous();
-    else if(schemeIndex == 5)    colorScheme = new ColorSchemeAccentedAnalogous();
-    colorScheme.schemeType = schemeIndex;
-  
-    // composition
-    composition = new Composition(w, h, colorScheme.colors);
-    art = composition.getShape();
-
-    // draw to canvas
+    // draw art to canvas
     canvas.beginDraw();
     canvas.colorMode(HSB, 1, 1, 1, 1);
     canvas.smooth();  
@@ -46,36 +27,132 @@ class ArtWork
 
   void display()
   {
-    // draw bounding box
-    stroke(0, 0, 0.8);
-    noFill();
-    rect(0, 0, w, h);
-
-    // draw art
     image(canvas, 0, 0);
   }
 
-  // Convert ArtWork to Sample
+  // Sample to RShape
   //----------------------------------------------------------------
   
-  Sample toSample(ColorScheme scheme, int rating)
+  RShape sampleToRShape(Sample s)
   {
-    double[] features = {
-      (double) scheme.schemeType,          // (int)    index number of color scheme
-      (double) scheme.hue,                 // (float)  0-1
-      (double) scheme.angle,               // (float)  0-1
-      (double) scheme.moreColors,          // (int)    number of colors, 0 if none
-      (double) scheme.moreColorsType,      // (int)    sat, bri or both satbri
-      (double) scheme.moreColorsSatLow,    // (float)  multiplier
-      (double) scheme.moreColorsBriLow,    // (float)  multiplier
-      (double) scheme.moreColorsSatEasing, // (int)    index number of easing
-      (double) scheme.moreColorsBriEasing, // (int)    index number of easing
-      (double) scheme.scaleSat,            // (float)  multiplier
-      (double) scheme.scaleBri             // (float)  multiplier
-      // NEED COMPOSITION HERE!!!!
-    };
+    positionType = GRID;
+
+    RShape frontShape = new RShape();
+    RShape backgroundShape = RShape.createRectangle(0, 0, w, h);
+    
+    // background
+    ReadonlyTColor bg;
+    if(backgroundType == DARKEST)         bg = colors.getDarkest();
+    else if(backgroundType == BRIGHTEST)  bg = colors.getLightest();
+    else if(backgroundType == RANDOM)     bg = colors.getRandom();
+    else if(backgroundType == DARKGRAY)   bg = TColor.newHSV(0, 0, 0.1);
+    else                                  bg = TColor.newHSV(0, 0, 1);
+
+    backgroundShape.setStroke(false);
+    backgroundShape.setFill(bg.toARGB());
+    colors = removeColor(colors, bg);
   
-    return new Sample(features, rating);
+    // horizontal
+    if(positionType == HORIZONTAL)
+    {
+      for(int i = 0; i < numShapes; i++)
+      {
+        int x = (i * shapeSize) + (i * shapeSpacing);
+        RShape newShape = getShapeType(shapeType);
+        newShape.translate(x, i * shapeDisplacementY);
+        newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
+        frontShape.addChild(newShape);
+      }
+    }
+  
+    // grid
+    else if(positionType == GRID)
+    {
+      for(int i = 0; i < numShapes; i++)
+      {
+        for(int j = 0; j < numShapes; j++)
+        {
+          int x = (i * shapeSize) + (i * shapeSpacing);
+          int y = (j * shapeSize) + (j * shapeSpacing);
+          RShape newShape = getShapeType(shapeType);
+          newShape.translate(x, y);
+          newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
+          frontShape.addChild(newShape);
+        }
+      }
+    }
+  
+    // center
+    else if(positionType == CENTER)
+    {
+  
+    }
+  
+    // rotation
+    else if(positionType == ROTATION)
+    {
+  
+    }
+
+    // set colors
+    for(int i = 0; i < frontShape.children.length; i++)
+    {
+      TColor col = colors.get(i % colors.size());
+      frontShape.children[i].setFill(col.toARGB());
+      frontShape.children[i].setStroke(false);
+    }
+  
+    // place in center of screen - important this happens before rotation!
+    frontShape.translate((w/2) - (frontShape.getWidth()/2), (h/2) - (frontShape.getHeight()/2));
+  
+    // rotate
+    frontShape.rotate(radians(fullShapeRotation), new RPoint(frontShape.getX() + (frontShape.getWidth()/2), frontShape.getY() + (frontShape.getHeight ()/2)));
+
+    backgroundShape.addChild(frontShape);
+    
+    return backgroundShape;
+  }
+
+  // Choose: Helpers
+  //----------------------------------------------------------------
+
+  RShape getShapeType(int type)
+  {
+    RShape returnShape;
+  
+    if(type == ELLIPSE)
+    {
+      returnShape = RShape.createCircle(0, 0, shapeSize);
+      returnShape.translate(returnShape.getWidth()/2, returnShape.getHeight()/2);
+    }
+    else if(type == RECTANGLE)
+    {
+      returnShape = RShape.createRectangle(0, 0, shapeSize, shapeSize);
+    }
+    else
+    {
+      float half = shapeSize/2;
+      returnShape = new RShape();
+      returnShape.addLineTo(half, shapeSize);
+      returnShape.addLineTo(-half, shapeSize);
+      returnShape.addLineTo(0, 0);
+      returnShape.translate(returnShape.getWidth()/2, 0);
+    }
+  
+    return returnShape;
+  }
+
+  ColorList removeColor(ColorList cols, ReadonlyTColor col)
+  {
+    ColorList newCols = new ColorList();
+    for(int i = 0; i < cols.size(); i++)
+    {
+      if(!cols.get(i).equals(col))
+      {
+        newCols.add(cols.get(i));
+      }
+    }
+    return newCols;
   }
 
   // Saving

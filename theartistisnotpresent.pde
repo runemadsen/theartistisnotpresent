@@ -35,13 +35,19 @@ void setup()
   OpenCV opencv = new OpenCV(this, "test.jpg");
 
   forest = new RandomForest();
-  art = new ArtWork(svgWidth, svgHeight);
+  testNew();
 }
 
 void draw()
 {
   background(1);
   art.display();
+}
+
+void testNew()
+{
+  Sample sample = new Sample();
+  art = new ArtWork(sample, svgWidth, svgHeight);
 }
 
 // Events
@@ -51,6 +57,6 @@ void keyPressed()
 {
   if(key == 'r')
   {
-    art = new ArtWork(svgWidth, svgHeight);
+    testNew();
   }
 }

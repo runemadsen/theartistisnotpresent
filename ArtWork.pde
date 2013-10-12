@@ -11,7 +11,7 @@ class ArtWork
 
   ArtWork(Sample sample, int w, int h)
   {
-    art = sampleToRShape(sample);
+    art = sampleToShape(sample, w, h);
     canvas = createGraphics(w, h);
 
     // draw art to canvas
@@ -33,63 +33,76 @@ class ArtWork
   // Sample to RShape
   //----------------------------------------------------------------
   
-  RShape sampleToRShape(Sample s)
+  RShape sampleToShape(Sample s, int w, int h)
   {
     positionType = GRID;
 
+    //--> Setup
+
+    ColorList colors = new ColorList();
     RShape frontShape = new RShape();
     RShape backgroundShape = RShape.createRectangle(0, 0, w, h);
+
+    int shapeSize           = sample.composition.shapeSize * w;
+    int shapeSpacing        = shapeSize * sample.composition.shapeSpacing;
+    int shapeDisplacementY  = shapeSize * sample.composition.shapeDisplacementY;
+
+    //--> Colors
+
+
     
-    // background
+    //--> Background
+
     ReadonlyTColor bg;
-    if(backgroundType == DARKEST)         bg = colors.getDarkest();
-    else if(backgroundType == BRIGHTEST)  bg = colors.getLightest();
-    else if(backgroundType == RANDOM)     bg = colors.getRandom();
-    else if(backgroundType == DARKGRAY)   bg = TColor.newHSV(0, 0, 0.1);
-    else                                  bg = TColor.newHSV(0, 0, 1);
+    if(sample.composition.backgroundType == sample.composition.DARKEST)         bg = colors.getDarkest();
+    else if(sample.composition.backgroundType == sample.composition.BRIGHTEST)  bg = colors.getLightest();
+    else if(sample.composition.backgroundType == sample.composition.RANDOM)     bg = colors.getRandom();
+    else if(sample.composition.backgroundType == sample.composition.DARKGRAY)   bg = TColor.newHSV(0, 0, 0.1);
+    else                                                                        bg = TColor.newHSV(0, 0, 1);
 
     backgroundShape.setStroke(false);
     backgroundShape.setFill(bg.toARGB());
     colors = removeColor(colors, bg);
   
-    // horizontal
-    if(positionType == HORIZONTAL)
+    //--> Position
+
+    if(sample.composition.positionType == sample.composition.HORIZONTAL)
     {
-      for(int i = 0; i < numShapes; i++)
+      for(int i = 0; i < sample.composition.numShapes; i++)
       {
         int x = (i * shapeSize) + (i * shapeSpacing);
-        RShape newShape = getShapeType(shapeType);
+        RShape newShape = getShapeType(sample.composition.shapeType);
         newShape.translate(x, i * shapeDisplacementY);
-        newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
+        newShape.rotate(radians(sample.composition.shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
         frontShape.addChild(newShape);
       }
     }
   
     // grid
-    else if(positionType == GRID)
+    else if(sample.composition.positionType == sample.composition.GRID)
     {
-      for(int i = 0; i < numShapes; i++)
+      for(int i = 0; i < sample.composition.numShapes; i++)
       {
-        for(int j = 0; j < numShapes; j++)
+        for(int j = 0; j < sample.composition.numShapes; j++)
         {
           int x = (i * shapeSize) + (i * shapeSpacing);
           int y = (j * shapeSize) + (j * shapeSpacing);
-          RShape newShape = getShapeType(shapeType);
+          RShape newShape = getShapeType(sample.composition.shapeType);
           newShape.translate(x, y);
-          newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
+          newShape.rotate(radians(sample.composition.shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
           frontShape.addChild(newShape);
         }
       }
     }
   
     // center
-    else if(positionType == CENTER)
+    else if(sample.composition.positionType == sample.composition.CENTER)
     {
   
     }
   
     // rotation
-    else if(positionType == ROTATION)
+    else if(sample.composition.positionType == sample.composition.ROTATION)
     {
   
     }
@@ -106,7 +119,7 @@ class ArtWork
     frontShape.translate((w/2) - (frontShape.getWidth()/2), (h/2) - (frontShape.getHeight()/2));
   
     // rotate
-    frontShape.rotate(radians(fullShapeRotation), new RPoint(frontShape.getX() + (frontShape.getWidth()/2), frontShape.getY() + (frontShape.getHeight ()/2)));
+    frontShape.rotate(radians(sample.composition.fullShapeRotation), new RPoint(frontShape.getX() + (frontShape.getWidth()/2), frontShape.getY() + (frontShape.getHeight ()/2)));
 
     backgroundShape.addChild(frontShape);
     

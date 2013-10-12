@@ -8,10 +8,6 @@ class Sample {
     this.label = label;
   }
   
-  Sample(int featureVectorSize) {
-    this.featureVector = new double[featureVectorSize];
-  }
-  
   void setLabel(int label) {
     this.label = label;
   }

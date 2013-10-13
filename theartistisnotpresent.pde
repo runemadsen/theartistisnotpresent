@@ -38,14 +38,15 @@ int BRISAT = 2;
 // Setup
 //----------------------------------------------------------------
 
+FSM fsm;
+State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault");
+State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
+State predictionState = new State(this, "enterPrediction", "drawPrediction", "exitPrediction");
+State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
+
 String svgRoot = "/Users/rmadsen/Dropbox/Public";
 int svgWidth = 480;
 int svgHeight = 288;
-
-// Shared
-//----------------------------------------------------------------
-
-int mode = DEFAULTMODE;
 
 // Rating Mode
 //----------------------------------------------------------------
@@ -56,9 +57,6 @@ ArrayList<String> ratings = new ArrayList<String>();
 
 // Prediction Mode
 //----------------------------------------------------------------
-
-ControlP5 cp5;
-DropdownList modeSelector;
 
 // Artist Mode
 //----------------------------------------------------------------
@@ -76,29 +74,56 @@ void setup()
   smooth();
   noStroke();
   
+  fsm = new FSM(defaultState);
   RG.init(this);
   OpenCV opencv = new OpenCV(this, "test.jpg");
   forest = new RandomForest();
-  
-  // set list
-  cp5 = new ControlP5(this);
-  modeSelector = cp5.addDropdownList("modeSelector").setPosition(10, 20);
-  modeSelector.addItem("Default Mode", DEFAULTMODE);
-  modeSelector.addItem("Rating Mode", RATINGMODE);
-  modeSelector.addItem("Prediction Mode", PREDICTIONMODE);
-  modeSelector.addItem("Artist Mode", ARTISTMODE);
 }
 
 void draw()
 {
   background(1);
-
-  if(mode == RATINGMODE)            drawRatingMode();
-  else if(mode == PREDICTIONMODE)   drawPredictionMode();
-  else if(mode == ARTISTMODE)      drawArtistMode();
+  fsm.update();
 }
 
-void drawRatingMode()
+void keyPressed()
+{
+  if(key == 'r')  fsm.transitionTo(ratingState);
+  if(key == 'p')  fsm.transitionTo(predictionState);
+  if(key == 'a')  fsm.transitionTo(artistState);
+
+  if(fsm.currentState == ratingState)            keyPressedRatingMode();
+  else if(fsm.currentState == predictionState)   keyPressedPredictionMode();
+  else if(fsm.currentState == artistState)       keyPressedArtistMode();
+}
+
+// Default State
+//----------------------------------------------------------------
+
+void enterDefault()
+{
+
+}
+
+void drawDefault()
+{
+
+}
+
+void exitDefault()
+{
+
+}
+
+// Rating Mode
+//----------------------------------------------------------------
+
+void enterRating()
+{
+  newRandom();
+}
+
+void drawRating()
 {
   pushMatrix();
   translate((width/2) - (svgWidth/2), (height/2) - (svgHeight/2));
@@ -106,22 +131,9 @@ void drawRatingMode()
   popMatrix();
 }
 
-void drawPredictionMode()
+void exitRating()
 {
-  
-}
 
-void drawArtistMode()
-{
-  
-}
-
-// Events
-//----------------------------------------------------------------
-
-void keyPressed()
-{
-  if(mode == RATINGMODE)  keyPressedRatingMode();
 }
 
 void keyPressedRatingMode()
@@ -149,26 +161,67 @@ void keyPressedRatingMode()
   }
 }
 
-void controlEvent(ControlEvent e) {
-  
-  if(e.isGroup() && e.getName() == "modeSelector")
-  {
-    int newMode = int(e.getGroup().getValue());
-    
-    if(newMode == RATINGMODE)
-    {
-      newRandom();
-    }
-
-    mode = newMode;
-  } 
+public void selectCSV(int theValue)
+{
+  println("Button clicked");
 }
 
-// New Random Artwork
-//----------------------------------------------------------------
+void selectedCSV(File selection)
+{
+  if (selection != null)
+  {
+    String[] csvData = loadStrings(selection.getAbsolutePath());
+  }
+}
 
 void newRandom()
 {
   rateSample = new Sample();
   rateArtwork = new ArtWork(rateSample, svgWidth, svgHeight);
+}
+
+// Prediction Mode
+//----------------------------------------------------------------
+
+void enterPrediction()
+{
+
+}
+
+void drawPrediction()
+{
+
+}
+
+void exitPrediction()
+{
+
+}
+
+void keyPressedPredictionMode()
+{
+
+}
+
+// Artist Mode
+//----------------------------------------------------------------
+
+void enterArtist()
+{
+
+}
+
+void drawArtist()
+{
+
+}
+
+void exitArtist()
+{
+
+}
+
+void keyPressedArtistMode()
+{
+
 }

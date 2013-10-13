@@ -161,19 +161,6 @@ void keyPressedRatingMode()
   }
 }
 
-public void selectCSV(int theValue)
-{
-  println("Button clicked");
-}
-
-void selectedCSV(File selection)
-{
-  if (selection != null)
-  {
-    String[] csvData = loadStrings(selection.getAbsolutePath());
-  }
-}
-
 void newRandom()
 {
   rateSample = new Sample();
@@ -185,7 +172,7 @@ void newRandom()
 
 void enterPrediction()
 {
-
+  selectInput("Select a file to process:", "fileSelected");
 }
 
 void drawPrediction()
@@ -201,6 +188,13 @@ void exitPrediction()
 void keyPressedPredictionMode()
 {
 
+}
+
+void fileSelected(File selection) {
+  if (selection != null) {
+    String[] csvData = loadStrings(selection.getAbsolutePath());
+    println(csvData);
+  }
 }
 
 // Artist Mode

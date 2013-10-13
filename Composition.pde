@@ -1,23 +1,5 @@
 class Composition
 {
-  // Constants
-  //----------------------------------------------------------------
-
-  int HORIZONTAL = 0;
-  int GRID = 1;
-  int CENTER = 2;
-  int ROTATION = 3;
-  
-  int TRIANGLE = 0;
-  int ELLIPSE = 1;
-  int RECTANGLE = 2;
-
-  int DARKEST = 0;
-  int BRIGHTEST = 1;
-  int RANDOM = 2;
-  int DARKGRAY = 3;
-  int WHITE = 4;
-
   // Properties
   //----------------------------------------------------------------
 
@@ -99,10 +81,10 @@ class Composition
   void chooseShapeSpacing()
   {
     WeightedRandomSet<Float> spacings = new WeightedRandomSet<Float>();
-    spacings.add(0, 1);
+    spacings.add(0.0, 1);
     spacings.add(0.5, 1);
-    spacings.add(1, 1);
-    spacings.add(random(a)), 1);
+    spacings.add(1.0, 1);
+    spacings.add(random(1), 1);
     shapeSpacing = spacings.getRandom();
   }
   
@@ -112,7 +94,7 @@ class Composition
   void chooseShapeDisplacementY()
   {
     WeightedRandomSet<Float> displacements = new WeightedRandomSet<Float>();
-    displacements.add(0, 15);
+    displacements.add(0.0, 15);
     displacements.add(0.1, 1);
     displacements.add(0.2, 1);
     displacements.add(0.3, 1);

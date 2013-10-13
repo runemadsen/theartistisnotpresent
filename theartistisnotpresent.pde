@@ -7,6 +7,28 @@ import de.looksgood.ani.*;
 import de.looksgood.ani.easing.*;
 import geomerative.*;
 
+// Constants
+//----------------------------------------------------------------
+
+int HORIZONTAL = 0;
+int GRID = 1;
+int CENTER = 2;
+int ROTATION = 3;
+
+int TRIANGLE = 0;
+int ELLIPSE = 1;
+int RECTANGLE = 2;
+
+int DARKEST = 0;
+int BRIGHTEST = 1;
+int RANDOM = 2;
+int DARKGRAY = 3;
+int WHITE = 4;
+
+int BRI = 0;
+int SAT = 1;
+int BRISAT = 2;
+
 // Setup
 //----------------------------------------------------------------
 

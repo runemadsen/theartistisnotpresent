@@ -12,6 +12,7 @@ class Sample {
   Sample()
   {
     int schemeIndex = round(random(5));
+    
     if(schemeIndex == 0)         colorscheme = new ColorSchemeMonoChrome();
     else if(schemeIndex == 1)    colorscheme = new ColorSchemeTriadic();
     else if(schemeIndex == 2)    colorscheme = new ColorSchemeComplementary();
@@ -21,28 +22,29 @@ class Sample {
      
     composition = new Composition();
 
-    featureVector = {
-      (double) schemeIndex,                       // (int)    index number of color scheme
-      (double) colorscheme.hue,                        // (float)  0-1
-      (double) colorscheme.angle,                      // (float)  0-1
-      (double) colorscheme.moreColors,                 // (int)    number of colors, 0 if none
-      (double) colorscheme.moreColorsType,             // (int)    sat, bri or both satbri
-      (double) colorscheme.moreColorsSatLow,           // (float)  multiplier
-      (double) colorscheme.moreColorsBriLow,           // (float)  multiplier
-      (double) colorscheme.moreColorsSatEasing,        // (int)    index number of easing
-      (double) colorscheme.moreColorsBriEasing,        // (int)    index number of easing
-      (double) colorscheme.scaleSat,                   // (float)  multiplier
-      (double) colorscheme.scaleBri,                   // (float)  multiplier
-      (double) composition.shapeType;             // (int)    constant val of shape
-      (double) composition.shapeSize;             // (float)  normalized size of shape
-      (double) composition.shapeSpacing;          // (float)  normalized shape spacing
-      (double) composition.shapeRotation;         // (int)    degrees
-      (double) composition.shapeDisplacementY;    // (float)  normalized displacement
-      (double) composition.numShapes;             // (int)    number of shapes
-      (double) composition.fullShapeRotation;     // (int)    degrees
-      (double) composition.positionType;          // (int)    constant val of position type
-      (double) composition.backgroundType;        // (int)    constants val of background type
-    }
+    double[] newFeatureVector = {
+      (double) schemeIndex,                           // (int)    index number of color scheme
+      (double) colorscheme.hue,                       // (float)  0-1
+      (double) colorscheme.angle,                     // (float)  0-1
+      (double) colorscheme.moreColors,                // (int)    number of colors, 0 if none
+      (double) colorscheme.moreColorsType,            // (int)    sat, bri or both satbri
+      (double) colorscheme.moreColorsSatLow,          // (float)  multiplier
+      (double) colorscheme.moreColorsBriLow,          // (float)  multiplier
+      (double) colorscheme.moreColorsSatEasing,       // (int)    index number of easing
+      (double) colorscheme.moreColorsBriEasing,       // (int)    index number of easing
+      (double) colorscheme.scaleSat,                  // (float)  multiplier
+      (double) colorscheme.scaleBri,                  // (float)  multiplier
+      (double) composition.shapeType,                 // (int)    constant val of shape
+      (double) composition.shapeSize,                 // (float)  normalized size of shape
+      (double) composition.shapeSpacing,              // (float)  normalized shape spacing
+      (double) composition.shapeRotation,             // (int)    degrees
+      (double) composition.shapeDisplacementY,        // (float)  normalized displacement
+      (double) composition.numShapes,                 // (int)    number of shapes
+      (double) composition.fullShapeRotation,         // (int)    degrees
+      (double) composition.positionType,              // (int)    constant val of position type
+      (double) composition.backgroundType             // (int)    constants val of background type
+    };
+    featureVector = newFeatureVector;
   }
 
   // New Existing

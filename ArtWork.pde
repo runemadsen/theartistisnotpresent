@@ -33,31 +33,27 @@ class ArtWork
   // Sample to RShape
   //----------------------------------------------------------------
   
-  RShape sampleToShape(Sample s, int w, int h)
+  RShape sampleToShape(Sample sample, int w, int h)
   {
-    positionType = GRID;
+    sample.composition.positionType = GRID;
 
     //--> Setup
 
-    ColorList colors = new ColorList();
+    ColorList colors = sample.colorscheme.colors;
     RShape frontShape = new RShape();
     RShape backgroundShape = RShape.createRectangle(0, 0, w, h);
 
-    int shapeSize           = sample.composition.shapeSize * w;
-    int shapeSpacing        = shapeSize * sample.composition.shapeSpacing;
-    int shapeDisplacementY  = shapeSize * sample.composition.shapeDisplacementY;
+    int shapeSize           = round(sample.composition.shapeSize * w);
+    int shapeSpacing        = round(shapeSize * sample.composition.shapeSpacing);
+    int shapeDisplacementY  = round(shapeSize * sample.composition.shapeDisplacementY);
 
-    //--> Colors
-
-
-    
     //--> Background
 
     ReadonlyTColor bg;
-    if(sample.composition.backgroundType == sample.composition.DARKEST)         bg = colors.getDarkest();
-    else if(sample.composition.backgroundType == sample.composition.BRIGHTEST)  bg = colors.getLightest();
-    else if(sample.composition.backgroundType == sample.composition.RANDOM)     bg = colors.getRandom();
-    else if(sample.composition.backgroundType == sample.composition.DARKGRAY)   bg = TColor.newHSV(0, 0, 0.1);
+    if(sample.composition.backgroundType == DARKEST)         bg = colors.getDarkest();
+    else if(sample.composition.backgroundType == BRIGHTEST)  bg = colors.getLightest();
+    else if(sample.composition.backgroundType == RANDOM)     bg = colors.getRandom();
+    else if(sample.composition.backgroundType == DARKGRAY)   bg = TColor.newHSV(0, 0, 0.1);
     else                                                                        bg = TColor.newHSV(0, 0, 1);
 
     backgroundShape.setStroke(false);
@@ -66,12 +62,12 @@ class ArtWork
   
     //--> Position
 
-    if(sample.composition.positionType == sample.composition.HORIZONTAL)
+    if(sample.composition.positionType == HORIZONTAL)
     {
       for(int i = 0; i < sample.composition.numShapes; i++)
       {
         int x = (i * shapeSize) + (i * shapeSpacing);
-        RShape newShape = getShapeType(sample.composition.shapeType);
+        RShape newShape = getShape(sample.composition.shapeType, shapeSize);
         newShape.translate(x, i * shapeDisplacementY);
         newShape.rotate(radians(sample.composition.shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
         frontShape.addChild(newShape);
@@ -79,7 +75,7 @@ class ArtWork
     }
   
     // grid
-    else if(sample.composition.positionType == sample.composition.GRID)
+    else if(sample.composition.positionType == GRID)
     {
       for(int i = 0; i < sample.composition.numShapes; i++)
       {
@@ -87,7 +83,7 @@ class ArtWork
         {
           int x = (i * shapeSize) + (i * shapeSpacing);
           int y = (j * shapeSize) + (j * shapeSpacing);
-          RShape newShape = getShapeType(sample.composition.shapeType);
+          RShape newShape = getShape(sample.composition.shapeType, shapeSize);
           newShape.translate(x, y);
           newShape.rotate(radians(sample.composition.shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
           frontShape.addChild(newShape);
@@ -96,13 +92,13 @@ class ArtWork
     }
   
     // center
-    else if(sample.composition.positionType == sample.composition.CENTER)
+    else if(sample.composition.positionType == CENTER)
     {
   
     }
   
     // rotation
-    else if(sample.composition.positionType == sample.composition.ROTATION)
+    else if(sample.composition.positionType == ROTATION)
     {
   
     }
@@ -129,7 +125,7 @@ class ArtWork
   // Choose: Helpers
   //----------------------------------------------------------------
 
-  RShape getShapeType(int type)
+  RShape getShape(int type, int shapeSize)
   {
     RShape returnShape;
   
@@ -171,7 +167,7 @@ class ArtWork
   // Saving
   //----------------------------------------------------------------
 
-  void saveSVG(String filename)
+  void saveSVG(String filename, int w, int h)
   {
     RG.saveShape(filename, art);
 

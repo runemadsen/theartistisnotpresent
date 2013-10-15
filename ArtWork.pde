@@ -3,6 +3,8 @@ class ArtWork
   // Properties
   //----------------------------------------------------------------
 
+  Ani easing;
+  PVector loc;
   RShape art;
   PGraphics canvas;
 
@@ -11,6 +13,7 @@ class ArtWork
 
   ArtWork(Sample sample, int w, int h)
   {
+    loc = new PVector(0, 0);
     art = sampleToShape(sample, w, h);
     canvas = createGraphics(w, h);
 
@@ -27,7 +30,13 @@ class ArtWork
 
   void display()
   {
-    image(canvas, 0, 0);
+    image(canvas, loc.x, loc.y);
+  }
+
+  void moveTo(int x, int y, int sec)
+  {
+    Ani.to(loc, sec, "x", x, Ani.QUAD_OUT);
+    Ani.to(loc, sec, "y", y, Ani.QUAD_OUT);
   }
 
   // Sample to RShape

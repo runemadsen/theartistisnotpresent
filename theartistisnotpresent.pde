@@ -43,6 +43,7 @@ State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault
 State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
 State predictionState = new State(this, "enterPrediction", "drawPrediction", "exitPrediction");
 State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
+State testState = new State(this, "enterTest", "drawTest", "exitTest");
 
 String svgRoot = "/Users/rmadsen/Dropbox/Public";
 int svgWidth = 480;
@@ -58,7 +59,7 @@ ArrayList<String> ratings = new ArrayList<String>();
 // Prediction Mode
 //----------------------------------------------------------------
 
-float predictionSplit = 0.5;
+float predictionSplit = 0.7;
 
 // Artist Mode
 //----------------------------------------------------------------
@@ -78,6 +79,7 @@ void setup()
   
   fsm = new FSM(defaultState);
   RG.init(this);
+  Ani.init(this);
   OpenCV opencv = new OpenCV(this, "test.jpg");
   forest = new RandomForest();
 }
@@ -93,6 +95,7 @@ void keyPressed()
   if(key == 'r')  fsm.transitionTo(ratingState);
   if(key == 'p')  fsm.transitionTo(predictionState);
   if(key == 'a')  fsm.transitionTo(artistState);
+  if(key == 't')  fsm.transitionTo(testState);
 
   if(fsm.currentState == ratingState)            keyPressedRatingMode();
   else if(fsm.currentState == predictionState)   keyPressedPredictionMode();
@@ -286,6 +289,25 @@ void exitArtist()
 }
 
 void keyPressedArtistMode()
+{
+
+}
+
+// Test Mode
+//----------------------------------------------------------------
+
+void enterTest()
+{
+  newRandom();
+  rateArtwork.moveTo(0, 300, 1);
+}
+
+void drawTest()
+{
+  rateArtwork.display();
+}
+
+void exitTest()
 {
 
 }

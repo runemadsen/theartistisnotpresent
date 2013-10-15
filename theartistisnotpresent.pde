@@ -58,6 +58,8 @@ ArrayList<String> ratings = new ArrayList<String>();
 // Prediction Mode
 //----------------------------------------------------------------
 
+float predictionSplit = 0.8;
+
 // Artist Mode
 //----------------------------------------------------------------
 
@@ -172,7 +174,7 @@ void newRandom()
 
 void enterPrediction()
 {
-  selectInput("Select a file to process:", "fileSelected");
+  selectInput("Select a file to process:", "parseSCV");
 }
 
 void drawPrediction()
@@ -190,10 +192,41 @@ void keyPressedPredictionMode()
 
 }
 
-void fileSelected(File selection) {
-  if (selection != null) {
+void parseSCV(File selection)
+{
+  if (selection != null)
+  {
+    //--> Split up data
+
     String[] csvData = loadStrings(selection.getAbsolutePath());
-    println(csvData);
+    ArrayList<Sample> trainingSamples = new ArrayList<Sample>();
+    ArrayList<Sample> predictionSamples = new ArrayList<Sample>();
+
+    int splitInteger = round(predictionSplit * csvData.length);
+    println(splitInteger);
+
+    for(int i = 0; i < csvData.length; i++)
+    {
+      Sample sample = new Sample(csvData[i]);
+
+      if(i < splitInteger)      trainingSamples.add(sample);
+      else                      predictionSamples.add(sample);
+    }
+    
+    //--> Train
+
+    for(int i = 0; i < trainingSamples.size(); i++)
+    {
+      forest.addTrainingSample(trainingSamples.get(i));
+    }
+
+    //--> Predict
+
+    for(int i = 0; i < predictionSamples.size(); i++)
+    {
+      double prediction = forest.predict(predictionSamples.get(i));
+      println("prediction");
+    }
   }
 }
 

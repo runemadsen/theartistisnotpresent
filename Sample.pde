@@ -6,6 +6,23 @@ class Sample {
   ColorScheme colorscheme;
   Composition composition;
 
+  // New from CSV String
+  // ------------------------------------------------------
+
+  Sample(String csvString)
+  {
+    String[] nums = csvString.split(",");
+    double[] newFeatureVector = new double[nums.length - 1]; // minus one to not include label
+    
+    for(int i = 0; i < nums.length - 1; i++)
+    {
+      newFeatureVector[i] = Double.parseDouble(nums[i]);
+    }
+
+    featureVector = newFeatureVector;
+    label = Integer.parseInt(nums[nums.length - 1]);
+  }
+
   // New Random
   // ------------------------------------------------------
 

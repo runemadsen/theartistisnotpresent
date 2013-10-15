@@ -202,8 +202,9 @@ void parseSCV(File selection)
     ArrayList<Sample> trainingSamples = new ArrayList<Sample>();
     ArrayList<Sample> predictionSamples = new ArrayList<Sample>();
 
+    println("length: " + csvData.length);
     int splitInteger = round(predictionSplit * csvData.length);
-    println(splitInteger);
+    println("splitInteger: " + splitInteger);
 
     for(int i = 0; i < csvData.length; i++)
     {
@@ -219,13 +220,15 @@ void parseSCV(File selection)
     {
       forest.addTrainingSample(trainingSamples.get(i));
     }
+    forest.train();
 
     //--> Predict
 
     for(int i = 0; i < predictionSamples.size(); i++)
     {
-      double prediction = forest.predict(predictionSamples.get(i));
-      println("prediction");
+      Sample sample = predictionSamples.get(i);
+      double prediction = forest.predict(sample);
+      println("Prediction: " + prediction + ", Label: " + sample.label);
     }
   }
 }

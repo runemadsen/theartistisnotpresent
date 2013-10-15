@@ -58,7 +58,7 @@ ArrayList<String> ratings = new ArrayList<String>();
 // Prediction Mode
 //----------------------------------------------------------------
 
-float predictionSplit = 0.8;
+float predictionSplit = 0.5;
 
 // Artist Mode
 //----------------------------------------------------------------
@@ -224,12 +224,46 @@ void parseSCV(File selection)
 
     //--> Predict
 
+    int correctAnswers = 0;
+    int wrongAnswers = 0;
+    int combinedDiff = 0;
+    int[] diffByrating = new int[10];
+    int[] missesByrating = new int[10];
+
     for(int i = 0; i < predictionSamples.size(); i++)
     {
       Sample sample = predictionSamples.get(i);
       double prediction = forest.predict(sample);
       println("Prediction: " + prediction + ", Label: " + sample.label);
+
+      int diff = abs(((int) prediction) - sample.label);
+
+      if(diff > 0)
+      {
+        wrongAnswers++;
+        combinedDiff += diff;
+        missesByrating[sample.label]++;
+        diffByrating[sample.label] += diff;
+      }
+      else
+      {
+        correctAnswers++;
+      }
     }
+
+    println("**************************************************");
+    println("Overall Results of Prediction");
+
+    for (int i = 0; i < diffByrating.length; i++)
+    {
+      if(missesByrating[i] > 0)
+        println("The rating " + i + " had " + missesByrating[i] + " wrong predictions with an average of " + (diffByrating[i] / missesByrating[i]));
+    }
+
+    println("Overall prediction difference average: " + (combinedDiff/predictionSamples.size()));
+    println("Overall correct answers: " + correctAnswers + " (" + (double) correctAnswers*100/predictionSamples.size() + " percent)");
+    println("Overall Wrong answers: " + wrongAnswers + " (" + (double) wrongAnswers*100/predictionSamples.size() + " percent)");
+    println("**************************************************");
   }
 }
 

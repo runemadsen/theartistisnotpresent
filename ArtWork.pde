@@ -11,9 +11,9 @@ class ArtWork
   // Constructor
   //----------------------------------------------------------------
 
-  ArtWork(Sample sample, int w, int h)
+  ArtWork(Sample sample, int w, int h, int x, int y)
   {
-    loc = new PVector(0, 0);
+    loc = new PVector(x, y);
     art = sampleToShape(sample, w, h);
     canvas = createGraphics(w, h);
 
@@ -30,7 +30,7 @@ class ArtWork
 
   void display()
   {
-    image(canvas, loc.x, loc.y);
+    image(canvas, loc.x, loc.y); 
   }
 
   void moveTo(int x, int y, int sec)

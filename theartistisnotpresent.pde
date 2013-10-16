@@ -38,6 +38,8 @@ int BRISAT = 2;
 // Setup
 //----------------------------------------------------------------
 
+RandomForest forest;
+
 FSM fsm;
 State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault");
 State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
@@ -46,8 +48,16 @@ State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
 State testState = new State(this, "enterTest", "drawTest", "exitTest");
 
 String svgRoot = "/Users/rmadsen/Dropbox/Public";
+
 int svgWidth = 480;
 int svgHeight = 288;
+
+int ledWidth = 215;
+int ledHeight = 168;
+
+float downScale =  (float) ledHeight / (float) svgHeight;
+
+PImage maske;
 
 // Rating Mode
 //----------------------------------------------------------------
@@ -64,7 +74,13 @@ float predictionSplit = 0.7;
 // Artist Mode
 //----------------------------------------------------------------
 
-RandomForest forest;
+// Test Mode
+//----------------------------------------------------------------
+
+ArtWork showArt;
+ArtWork outArt;
+long lastMillis = 0;
+int timeOnScreen = 3000;
 
 // Setup and Draw
 //----------------------------------------------------------------
@@ -169,7 +185,7 @@ void keyPressedRatingMode()
 void newRandom()
 {
   rateSample = new Sample();
-  rateArtwork = new ArtWork(rateSample, svgWidth, svgHeight);
+  rateArtwork = new ArtWork(rateSample, svgWidth, svgHeight, 0, 0);
 }
 
 // Prediction Mode
@@ -298,13 +314,33 @@ void keyPressedArtistMode()
 
 void enterTest()
 {
-  newRandom();
-  rateArtwork.moveTo(0, 300, 1);
+  lastMillis = millis();
+  maske = loadImage("mask.png");
+  showArt = new ArtWork(new Sample(), int(svgWidth * downScale), int(svgHeight * downScale), 0, -svgHeight);
+  outArt = new ArtWork(new Sample(), int(svgWidth * downScale), int(svgHeight * downScale), 0, 0);
 }
 
 void drawTest()
 {
-  rateArtwork.display();
+  showArt.display();
+  outArt.display();
+
+  fill(0);
+  noStroke();
+  //rect(216, 0, width-216, height);
+  //rect(0, 169, width, height-169);
+  image(maske, 0, 0);
+
+  if(millis() - lastMillis > timeOnScreen)
+  {
+    lastMillis = millis();
+    
+    outArt = showArt;
+    outArt.moveTo(0, int(svgHeight * downScale), 1);
+    
+    showArt = new ArtWork(new Sample(), int(svgWidth * downScale), int(svgHeight * downScale), 0, -int(svgHeight*downScale));
+    showArt.moveTo(0, 0, 1);
+  }
 }
 
 void exitTest()

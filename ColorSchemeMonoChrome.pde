@@ -13,13 +13,33 @@ class ColorSchemeMonoChrome extends ColorScheme
 
 	ColorSchemeMonoChrome() {}
 
+  ColorList getColors()
+  {
+    ColorList colors = new ColorList();
+
+    // hue
+    colors.add(TColor.newHSV(hue, 1, 1));
+
+    // more colors
+    addColors(colors, pickMoreColorsFromColor(colors.get(0)));
+
+    // variable saturation
+    colors = scaleSaturations(colors, scaleSat);
+
+    // variable brightness
+    colors = scaleBrightnesses(colors, scaleBri);
+
+    // fewer colors
+
+    return colors;
+  }
+
 	/* Execute
 	--------------------------------------------------------- */
 
 	void pickMoreColors()
 	{
     pickMoreColorsDisperse(3, 10);
-    pickMoreColorsFromColor(colors.get(0));
 	}
 
 }

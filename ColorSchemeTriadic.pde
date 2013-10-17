@@ -13,6 +13,33 @@ class ColorSchemeTriadic extends ColorScheme
 
 	ColorSchemeTriadic() {}
 
+	ColorList getColors()
+	{
+		ColorList colors = new ColorList();
+
+		// hue
+		colors.add(TColor.newHSV(hue, 1, 1));
+
+		// angle colors
+		colors.add(TColor.newHSV( colors.get(0).hue() - angle, 1, 1)); // left
+		colors.add(TColor.newHSV( colors.get(0).hue() + angle, 1, 1)); // right
+
+		// more colors
+		addColors(colors, pickMoreColorsFromColor(colors.get(0)));
+		addColors(colors, pickMoreColorsFromColor(colors.get(1)));
+		addColors(colors, pickMoreColorsFromColor(colors.get(2)));
+
+		// variable saturation
+		colors = scaleSaturations(colors, scaleSat);
+
+		// variable brightness
+		colors = scaleBrightnesses(colors, scaleBri);
+
+		// fewer colors
+
+		return colors;
+	}
+
 	/* Execute
 	--------------------------------------------------------- */
 
@@ -20,19 +47,10 @@ class ColorSchemeTriadic extends ColorScheme
 	{
 		// pick angle 90º-175º away from base hue
 		angle = random(90f/360f, 175f/360f);
-
-		// find left color
-		colors.add(TColor.newHSV( colors.get(0).hue() - angle, 1, 1));
-
-		// find right color
-		colors.add(TColor.newHSV( colors.get(0).hue() + angle, 1, 1));
 	}
 
 	void pickMoreColors()
 	{
 		pickMoreColorsDisperse(2, 4);
-		pickMoreColorsFromColor(colors.get(0));
-		pickMoreColorsFromColor(colors.get(1));
-		pickMoreColorsFromColor(colors.get(2));
 	}
 }

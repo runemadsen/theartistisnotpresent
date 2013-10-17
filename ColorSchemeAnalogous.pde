@@ -1,8 +1,5 @@
 class ColorSchemeAnalogous extends ColorScheme
 {
-	/* Define
-	------------------------------------------------------------- */
-
 	public String getName() { return "Analogous"; };
 
 	public boolean hasAngleColors() { return true; }
@@ -13,24 +10,48 @@ class ColorSchemeAnalogous extends ColorScheme
 
 	ColorSchemeAnalogous() {}
 
-	/* Execute
-	--------------------------------------------------------- */
+	// Get Colors
+	//----------------------------------------------------------------
 
-	void pickAngleColors()
+	ColorList getColors()
 	{
-		float numColors = int(random(3, 6)); // this is unaccounted for in the DNA
-		angle = random(5f, (180f/numColors)) / 360f;
+		ColorList colors = new ColorList();
 
-		for(int i = 0; i < numColors; i++)
+		// hue
+		colors.add(TColor.newHSV(hue, 1, 1));
+
+		// angle colors
+		for(int i = 0; i < 4; i++)
 		{
 			colors.add(TColor.newHSV(colors.get(0).hue() + (angle*(i+1)), 1, 1));
 		}
+		println(angle);
+
+		// more colors
+		addColors(colors, pickMoreColorsFromColor(colors.get(0)));
+		addColors(colors, pickMoreColorsFromColor(colors.get(1)));
+
+		// variable saturation
+		colors = scaleSaturations(colors, scaleSat);
+
+		// variable brightness
+		colors = scaleBrightnesses(colors, scaleBri);
+
+		// fewer colors
+
+		return colors;
+	}
+
+	// Choose Vars
+	//----------------------------------------------------------------
+
+	void pickAngleColors()
+	{
+		angle = random(5.0, (180.0 / (float) 4)) / 360f;
 	}
 
 	void pickMoreColors()
 	{
 		pickMoreColorsDisperse(2, 6);
-		pickMoreColorsFromColor(colors.get(0));
-		pickMoreColorsFromColor(colors.get(1));
 	}
 }

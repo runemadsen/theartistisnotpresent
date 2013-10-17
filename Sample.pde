@@ -21,6 +21,9 @@ class Sample {
 
     featureVector = newFeatureVector;
     label = Integer.parseInt(nums[nums.length - 1]);
+
+    //colorscheme = getColorSchemeFromInteger(schemeIndex);
+    //composition = new Composition();
   }
 
   // New Random
@@ -30,13 +33,7 @@ class Sample {
   {
     int schemeIndex = round(random(5));
     
-    if(schemeIndex == 0)         colorscheme = new ColorSchemeMonoChrome();
-    else if(schemeIndex == 1)    colorscheme = new ColorSchemeTriadic();
-    else if(schemeIndex == 2)    colorscheme = new ColorSchemeComplementary();
-    else if(schemeIndex == 3)    colorscheme = new ColorSchemeTetradic();
-    else if(schemeIndex == 4)    colorscheme = new ColorSchemeAnalogous();
-    else if(schemeIndex == 5)    colorscheme = new ColorSchemeAccentedAnalogous();
-     
+    colorscheme = getColorSchemeFromInteger(schemeIndex);
     composition = new Composition();
 
     double[] newFeatureVector = {
@@ -75,6 +72,17 @@ class Sample {
 
   // Getter / Setter
   // ------------------------------------------------------
+
+  ColorScheme getColorSchemeFromInteger(int type)
+  {
+    return new ColorSchemeAnalogous();
+    //if(type == 0)         return new ColorSchemeMonoChrome();
+    //else if(type == 1)    return new ColorSchemeTriadic();
+    //else if(type == 2)    return new ColorSchemeComplementary();
+    //else if(type == 3)    return new ColorSchemeTetradic();
+    //else if(type == 4)    return new ColorSchemeAnalogous();
+    //else                  return new ColorSchemeAccentedAnalogous();
+  }
   
   void setLabel(int label)
   {

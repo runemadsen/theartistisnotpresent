@@ -14,8 +14,6 @@ abstract class ColorScheme
   float scaleSat = 1;
   float scaleBri = 1;
 
-	ColorList colors = new ColorList();
-
   ColorScheme() 
   {
     pickHue();
@@ -26,25 +24,10 @@ abstract class ColorScheme
     if(hasFewerColors())          pickFewerColors();
   }
 
-	// Main
-  //----------------------------------------------------------------
-
-  void display()
-  {
-    int rectSize = 200;
-
-    for(int i = 0; i < colors.size(); i++)
-    {
-      TColor col = colors.get(i);
-      noStroke();
-      fill(col.hue(), col.saturation(), col.brightness());
-      rect((i % 3) * rectSize, ((i/3) % 3) * rectSize, rectSize, rectSize);
-    }
-  }
-
 	// Base methods that can be overridden
   //----------------------------------------------------------------
 
+  public abstract ColorList getColors();
   public abstract String getName();
   public abstract boolean hasAngleColors();
   public abstract boolean hasMoreColors();
@@ -55,19 +38,16 @@ abstract class ColorScheme
 	void pickHue()
 	{
 		hue = random(1);
-		colors.add(TColor.newHSV(hue, 1, 1));
 	}
 
 	void pickVariableSaturation()
 	{
 		scaleSat = random(0.4, 1);
-		scaleSaturations(scaleSat);
 	}
 
 	void pickVariableBrightness()
 	{
 		scaleBri = random(0.4, 1);
-		scaleBrightnesses(scaleBri);
 	}
 
 	void pickAngleColors() {}
@@ -97,7 +77,7 @@ abstract class ColorScheme
 		if(moreColorsType == BRI || moreColorsType == BRISAT)   moreColorsBriLow = lowChooser.getRandom();
 	}
 
-	void pickMoreColorsFromColor(TColor col)
+	ColorList pickMoreColorsFromColor(TColor col)
 	{
 		ColorList mores = new ColorList();
 
@@ -124,30 +104,36 @@ abstract class ColorScheme
 			}
 		}
 
-		addColors(mores);
+		return mores;
 	}
 
-	void scaleSaturations(float s)
+	ColorList scaleSaturations(ColorList colors, float s)
 	{
 		for(int i = 0; i < colors.size(); i++)
 		{
 			colors.get(i).setSaturation( colors.get(i).saturation() * s);
 		}
+
+    return colors;
 	}
 
-	void scaleBrightnesses(float s)
+	ColorList scaleBrightnesses(ColorList colors, float s)
 	{
 		for(int i = 0; i < colors.size(); i++)
 		{
 			colors.get(i).setBrightness( colors.get(i).brightness() * s);
 		}
+
+    return colors;
 	}
 
-	void addColors(ColorList newColors)
+	ColorList addColors(ColorList colors, ColorList newColors)
 	{
 		for(int i = 0; i < newColors.size(); i++)
 		{
 			colors.add(newColors.get(i));
 		}
+
+    return colors;
 	}
 }

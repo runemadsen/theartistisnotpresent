@@ -23,6 +23,8 @@ class ArtWork
     canvas.smooth();  
     art.draw(canvas);
     canvas.endDraw();
+
+    println(sample.colorscheme.getName());
   }
 
   // Display
@@ -48,7 +50,7 @@ class ArtWork
 
     //--> Setup
 
-    ColorList colors = sample.colorscheme.colors;
+    ColorList colors = sample.colorscheme.getColors();
     RShape frontShape = new RShape();
     RShape backgroundShape = RShape.createRectangle(0, 0, w, h);
 

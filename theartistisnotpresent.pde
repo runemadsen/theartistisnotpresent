@@ -16,6 +16,13 @@ int RATINGMODE = 1;
 int PREDICTIONMODE = 2;
 int ARTISTMODE = 3;
 
+int MONOCHROME = 0;
+int TRIADIC = 1;
+int COMPLEMENTARY = 2;
+int TETRADIC = 3;
+int ANALOGOUS = 4;
+int ACCENTEDANALOGOUS = 5;
+
 int HORIZONTAL = 0;
 int GRID = 1;
 int CENTER = 2;
@@ -46,6 +53,7 @@ State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
 State predictionState = new State(this, "enterPrediction", "drawPrediction", "exitPrediction");
 State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
 State testState = new State(this, "enterTest", "drawTest", "exitTest");
+State compareState = new State(this, "enterCompare", "drawCompare", "exitCompare");
 
 String svgRoot = "/Users/rmadsen/Dropbox/Public";
 
@@ -56,6 +64,11 @@ int ledWidth = 215;
 int ledHeight = 168;
 
 float downScale =  (float) ledHeight / (float) svgHeight;
+
+int smallWidth = int(svgWidth * downScale);
+int smallHeight = int(svgHeight * downScale);
+
+int smallWidthDiff =  smallWidth - ledWidth;
 
 PImage maske;
 
@@ -82,6 +95,12 @@ ArtWork outArt;
 long lastMillis = 0;
 int timeOnScreen = 3000;
 
+// Compare Mode
+//----------------------------------------------------------------
+
+ArtWork compare1;
+ArtWork compare2;
+
 // Setup and Draw
 //----------------------------------------------------------------
 
@@ -90,7 +109,7 @@ void setup()
   size(1000, 700);
   colorMode(HSB, 1, 1, 1, 1);
   background(0);
-  smooth();
+  //smooth();
   noStroke();
   
   fsm = new FSM(defaultState);
@@ -112,6 +131,7 @@ void keyPressed()
   if(key == 'p')  fsm.transitionTo(predictionState);
   if(key == 'a')  fsm.transitionTo(artistState);
   if(key == 't')  fsm.transitionTo(testState);
+  if(key == 'c')  fsm.transitionTo(compareState);
 
   if(fsm.currentState == ratingState)            keyPressedRatingMode();
   else if(fsm.currentState == predictionState)   keyPressedPredictionMode();
@@ -316,19 +336,22 @@ void enterTest()
 {
   lastMillis = millis();
   maske = loadImage("mask.png");
-  showArt = new ArtWork(new Sample(), int(svgWidth * downScale), int(svgHeight * downScale), 0, -svgHeight);
-  outArt = new ArtWork(new Sample(), int(svgWidth * downScale), int(svgHeight * downScale), 0, 0);
+  showArt = new ArtWork(new Sample(), smallWidth, smallHeight, -(smallWidthDiff/2), 0);
 }
 
 void drawTest()
 {
   showArt.display();
-  outArt.display();
+
+  if(outArt != null)
+  {
+    outArt.display();
+  }
 
   fill(0);
   noStroke();
-  //rect(216, 0, width-216, height);
-  //rect(0, 169, width, height-169);
+  rect(215, 0, width-215, height);
+  rect(0, 168, width, height-168);
   image(maske, 0, 0);
 
   if(millis() - lastMillis > timeOnScreen)
@@ -336,14 +359,38 @@ void drawTest()
     lastMillis = millis();
     
     outArt = showArt;
-    outArt.moveTo(0, int(svgHeight * downScale), 1);
+    outArt.moveTo(-(smallWidthDiff/2), int(svgHeight * downScale), 1);
     
-    showArt = new ArtWork(new Sample(), int(svgWidth * downScale), int(svgHeight * downScale), 0, -int(svgHeight*downScale));
-    showArt.moveTo(0, 0, 1);
+    showArt = new ArtWork(new Sample(), smallWidth, smallHeight, -(smallWidthDiff/2), -smallHeight);
+    showArt.moveTo(-(smallWidthDiff/2), 0, 1);
   }
 }
 
 void exitTest()
+{
+
+}
+
+// Compare Mode
+//----------------------------------------------------------------
+
+void enterCompare()
+{
+  Sample sample1 = new Sample();
+  sample1.label = 9;
+  compare1 = new ArtWork(sample1, svgWidth, svgHeight, 0, 0);
+
+  Sample sample2 = new Sample(sample1.toString());
+  compare2 = new ArtWork(sample2, svgWidth, svgHeight, svgWidth, 0);
+}
+
+void drawCompare()
+{
+  compare1.display();
+  compare2.display();
+}
+
+void exitCompare()
 {
 
 }

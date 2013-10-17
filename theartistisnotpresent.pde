@@ -23,6 +23,11 @@ int TETRADIC = 3;
 int ANALOGOUS = 4;
 int ACCENTEDANALOGOUS = 5;
 
+int DISTANCE_SORT = 0;
+int RANDOM_SORT = 1;
+int BRIGHTNESS_SORT = 2;
+int SATURATION_SORT = 3;
+
 int HORIZONTAL = 0;
 int GRID = 1;
 int CENTER = 2;
@@ -55,8 +60,6 @@ State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
 State testState = new State(this, "enterTest", "drawTest", "exitTest");
 State compareState = new State(this, "enterCompare", "drawCompare", "exitCompare");
 
-String svgRoot = "/Users/rmadsen/Dropbox/Public";
-
 int svgWidth = 480;
 int svgHeight = 288;
 
@@ -87,6 +90,9 @@ float predictionSplit = 0.7;
 // Artist Mode
 //----------------------------------------------------------------
 
+boolean saveImages = false;
+String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
+
 // Test Mode
 //----------------------------------------------------------------
 
@@ -106,7 +112,7 @@ ArtWork compare2;
 
 void setup()
 {
-  size(1000, 700);
+  size(1200, 800);
   colorMode(HSB, 1, 1, 1, 1);
   background(0);
   //smooth();
@@ -136,6 +142,7 @@ void keyPressed()
   if(fsm.currentState == ratingState)            keyPressedRatingMode();
   else if(fsm.currentState == predictionState)   keyPressedPredictionMode();
   else if(fsm.currentState == artistState)       keyPressedArtistMode();
+  else if(fsm.currentState == compareState)      keyPressedCompareMode();
 }
 
 // Default State
@@ -213,7 +220,7 @@ void newRandom()
 
 void enterPrediction()
 {
-  selectInput("Select a file to process:", "parseSCV");
+  selectInput("Select a file to process:", "parsePredictionSCV");
 }
 
 void drawPrediction()
@@ -231,7 +238,7 @@ void keyPressedPredictionMode()
 
 }
 
-void parseSCV(File selection)
+void parsePredictionSCV(File selection)
 {
   if (selection != null)
   {
@@ -311,12 +318,35 @@ void parseSCV(File selection)
 
 void enterArtist()
 {
+  selectInput("Select a file to process:", "parseArtistSCV");
+}
 
+void parseArtistSCV(File selection)
+{
+  if (selection != null)
+  {
+    String[] csvData = loadStrings(selection.getAbsolutePath());
+    
+    for(int i = 0; i < csvData.length; i++)
+    {
+      Sample sample = new Sample(csvData[i]);
+      forest.addTrainingSample(sample);
+    }
+
+    forest.train();
+
+    // generate first generation
+  }
 }
 
 void drawArtist()
 {
+  // MAKE SURE THAT WHEN I GENERATE A NEW POPULATION, AND I WEIGH THEM WITH RANDOM FOREST, THAT GOES IN THE LABEL
 
+  // show generation
+
+  // after millis
+    // new generation based on weight of parents from the old generation
 }
 
 void exitArtist()
@@ -392,7 +422,7 @@ void exitCompare()
 
 void keyPressedCompareMode()
 {
-  if(key == 'r')
+  if(key == 'n')
   {
     compareTwo();
   }

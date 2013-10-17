@@ -37,6 +37,9 @@ class ColorSchemeAccentedAnalogous extends ColorScheme
 
 		// fewer colors
 
+		// sort colors
+		colors = sortColors(colors);
+
 		return colors;
 	}
 

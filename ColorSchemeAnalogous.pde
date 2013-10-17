@@ -25,7 +25,6 @@ class ColorSchemeAnalogous extends ColorScheme
 		{
 			colors.add(TColor.newHSV(colors.get(0).hue() + (angle*(i+1)), 1, 1));
 		}
-		println(angle);
 
 		// more colors
 		addColors(colors, pickMoreColorsFromColor(colors.get(0)));
@@ -38,6 +37,9 @@ class ColorSchemeAnalogous extends ColorScheme
 		colors = scaleBrightnesses(colors, scaleBri);
 
 		// fewer colors
+
+		// sort colors
+		colors = sortColors(colors);
 
 		return colors;
 	}

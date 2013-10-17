@@ -37,15 +37,17 @@ class Sample {
     colorscheme.moreColorsBriEasing =  (int)    featureVector[8];
     colorscheme.scaleSat =             (float)  featureVector[9];
     colorscheme.scaleBri =             (float)  featureVector[10];
-    composition.shapeType =            (int)    featureVector[11];
-    composition.shapeSize =            (float)  featureVector[12];
-    composition.shapeSpacing =         (float)  featureVector[13];
-    composition.shapeRotation =        (int)    featureVector[14];
-    composition.shapeDisplacementY =   (float)  featureVector[15];
-    composition.numShapes =            (int)    featureVector[16];
-    composition.fullShapeRotation =    (int)    featureVector[17];
-    composition.positionType =         (int)    featureVector[18];
-    composition.backgroundType =       (int)    featureVector[19];
+    colorscheme.sortMode =             (int)    featureVector[11];
+    colorscheme.sortReversed =         (int)    featureVector[12];
+    composition.shapeType =            (int)    featureVector[13];
+    composition.shapeSize =            (float)  featureVector[14];
+    composition.shapeSpacing =         (float)  featureVector[15];
+    composition.shapeRotation =        (int)    featureVector[16];
+    composition.shapeDisplacementY =   (float)  featureVector[17];
+    composition.numShapes =            (int)    featureVector[18];
+    composition.fullShapeRotation =    (int)    featureVector[19];
+    composition.positionType =         (int)    featureVector[20];
+    composition.backgroundType =       (int)    featureVector[21];
   }
 
   // New Random
@@ -71,6 +73,8 @@ class Sample {
       (double) colorscheme.moreColorsBriEasing,       // (int)    index number of easing
       (double) colorscheme.scaleSat,                  // (float)  multiplier
       (double) colorscheme.scaleBri,                  // (float)  multiplier
+      (double) colorscheme.sortMode,                  // (int)    constant val of sortMode
+      (double) colorscheme.sortReversed,              // (float)  0 or 1 for reversed
       (double) composition.shapeType,                 // (int)    constant val of shape
       (double) composition.shapeSize,                 // (float)  normalized size of shape
       (double) composition.shapeSpacing,              // (float)  normalized shape spacing

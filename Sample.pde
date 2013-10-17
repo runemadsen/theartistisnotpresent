@@ -22,8 +22,30 @@ class Sample {
     featureVector = newFeatureVector;
     label = Integer.parseInt(nums[nums.length - 1]);
 
-    //colorscheme = getColorSchemeFromInteger(schemeIndex);
-    //composition = new Composition();
+    int schemeIndex = (int) featureVector[0];
+    colorscheme = getColorSchemeFromInteger(schemeIndex);
+    composition = new Composition();
+
+    // MAKE SURE THESE ALWAYS FIT WITH ORDER FROM UNDERNEATH
+    colorscheme.hue =                  (float)  featureVector[1];
+    colorscheme.angle =                (float)  featureVector[2];
+    colorscheme.moreColors =           (int)    featureVector[3];
+    colorscheme.moreColorsType =       (int)    featureVector[4];
+    colorscheme.moreColorsSatLow =     (float)  featureVector[5];
+    colorscheme.moreColorsBriLow =     (float)  featureVector[6];
+    colorscheme.moreColorsSatEasing =  (int)    featureVector[7];
+    colorscheme.moreColorsBriEasing =  (int)    featureVector[8];
+    colorscheme.scaleSat =             (float)  featureVector[9];
+    colorscheme.scaleBri =             (float)  featureVector[10];
+    composition.shapeType =            (int)    featureVector[11];
+    composition.shapeSize =            (float)  featureVector[12];
+    composition.shapeSpacing =         (float)  featureVector[13];
+    composition.shapeRotation =        (int)    featureVector[14];
+    composition.shapeDisplacementY =   (float)  featureVector[15];
+    composition.numShapes =            (int)    featureVector[16];
+    composition.fullShapeRotation =    (int)    featureVector[17];
+    composition.positionType =         (int)    featureVector[18];
+    composition.backgroundType =       (int)    featureVector[19];
   }
 
   // New Random
@@ -36,6 +58,7 @@ class Sample {
     colorscheme = getColorSchemeFromInteger(schemeIndex);
     composition = new Composition();
 
+    // MAKE SURE THESE ALWAYS FIT WITH ORDER FROM ABOVE
     double[] newFeatureVector = {
       (double) schemeIndex,                           // (int)    index number of color scheme
       (double) colorscheme.hue,                       // (float)  0-1
@@ -75,13 +98,12 @@ class Sample {
 
   ColorScheme getColorSchemeFromInteger(int type)
   {
-    return new ColorSchemeAnalogous();
-    //if(type == 0)         return new ColorSchemeMonoChrome();
-    //else if(type == 1)    return new ColorSchemeTriadic();
-    //else if(type == 2)    return new ColorSchemeComplementary();
-    //else if(type == 3)    return new ColorSchemeTetradic();
-    //else if(type == 4)    return new ColorSchemeAnalogous();
-    //else                  return new ColorSchemeAccentedAnalogous();
+    if(type == 0)         return new ColorSchemeMonoChrome();
+    else if(type == 1)    return new ColorSchemeTriadic();
+    else if(type == 2)    return new ColorSchemeComplementary();
+    else if(type == 3)    return new ColorSchemeTetradic();
+    else if(type == 4)    return new ColorSchemeAnalogous();
+    else                  return new ColorSchemeAccentedAnalogous();
   }
   
   void setLabel(int label)

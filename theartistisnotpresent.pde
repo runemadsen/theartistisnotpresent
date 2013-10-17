@@ -376,12 +376,7 @@ void exitTest()
 
 void enterCompare()
 {
-  Sample sample1 = new Sample();
-  sample1.label = 9;
-  compare1 = new ArtWork(sample1, svgWidth, svgHeight, 0, 0);
-
-  Sample sample2 = new Sample(sample1.toString());
-  compare2 = new ArtWork(sample2, svgWidth, svgHeight, svgWidth, 0);
+  compareTwo();
 }
 
 void drawCompare()
@@ -393,4 +388,22 @@ void drawCompare()
 void exitCompare()
 {
 
+}
+
+void keyPressedCompareMode()
+{
+  if(key == 'r')
+  {
+    compareTwo();
+  }
+}
+
+void compareTwo()
+{
+  Sample sample1 = new Sample();
+  sample1.label = 9;
+  compare1 = new ArtWork(sample1, svgWidth, svgHeight, 0, 0);
+
+  Sample sample2 = new Sample(sample1.toString());
+  compare2 = new ArtWork(sample2, svgWidth, svgHeight, svgWidth, 0);
 }

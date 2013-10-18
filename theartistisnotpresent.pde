@@ -50,6 +50,7 @@ int BRISAT = 2;
 // Setup
 //----------------------------------------------------------------
 
+Mask curtain;
 RandomForest forest;
 
 FSM fsm;
@@ -60,20 +61,16 @@ State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
 State testState = new State(this, "enterTest", "drawTest", "exitTest");
 State compareState = new State(this, "enterCompare", "drawCompare", "exitCompare");
 
-int svgWidth = 480;
-int svgHeight = 288;
+PVector screenSize = new PVector(480, 288);
 
-int ledWidth = 215;
-int ledHeight = 168;
+PVector ledPosition = new PVector(36, 258);
+PVector ledSize = new PVector(215, 168);
+PImage  ledMask;
 
-float downScale =  (float) ledHeight / (float) svgHeight;
+float downScale =  ledSize.y / screenSize.y;
 
-int smallWidth = int(svgWidth * downScale);
-int smallHeight = int(svgHeight * downScale);
-
-int smallWidthDiff =  smallWidth - ledWidth;
-
-PImage maske;
+PVector smallSize = new PVector(screenSize.x * downScale, screenSize.y * downScale);
+float smallWidthDiff =  smallSize.x - ledSize.x;
 
 // Rating Mode
 //----------------------------------------------------------------
@@ -174,7 +171,7 @@ void enterRating()
 void drawRating()
 {
   pushMatrix();
-  translate((width/2) - (svgWidth/2), (height/2) - (svgHeight/2));
+  translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y/2));
   rateArtwork.display();
   popMatrix();
 }
@@ -212,7 +209,7 @@ void keyPressedRatingMode()
 void newRandom()
 {
   rateSample = new Sample();
-  rateArtwork = new ArtWork(rateSample, svgWidth, svgHeight, 0, 0);
+  rateArtwork = new ArtWork(rateSample, (int) screenSize.x, (int) screenSize.y, 0, 0);
 }
 
 // Prediction Mode
@@ -365,34 +362,33 @@ void keyPressedArtistMode()
 void enterTest()
 {
   lastMillis = millis();
-  maske = loadImage("mask.png");
-  showArt = new ArtWork(new Sample(), smallWidth, smallHeight, -(smallWidthDiff/2), 0);
+  curtain = new Mask();
+  curtain.addWindow((int) ledPosition.x, (int) ledPosition.y, (int) ledSize.x, (int) ledSize.y);
+  ledMask = loadImage("mask.png");
+  showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), 0);
 }
 
 void drawTest()
 {
-  showArt.display();
+  pushMatrix();
+  translate((int) ledPosition.x, (int) ledPosition.y);
+    showArt.display();
+    if(outArt != null)  outArt.display();
+    image(ledMask, 0, 0);
+  popMatrix();
+  curtain.display();
 
-  if(outArt != null)
-  {
-    outArt.display();
-  }
-
-  fill(0);
-  noStroke();
-  rect(215, 0, width-215, height);
-  rect(0, 168, width, height-168);
-  image(maske, 0, 0);
+  saveFrame("test.png");
 
   if(millis() - lastMillis > timeOnScreen)
   {
     lastMillis = millis();
     
     outArt = showArt;
-    outArt.moveTo(-(smallWidthDiff/2), int(svgHeight * downScale), 1);
+    outArt.moveTo(-int(smallWidthDiff/2), int(screenSize.y * downScale), 1);
     
-    showArt = new ArtWork(new Sample(), smallWidth, smallHeight, -(smallWidthDiff/2), -smallHeight);
-    showArt.moveTo(-(smallWidthDiff/2), 0, 1);
+    showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), -int(smallSize.y));
+    showArt.moveTo(-int(smallWidthDiff/2), 0, 1);
   }
 }
 
@@ -432,8 +428,8 @@ void compareTwo()
 {
   Sample sample1 = new Sample();
   sample1.label = 9;
-  compare1 = new ArtWork(sample1, svgWidth, svgHeight, 0, 0);
+  compare1 = new ArtWork(sample1, (int) screenSize.x, (int) screenSize.y, 0, 0);
 
   Sample sample2 = new Sample(sample1.toString());
-  compare2 = new ArtWork(sample2, svgWidth, svgHeight, svgWidth, 0);
+  compare2 = new ArtWork(sample2, (int) screenSize.x, (int) screenSize.y, (int) screenSize.x, 0);
 }

@@ -8,20 +8,12 @@ class Population
   Population(float _mutationRate, int populationNum)
   {
     mutationRate = _mutationRate;
-    population = new Face[populationNum];
+    population = new Sample[populationNum];
     matingPool = new ArrayList<Sample>();
     
     for (int i = 0; i < population.length; i++)
     {
       population[i] = new Sample();
-    }
-  }
-
-  void display()
-  {
-    for (int i = 0; i < population.length; i++)
-    {
-      population[i].display();
     }
   }
 
@@ -41,7 +33,7 @@ class Population
     }
   }  
 
-  void reproduction() 
+  /*void reproduction() 
   {
     for (int i = 0; i < population.length; i++)
     {
@@ -57,7 +49,7 @@ class Population
     }
 
     curGeneration++;
-  }
+  }*/
 
   int getCurGeneration()
   {

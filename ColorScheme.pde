@@ -193,7 +193,7 @@ abstract class ColorScheme
     backgroundMode = backgrounds.getRandom();
   }
 
-  // Getters
+  // Get Front Colors
   //----------------------------------------------------------------
 
   ColorList getColors()
@@ -271,5 +271,17 @@ abstract class ColorScheme
     }
 
     return colors;
+  }
+
+      // Get Background Color
+  //----------------------------------------------------------------
+
+  TColor getBackgroundColor()
+  {
+    if(backgroundMode == DARKEST)         return colors.getDarkest();
+    else if(backgroundMode == BRIGHTEST)  return colors.getLightest();
+    else if(backgroundMode == RANDOM)     return colors.getRandom();
+    else if(backgroundMode == DARKGRAY)   return TColor.newHSV(0, 0, 0.1);
+    else                                  return TColor.newHSV(0, 0, 1);
   }
 }

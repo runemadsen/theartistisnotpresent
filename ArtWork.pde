@@ -46,50 +46,36 @@ class ArtWork
   {
     //--> Setup
 
+    TColor bgColor = sample.colorscheme.getBackgroundColor();
     ColorList colors = sample.colorscheme.getColors();
     RShape frontShape = sample.composition.getShape(w, h);
     RShape backgroundShape = RShape.createRectangle(0, 0, w, h);
 
     //--> Background
 
-    ReadonlyTColor bg;
-    if(sample.composition.backgroundType == DARKEST)         bg = colors.getDarkest();
-    else if(sample.composition.backgroundType == BRIGHTEST)  bg = colors.getLightest();
-    else if(sample.composition.backgroundType == RANDOM)     bg = colors.getRandom();
-    else if(sample.composition.backgroundType == DARKGRAY)   bg = TColor.newHSV(0, 0, 0.1);
-    else                                                                        bg = TColor.newHSV(0, 0, 1);
-
     backgroundShape.setStroke(false);
-    backgroundShape.setFill(bg.toARGB());
+    backgroundShape.setFill(bgColor.toARGB());
     colors = removeColor(colors, bg);
+
+    //--> Remove Background Color
+    
+    ColorList frontColors = new ColorList();
+    for(int i = 0; i < colors.size(); i++)
+    {
+      if(!colors.get(i).equals(bgColor))  frontColors.add(colors.get(i));
+    }
   
     //--> Color Fill
 
     for(int i = 0; i < frontShape.children.length; i++)
     {
-      TColor col = colors.get(i % colors.size());
+      TColor col = frontColors.get(i % frontColors.size());
       frontShape.children[i].setFill(col.toARGB());
       frontShape.children[i].setStroke(false);
     }
   
     backgroundShape.addChild(frontShape);  
     return backgroundShape;
-  }
-
-  // Choose: Helpers
-  //----------------------------------------------------------------
-
-  ColorList removeColor(ColorList cols, ReadonlyTColor col)
-  {
-    ColorList newCols = new ColorList();
-    for(int i = 0; i < cols.size(); i++)
-    {
-      if(!cols.get(i).equals(col))
-      {
-        newCols.add(cols.get(i));
-      }
-    }
-    return newCols;
   }
 
   // Saving

@@ -378,8 +378,6 @@ void drawTest()
   popMatrix();
   curtain.display();
 
-  saveFrame("test.png");
-
   if(millis() - lastMillis > timeOnScreen)
   {
     lastMillis = millis();

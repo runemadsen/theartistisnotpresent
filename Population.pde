@@ -33,7 +33,7 @@ class Population
     }
   }  
 
-  /*void reproduction() 
+  void reproduction() 
   {
     for (int i = 0; i < population.length; i++)
     {
@@ -49,7 +49,7 @@ class Population
     }
 
     curGeneration++;
-  }*/
+  }
 
   int getCurGeneration()
   {

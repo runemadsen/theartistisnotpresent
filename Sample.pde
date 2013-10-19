@@ -91,10 +91,43 @@ class Sample {
   // New Existing
   // ------------------------------------------------------
 
+  Sample(double[] featureVector)
+  {
+    this.featureVector = featureVector;
+  }
+
   Sample(double[] featureVector, int label)
   {
     this.featureVector = featureVector;
     this.label = label;
+  }
+
+  // Mutants! Oh Mutants!
+  // ------------------------------------------------------
+
+  Sample crossover(Sample partner)
+  {
+    double[] childFeatureVector = new double[featureVector.length];
+    int splitIndex = int(random(featureVector.length));
+    
+    for(int i = 0; i < featureVector.length; i++)
+    {
+      if (i > splitIndex) childFeatureVector[i] = featureVector[i];
+      else                childFeatureVector[i] = partner.featureVector[i];
+    }
+  
+    return new Sample(childFeatureVector);
+  }
+  
+  void mutate(float m)
+  {
+    for(int i = 0; i < featureVector.length; i++)
+    {
+      if(random(1) < m)
+      {
+        //featureVector[i] = 
+      }
+    }
   }
 
   // Getter / Setter

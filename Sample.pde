@@ -90,7 +90,7 @@ class Sample {
 
     // MAKE SURE THESE ALWAYS FIT WITH ORDER FROM ABOVE
     double[] newFeatureVector = {
-      (double) colorscheme.getIndex(),                           // (int)    index number of color scheme
+      (double) colorscheme.getIndex(),                // (int)    index number of color scheme
       (double) colorscheme.hue,                       // (float)  0-1
       (double) colorscheme.angle,                     // (float)  0-1
       (double) colorscheme.moreColors,                // (int)    number of colors, 0 if none

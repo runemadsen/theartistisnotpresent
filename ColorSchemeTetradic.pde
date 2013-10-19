@@ -13,6 +13,11 @@ class ColorSchemeTetradic extends ColorScheme
 
 	ColorSchemeTetradic() {}
 
+	int getIndex() { return TETRADIC; }
+
+  // Get Colors
+  //----------------------------------------------------------------
+
 	ColorList getColors()
 	{
 		ColorList colors = new ColorList();

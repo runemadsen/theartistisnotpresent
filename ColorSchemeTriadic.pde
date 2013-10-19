@@ -13,6 +13,11 @@ class ColorSchemeTriadic extends ColorScheme
 
 	ColorSchemeTriadic() {}
 
+	int getIndex() { return TRIADIC; }
+
+  // Get Colors
+  //----------------------------------------------------------------
+
 	ColorList getColors()
 	{
 		ColorList colors = new ColorList();

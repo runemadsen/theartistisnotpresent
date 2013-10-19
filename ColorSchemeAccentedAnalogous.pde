@@ -9,6 +9,8 @@ class ColorSchemeAccentedAnalogous extends ColorScheme
 
 	ColorSchemeAccentedAnalogous() {}
 
+	int getIndex() { return ACCENTEDANALOGOUS; }
+
 	// Get Colors
 	//----------------------------------------------------------------
 

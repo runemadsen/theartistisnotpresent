@@ -10,6 +10,8 @@ class ColorSchemeAnalogous extends ColorScheme
 
 	ColorSchemeAnalogous() {}
 
+	int getIndex() { return ANALOGOUS; }
+
 	// Get Colors
 	//----------------------------------------------------------------
 

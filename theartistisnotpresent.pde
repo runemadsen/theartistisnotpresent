@@ -58,7 +58,7 @@ State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault
 State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
 State predictionState = new State(this, "enterPrediction", "drawPrediction", "exitPrediction");
 State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
-State testState = new State(this, "enterTest", "drawTest", "exitTest");
+State ledState = new State(this, "enterLed", "drawLed", "exitLed");
 State compareState = new State(this, "enterCompare", "drawCompare", "exitCompare");
 
 PVector screenSize = new PVector(480, 288);
@@ -87,6 +87,11 @@ float predictionSplit = 0.7;
 // Artist Mode
 //----------------------------------------------------------------
 
+boolean csvLoaded = false;
+float mutationRate = 0.05;
+int populationNum = 10;
+Population population;
+ArtWork[] populationArt = new ArtWork[populationNum];
 boolean saveImages = false;
 String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
 
@@ -109,7 +114,7 @@ ArtWork compare2;
 
 void setup()
 {
-  size(1200, 800);
+  size(1458, 880);
   colorMode(HSB, 1, 1, 1, 1);
   background(0);
   //smooth();
@@ -133,7 +138,7 @@ void keyPressed()
   if(key == 'r')  fsm.transitionTo(ratingState);
   if(key == 'p')  fsm.transitionTo(predictionState);
   if(key == 'a')  fsm.transitionTo(artistState);
-  if(key == 't')  fsm.transitionTo(testState);
+  if(key == 'l')  fsm.transitionTo(ledState);
   if(key == 'c')  fsm.transitionTo(compareState);
 
   if(fsm.currentState == ratingState)            keyPressedRatingMode();
@@ -332,18 +337,28 @@ void parseArtistSCV(File selection)
 
     forest.train();
 
-    // generate first generation
+    population = new Population(mutationRate, populationNum);
+    populationToArtWork(population);
+    labelPopulation(population);
   }
+
+  csvLoaded = true;
 }
 
 void drawArtist()
 {
-  // MAKE SURE THAT WHEN I GENERATE A NEW POPULATION, AND I WEIGH THEM WITH RANDOM FOREST, THAT GOES IN THE LABEL
-
-  // show generation
-
-  // after millis
-    // new generation based on weight of parents from the old generation
+  if(csvLoaded)
+  {
+    for(int i = 0; i < populationNum; i++)
+    {
+      populationArt[i].display();
+      textSize(32);
+      fill(0);
+      text(population.population[i].label, populationArt[i].loc.x + 5, populationArt[i].loc.y + 37);
+      fill(1);
+      text(population.population[i].label, populationArt[i].loc.x + 7, populationArt[i].loc.y + 37);
+    }
+  }
 }
 
 void exitArtist()
@@ -353,13 +368,40 @@ void exitArtist()
 
 void keyPressedArtistMode()
 {
+  if(key == 'n')
+  {
+    population.selection();
+    population.reproduction();
+    populationToArtWork(population);
+    labelPopulation(population);
+  }
+}
 
+void populationToArtWork(Population p)
+{
+  for(int i = 0; i < populationNum; i++)
+  {
+    int w = (int) screenSize.x;
+    int h = (int) screenSize.y;
+    int x = int((i % 3) * (screenSize.x + 5));
+    int y = int(((i / 3) % 3) * (screenSize.y + 5));
+
+    populationArt[i] = new ArtWork(p.population[i], w, h, x, y);
+  }
+}
+
+void labelPopulation(Population p)
+{
+  for(int i = 0; i < populationNum; i++)
+  {
+    p.population[i].label = (int) forest.predict(p.population[i]);
+  }
 }
 
 // Test Mode
 //----------------------------------------------------------------
 
-void enterTest()
+void enterLed()
 {
   lastMillis = millis();
   curtain = new Mask();
@@ -368,7 +410,7 @@ void enterTest()
   showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), 0);
 }
 
-void drawTest()
+void drawLed()
 {
   pushMatrix();
   translate((int) ledPosition.x, (int) ledPosition.y);
@@ -390,7 +432,7 @@ void drawTest()
   }
 }
 
-void exitTest()
+void exitLed()
 {
 
 }

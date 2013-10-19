@@ -32,6 +32,7 @@ abstract class ColorScheme
 
   public abstract ColorList getColors();
   public abstract String getName();
+  public abstract int getIndex();
   public abstract boolean hasAngleColors();
   public abstract boolean hasMoreColors();
   public abstract boolean hasVariableSaturation();

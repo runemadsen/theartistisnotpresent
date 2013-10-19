@@ -13,6 +13,11 @@ class ColorSchemeComplementary extends ColorScheme
 
 	ColorSchemeComplementary() {}
 
+  int getIndex() { return COMPLEMENTARY; }
+
+  // Get Colors
+  //----------------------------------------------------------------
+
   ColorList getColors()
   {
     ColorList colors = new ColorList();

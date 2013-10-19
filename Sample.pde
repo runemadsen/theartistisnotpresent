@@ -19,11 +19,41 @@ class Sample {
       newFeatureVector[i] = Double.parseDouble(nums[i]);
     }
 
-    featureVector = newFeatureVector;
+    fromFeatureVector(newFeatureVector);
     label = Integer.parseInt(nums[nums.length - 1]);
+  }
 
-    int schemeIndex = (int) featureVector[0];
-    colorscheme = getColorSchemeFromInteger(schemeIndex);
+  // New Random
+  // ------------------------------------------------------
+
+  Sample()
+  {
+    ColorScheme newColorscheme = getColorSchemeFromInteger(round(random(5)));
+    Composition newComposition = new Composition();
+    fromObjects(newColorscheme, newComposition);
+  }
+
+  // New Existing
+  // ------------------------------------------------------
+
+  Sample(double[] newFeatureVector)
+  {
+    fromFeatureVector(newFeatureVector);
+  }
+
+  Sample(double[] newFeatureVector, int newLabel)
+  {
+    fromFeatureVector(newFeatureVector);
+    label = newLabel;
+  }
+
+  // Feature To Objects
+  // ------------------------------------------------------
+
+  void fromFeatureVector(double[] newFeatureVector)
+  {
+    featureVector = newFeatureVector;
+    colorscheme = getColorSchemeFromInteger((int) featureVector[0]);
     composition = new Composition();
 
     // MAKE SURE THESE ALWAYS FIT WITH ORDER FROM UNDERNEATH
@@ -50,19 +80,17 @@ class Sample {
     composition.backgroundType =       (int)    featureVector[21];
   }
 
-  // New Random
+  // Objects to Feature
   // ------------------------------------------------------
 
-  Sample()
+  void fromObjects(ColorScheme newColorscheme, Composition newComposition)
   {
-    int schemeIndex = round(random(5));
-    
-    colorscheme = getColorSchemeFromInteger(schemeIndex);
-    composition = new Composition();
+    colorscheme = newColorscheme;
+    composition = newComposition;
 
     // MAKE SURE THESE ALWAYS FIT WITH ORDER FROM ABOVE
     double[] newFeatureVector = {
-      (double) schemeIndex,                           // (int)    index number of color scheme
+      (double) colorscheme.getIndex(),                           // (int)    index number of color scheme
       (double) colorscheme.hue,                       // (float)  0-1
       (double) colorscheme.angle,                     // (float)  0-1
       (double) colorscheme.moreColors,                // (int)    number of colors, 0 if none
@@ -86,20 +114,6 @@ class Sample {
       (double) composition.backgroundType             // (int)    constants val of background type
     };
     featureVector = newFeatureVector;
-  }
-
-  // New Existing
-  // ------------------------------------------------------
-
-  Sample(double[] featureVector)
-  {
-    this.featureVector = featureVector;
-  }
-
-  Sample(double[] featureVector, int label)
-  {
-    this.featureVector = featureVector;
-    this.label = label;
   }
 
   // Mutants! Oh Mutants!

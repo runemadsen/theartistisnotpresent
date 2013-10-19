@@ -13,6 +13,11 @@ class ColorSchemeMonoChrome extends ColorScheme
 
 	ColorSchemeMonoChrome() {}
 
+  int getIndex() { return MONOCHROME; }
+
+  // Get Colors
+  //----------------------------------------------------------------
+
   ColorList getColors()
   {
     ColorList colors = new ColorList();

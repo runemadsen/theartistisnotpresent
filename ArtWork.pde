@@ -23,8 +23,6 @@ class ArtWork
     canvas.smooth();  
     art.draw(canvas);
     canvas.endDraw();
-
-    println(sample.colorscheme.getName());
   }
 
   // Display

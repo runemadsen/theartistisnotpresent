@@ -11,14 +11,12 @@ class Composition
   int numShapes;
   int fullShapeRotation;
   int positionType;
-  int backgroundType;
 
   // Constructor
   //----------------------------------------------------------------
 
   Composition()
   {
-    chooseBackground();
     chooseNumShapes();
     chooseShapeSize();
     chooseShapeType();
@@ -27,20 +25,6 @@ class Composition
     chooseShapeRotation();
     choosePosition();
     chooseFullShapeRotation();
-  }
-
-  // Choose: Background
-  //----------------------------------------------------------------
-
-  void chooseBackground()
-  {
-    WeightedRandomSet<Integer> backgrounds = new WeightedRandomSet<Integer>();
-    backgrounds.add(DARKEST, 1);
-    backgrounds.add(BRIGHTEST, 1);
-    backgrounds.add(RANDOM, 1);
-    backgrounds.add(DARKGRAY, 1);
-    backgrounds.add(WHITE, 1);
-    backgroundType = backgrounds.getRandom();
   }
 
   // Choose: Num Shapes
@@ -130,8 +114,8 @@ class Composition
     WeightedRandomSet<Integer> positions = new WeightedRandomSet<Integer>();
     positions.add(HORIZONTAL, 1);
     positions.add(GRID, 1);
-    positions.add(CENTER, 1);
-    positions.add(ROTATION, 1);
+    //positions.add(CENTER, 1);
+    //positions.add(ROTATION, 1);
     positionType = positions.getRandom();
   }
   
@@ -151,5 +135,102 @@ class Composition
     rotations.add(315, 1);
     rotations.add(round(random(360)), 2);
     fullShapeRotation = rotations.getRandom();
+  }
+
+  // Get Shape
+  //----------------------------------------------------------------
+
+  RShape getShape(int w, int h)
+  {
+    RShape frontShape = new RShape();
+
+    int scaledShapeSize           = round(shapeSize * w);
+    int scaledShapeSpacing        = round(scaledShapeSize * shapeSpacing);
+    int scaleShapeDisplacementY   = round(scaledShapeSize * shapeDisplacementY);
+
+    if(positionType == HORIZONTAL)
+    {
+      for(int i = 0; i < numShapes; i++)
+      {
+        int x = (i * scaledShapeSize) + (i * scaledShapeSpacing);
+        RShape newShape = getShapeType(shapeType, scaledShapeSize);
+        newShape.translate(x, i * shapeDisplacementY);
+        newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
+        frontShape.addChild(newShape);
+      }
+    }
+  
+    else if(positionType == GRID)
+    {
+      for(int i = 0; i < numShapes; i++)
+      {
+        for(int j = 0; j < numShapes; j++)
+        {
+          int x = (i * scaledShapeSize) + (i * scaledShapeSpacing);
+          int y = (j * scaledShapeSize) + (j * scaledShapeSpacing);
+          RShape newShape = getShapeType(shapeType, scaledShapeSize);
+          newShape.translate(x, y);
+          newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
+          frontShape.addChild(newShape);
+        }
+      }
+    }
+  
+    // center
+    else if(positionType == CENTER)
+    {
+  
+    }
+  
+    // rotation
+    else if(positionType == ROTATION)
+    {
+  
+    }
+
+    // set colors
+    for(int i = 0; i < frontShape.children.length; i++)
+    {
+      TColor col = colors.get(i % colors.size());
+      frontShape.children[i].setFill(col.toARGB());
+      frontShape.children[i].setStroke(false);
+    }
+  
+    // place in center of screen - important this happens before rotation!
+    frontShape.translate((w/2) - (frontShape.getWidth()/2), (h/2) - (frontShape.getHeight()/2));
+  
+    // rotate
+    frontShape.rotate(radians(fullShapeRotation), new RPoint(frontShape.getX() + (frontShape.getWidth()/2), frontShape.getY() + (frontShape.getHeight ()/2)));
+    
+    return frontShape;
+  }
+
+  // Get Shape Type
+  //----------------------------------------------------------------
+
+  RShape getShapeType(int type, int shapeSize)
+  {
+    RShape returnShape;
+  
+    if(type == ELLIPSE)
+    {
+      returnShape = RShape.createCircle(0, 0, shapeSize);
+      returnShape.translate(returnShape.getWidth()/2, returnShape.getHeight()/2);
+    }
+    else if(type == RECTANGLE)
+    {
+      returnShape = RShape.createRectangle(0, 0, shapeSize, shapeSize);
+    }
+    else
+    {
+      float half = shapeSize/2;
+      returnShape = new RShape();
+      returnShape.addLineTo(half, shapeSize);
+      returnShape.addLineTo(-half, shapeSize);
+      returnShape.addLineTo(0, 0);
+      returnShape.translate(returnShape.getWidth()/2, 0);
+    }
+  
+    return returnShape;
   }
 }

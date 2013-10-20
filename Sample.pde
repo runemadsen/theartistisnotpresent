@@ -28,7 +28,7 @@ class Sample {
 
   Sample()
   {
-    ColorScheme newColorscheme = getColorSchemeFromInteger(round(random(5)));
+    ColorScheme newColorscheme = new ColorScheme();
     Composition newComposition = new Composition();
     fromObjects(newColorscheme, newComposition);
   }
@@ -53,31 +53,32 @@ class Sample {
   void fromFeatureVector(double[] newFeatureVector)
   {
     featureVector = newFeatureVector;
-    colorscheme = getColorSchemeFromInteger((int) featureVector[0]);
+    colorscheme = new ColorScheme();
     composition = new Composition();
 
     // MAKE SURE THESE ALWAYS FIT WITH ORDER FROM UNDERNEATH
-    colorscheme.hue =                  (float)  featureVector[1];
-    colorscheme.angle =                (float)  featureVector[2];
-    colorscheme.moreColors =           (int)    featureVector[3];
-    colorscheme.moreColorsType =       (int)    featureVector[4];
-    colorscheme.moreColorsSatLow =     (float)  featureVector[5];
-    colorscheme.moreColorsBriLow =     (float)  featureVector[6];
-    colorscheme.moreColorsSatEasing =  (int)    featureVector[7];
-    colorscheme.moreColorsBriEasing =  (int)    featureVector[8];
-    colorscheme.scaleSat =             (float)  featureVector[9];
-    colorscheme.scaleBri =             (float)  featureVector[10];
-    colorscheme.sortMode =             (int)    featureVector[11];
-    colorscheme.sortReversed =         (int)    featureVector[12];
-    composition.shapeType =            (int)    featureVector[13];
-    composition.shapeSize =            (float)  featureVector[14];
-    composition.shapeSpacing =         (float)  featureVector[15];
-    composition.shapeRotation =        (int)    featureVector[16];
-    composition.shapeDisplacementY =   (float)  featureVector[17];
-    composition.numShapes =            (int)    featureVector[18];
-    composition.fullShapeRotation =    (int)    featureVector[19];
-    composition.positionType =         (int)    featureVector[20];
-    composition.backgroundType =       (int)    featureVector[21];
+    colorscheme.hue =                       (float) featureVector[0];
+    colorscheme.numColors =                   (int) featureVector[1];
+    colorscheme.colorDistance =             (float) featureVector[2];
+    colorscheme.moreColors =                  (int) featureVector[3];
+    colorscheme.moreColorsMode =              (int) featureVector[4];
+    colorscheme.moreColorsSaturationBase =  (float) featureVector[5];
+    colorscheme.moreColorsBrightnessBase =  (float) featureVector[6];
+    colorscheme.moreColorsSatEasing =         (int) featureVector[7];
+    colorscheme.moreColorsBriEasing =         (int) featureVector[8];
+    colorscheme.saturationScale =           (float) featureVector[9];
+    colorscheme.brightnessScale =           (float) featureVector[10];
+    colorscheme.sortMode =                    (int) featureVector[11];
+    colorscheme.sortReversed =                (int) featureVector[12];
+    colorscheme.backgroundMode =              (int) featureVector[13];
+    composition.shapeType =                   (int) featureVector[14];
+    composition.shapeSize =                 (float) featureVector[15];
+    composition.shapeSpacing =              (float) featureVector[16];
+    composition.shapeRotation =               (int) featureVector[17];
+    composition.shapeDisplacementY =        (float) featureVector[18];
+    composition.numShapes =                   (int) featureVector[19];
+    composition.fullShapeRotation =           (int) featureVector[20];
+    composition.positionType =                (int) featureVector[21];
   }
 
   // Objects to Feature
@@ -89,29 +90,29 @@ class Sample {
     composition = newComposition;
 
     // MAKE SURE THESE ALWAYS FIT WITH ORDER FROM ABOVE
-    double[] newFeatureVector = {
-      (double) colorscheme.getIndex(),                // (int)    index number of color scheme
-      (double) colorscheme.hue,                       // (float)  0-1
-      (double) colorscheme.angle,                     // (float)  0-1
-      (double) colorscheme.moreColors,                // (int)    number of colors, 0 if none
-      (double) colorscheme.moreColorsType,            // (int)    sat, bri or both satbri
-      (double) colorscheme.moreColorsSatLow,          // (float)  multiplier
-      (double) colorscheme.moreColorsBriLow,          // (float)  multiplier
-      (double) colorscheme.moreColorsSatEasing,       // (int)    index number of easing
-      (double) colorscheme.moreColorsBriEasing,       // (int)    index number of easing
-      (double) colorscheme.scaleSat,                  // (float)  multiplier
-      (double) colorscheme.scaleBri,                  // (float)  multiplier
-      (double) colorscheme.sortMode,                  // (int)    constant val of sortMode
-      (double) colorscheme.sortReversed,              // (float)  0 or 1 for reversed
-      (double) composition.shapeType,                 // (int)    constant val of shape
-      (double) composition.shapeSize,                 // (float)  normalized size of shape
-      (double) composition.shapeSpacing,              // (float)  normalized shape spacing
-      (double) composition.shapeRotation,             // (int)    degrees
-      (double) composition.shapeDisplacementY,        // (float)  normalized displacement
-      (double) composition.numShapes,                 // (int)    number of shapes
-      (double) composition.fullShapeRotation,         // (int)    degrees
-      (double) composition.positionType,              // (int)    constant val of position type
-      (double) composition.backgroundType             // (int)    constants val of background type
+    double[] newFeatureVector = {         
+      (double) colorscheme.hue,
+      (double) colorscheme.numColors,
+      (double) colorscheme.colorDistance,
+      (double) colorscheme.moreColors,
+      (double) colorscheme.moreColorsMode,
+      (double) colorscheme.moreColorsSaturationBase,
+      (double) colorscheme.moreColorsBrightnessBase,
+      (double) colorscheme.moreColorsSatEasing,
+      (double) colorscheme.moreColorsBriEasing,
+      (double) colorscheme.saturationScale,
+      (double) colorscheme.brightnessScale,
+      (double) colorscheme.sortMode,
+      (double) colorscheme.sortReversed,
+      (double) colorscheme.backgroundMode,
+      (double) composition.shapeType,
+      (double) composition.shapeSize,
+      (double) composition.shapeSpacing,
+      (double) composition.shapeRotation,
+      (double) composition.shapeDisplacementY,
+      (double) composition.numShapes,
+      (double) composition.fullShapeRotation,
+      (double) composition.positionType
     };
     featureVector = newFeatureVector;
   }
@@ -144,18 +145,8 @@ class Sample {
     }
   }
 
-  // Getter / Setter
+  // Label
   // ------------------------------------------------------
-
-  ColorScheme getColorSchemeFromInteger(int type)
-  {
-    if(type == 0)         return new ColorSchemeMonoChrome();
-    else if(type == 1)    return new ColorSchemeTriadic();
-    else if(type == 2)    return new ColorSchemeComplementary();
-    else if(type == 3)    return new ColorSchemeTetradic();
-    else if(type == 4)    return new ColorSchemeAnalogous();
-    else                  return new ColorSchemeAccentedAnalogous();
-  }
   
   void setLabel(int label)
   {

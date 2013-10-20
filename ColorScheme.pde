@@ -1,4 +1,4 @@
-abstract class ColorScheme
+class ColorScheme
 {
   // Default Properties
   //----------------------------------------------------------------
@@ -54,7 +54,7 @@ abstract class ColorScheme
     nums.add(2, 1);
     nums.add(3, 1);
     nums.add(4, 1);
-    nums.add(int(random(5, 8), 1);
+    nums.add(round(random(5, 8)), 1);
     numColors = nums.getRandom();
   }
 
@@ -78,7 +78,7 @@ abstract class ColorScheme
   {
     WeightedRandomSet<Integer> nums = new WeightedRandomSet<Integer>();
     nums.add(0, 1);
-    nums.add(int(random(2, 10), 1);
+    nums.add(round(random(2, 10)), 1);
     moreColors = nums.getRandom();
   }
 
@@ -174,7 +174,7 @@ abstract class ColorScheme
   // Choose: Sort Reversed
   //----------------------------------------------------------------
 
-  void chooseSortMode()
+  void chooseSortReversed()
   {
     sortReversed = round(random(1));
   }
@@ -223,13 +223,13 @@ abstract class ColorScheme
 
         if(moreColorsMode == SAT || moreColorsMode == BRISAT)
         {
-          val = Ani.LINEAR.calcEasing(j, chooseMoreColorsSaturationBase, 1-chooseMoreColorsSaturationBase, moreColors);
+          val = Ani.LINEAR.calcEasing(j, moreColorsSaturationBase, 1-moreColorsSaturationBase, moreColors);
           newColor.setSaturation(val);
         }
   
         if(moreColorsMode == BRI || moreColorsMode == BRISAT)
         {
-          val = Ani.LINEAR.calcEasing(j, chooseMoreColorsBrightnessBase, 1-chooseMoreColorsBrightnessBase, moreColors);
+          val = Ani.LINEAR.calcEasing(j, moreColorsBrightnessBase, 1-moreColorsBrightnessBase, moreColors);
           newColor.setSaturation(val);
         }
 
@@ -273,15 +273,15 @@ abstract class ColorScheme
     return colors;
   }
 
-      // Get Background Color
+  // Get Background Color
   //----------------------------------------------------------------
 
-  TColor getBackgroundColor()
+  TColor getBackgroundColor(ColorList colors)
   {
-    if(backgroundMode == DARKEST)         return colors.getDarkest();
-    else if(backgroundMode == BRIGHTEST)  return colors.getLightest();
-    else if(backgroundMode == RANDOM)     return colors.getRandom();
-    else if(backgroundMode == DARKGRAY)   return TColor.newHSV(0, 0, 0.1);
-    else                                  return TColor.newHSV(0, 0, 1);
+    if(backgroundMode == DARKEST)         return (TColor) colors.getDarkest();
+    else if(backgroundMode == BRIGHTEST)  return (TColor) colors.getLightest();
+    else if(backgroundMode == RANDOM)     return (TColor) colors.getRandom();
+    else if(backgroundMode == DARKGRAY)   return (TColor) TColor.newHSV(0, 0, 0.1);
+    else                                  return (TColor) TColor.newHSV(0, 0, 1);
   }
 }

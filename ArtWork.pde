@@ -46,8 +46,8 @@ class ArtWork
   {
     //--> Setup
 
-    TColor bgColor = sample.colorscheme.getBackgroundColor();
     ColorList colors = sample.colorscheme.getColors();
+    TColor bgColor = sample.colorscheme.getBackgroundColor(colors);
     RShape frontShape = sample.composition.getShape(w, h);
     RShape backgroundShape = RShape.createRectangle(0, 0, w, h);
 
@@ -55,7 +55,6 @@ class ArtWork
 
     backgroundShape.setStroke(false);
     backgroundShape.setFill(bgColor.toARGB());
-    colors = removeColor(colors, bg);
 
     //--> Remove Background Color
     

@@ -187,14 +187,6 @@ class Composition
     {
   
     }
-
-    // set colors
-    for(int i = 0; i < frontShape.children.length; i++)
-    {
-      TColor col = colors.get(i % colors.size());
-      frontShape.children[i].setFill(col.toARGB());
-      frontShape.children[i].setStroke(false);
-    }
   
     // place in center of screen - important this happens before rotation!
     frontShape.translate((w/2) - (frontShape.getWidth()/2), (h/2) - (frontShape.getHeight()/2));

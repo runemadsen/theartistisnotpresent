@@ -20,6 +20,7 @@ class ColorScheme
 
   ColorScheme() 
   {
+    println("begin");
     chooseHue();
     chooseNumColors();
     chooseColorDistance();
@@ -34,6 +35,7 @@ class ColorScheme
     chooseSortMode();
     chooseSortReversed();
     chooseBackgroundMode();
+    println("end");
   }
 
   // Choose: Hue
@@ -201,7 +203,7 @@ class ColorScheme
     ColorList colors = new ColorList();
 
     //--> Base Color
-
+    
     colors.add(TColor.newHSV(hue, 1, 1));
 
     //--> Create Colors
@@ -212,8 +214,10 @@ class ColorScheme
     }
 
     //--> More Colors
+    
+    int baseColorNum = colors.size();
 
-    for(int i = 0; i < colors.size(); i++)
+    for(int i = 0; i < baseColorNum; i++)
     {
       for(int j = 0; j < moreColors; j++)
       {
@@ -238,21 +242,21 @@ class ColorScheme
     }
 
     //--> Saturation Scale
-
+    
     for(int i = 0; i < colors.size(); i++)
     {
       colors.get(i).setSaturation( colors.get(i).saturation() * saturationScale);
     }
 
     //--> Brightness Scale
-
+    
     for(int i = 0; i < colors.size(); i++)
     {
       colors.get(i).setBrightness( colors.get(i).brightness() * brightnessScale);
     }
 
     //--> Sort Colors
-
+    
     if(sortMode == DISTANCE_SORT)
     {
       colors = colors.sortByDistance(sortReversed == 1);

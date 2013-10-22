@@ -20,7 +20,6 @@ class ColorScheme
 
   ColorScheme() 
   {
-    println("begin");
     chooseHue();
     chooseNumColors();
     chooseColorDistance();
@@ -35,7 +34,6 @@ class ColorScheme
     chooseSortMode();
     chooseSortReversed();
     chooseBackgroundMode();
-    println("end");
   }
 
   // Choose: Hue

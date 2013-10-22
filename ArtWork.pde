@@ -47,9 +47,11 @@ class ArtWork
     //--> Setup
 
     ColorList colors = sample.colorscheme.getColors();
+
     TColor bgColor = sample.colorscheme.getBackgroundColor(colors);
     RShape frontShape = sample.composition.getShape(w, h);
     RShape backgroundShape = RShape.createRectangle(0, 0, w, h);
+    ColorList frontColors = new ColorList();
 
     //--> Background
 
@@ -58,7 +60,6 @@ class ArtWork
 
     //--> Remove Background Color
     
-    ColorList frontColors = new ColorList();
     for(int i = 0; i < colors.size(); i++)
     {
       if(!colors.get(i).equals(bgColor))  frontColors.add(colors.get(i));

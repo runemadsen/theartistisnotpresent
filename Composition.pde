@@ -11,6 +11,8 @@ class Composition
   int numShapes;
   int fullShapeRotation;
   int positionType;
+  int divide;
+  int divideRotation;
 
   // Constructor
   //----------------------------------------------------------------
@@ -25,6 +27,8 @@ class Composition
     chooseShapeRotation();
     choosePosition();
     chooseFullShapeRotation();
+    chooseDivide();
+    chooseDivideRotation();
   }
 
   // Choose: Num Shapes
@@ -137,6 +141,28 @@ class Composition
     fullShapeRotation = rotations.getRandom();
   }
 
+  // Choose: Divide
+  //----------------------------------------------------------------
+  
+  void chooseDivide()
+  {
+    divide = round(random(1));
+  }
+
+  // Choose: Divide Rotation
+  //----------------------------------------------------------------
+  
+  void chooseDivideRotation()
+  {
+    WeightedRandomSet<Integer> rotations = new WeightedRandomSet<Integer>();
+    rotations.add(0, 15);
+    rotations.add(45, 1);
+    rotations.add(90, 1);
+    rotations.add(135, 1);
+    rotations.add(round(random(360)), 2);
+    divideRotation = rotations.getRandom();
+  }
+
   // Get Shape
   //----------------------------------------------------------------
 
@@ -153,10 +179,8 @@ class Composition
       for(int i = 0; i < numShapes; i++)
       {
         int x = (i * scaledShapeSize) + (i * scaledShapeSpacing);
-        RShape newShape = getShapeType(shapeType, scaledShapeSize);
-        newShape.translate(x, i * shapeDisplacementY);
-        newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
-        frontShape.addChild(newShape);
+        int y = i * scaleShapeDisplacementY;
+        addNewShape(frontShape, x, y, scaledShapeSize, shapeRotation * i);
       }
     }
   
@@ -168,21 +192,16 @@ class Composition
         {
           int x = (i * scaledShapeSize) + (i * scaledShapeSpacing);
           int y = (j * scaledShapeSize) + (j * scaledShapeSpacing);
-          RShape newShape = getShapeType(shapeType, scaledShapeSize);
-          newShape.translate(x, y);
-          newShape.rotate(radians(shapeRotation * i), new RPoint(newShape.getX() + (newShape.getWidth()/2), newShape.getY() + (newShape.  getHeight()/2)));
-          frontShape.addChild(newShape);
+          addNewShape(frontShape, x, y, scaledShapeSize, shapeRotation * i);
         }
       }
     }
   
-    // center
     else if(positionType == CENTER)
     {
   
     }
   
-    // rotation
     else if(positionType == ROTATION)
     {
   
@@ -195,6 +214,47 @@ class Composition
     frontShape.rotate(radians(fullShapeRotation), new RPoint(frontShape.getX() + (frontShape.getWidth()/2), frontShape.getY() + (frontShape.getHeight ()/2)));
     
     return frontShape;
+  }
+
+  // Add New Shape
+  //----------------------------------------------------------------
+
+  void addNewShape(RShape parent, int x, int y, int siz, int deg)
+  {
+    RShape newShape = getShapeType(shapeType, siz);
+    newShape.translate(x, y);
+    newShape.rotate(radians(deg), newShape.getCentroid());
+    
+    if(divide == 1)
+    {
+      RShape[] divideShapes = divideShape(newShape);
+      for(int i = 0; i < divideShapes.length; i++)
+      {
+        parent.addChild(divideShapes[i]);  
+      }
+    }
+    else 
+    {
+      parent.addChild(newShape);
+    }
+  }
+
+  // Divide Shape
+  //----------------------------------------------------------------
+
+  RShape[] divideShape(RShape theShape)
+  {
+    RPoint centroid = theShape.getCentroid();
+    RShape eli = RShape.createEllipse(centroid.x, centroid.y, theShape.getWidth()*2, theShape.getWidth()*2);
+
+    RShape[] halfs = eli.split(0.5);
+    halfs[0].rotate(radians(divideRotation), centroid.x, centroid.y);
+    halfs[1].rotate(radians(divideRotation), centroid.x, centroid.y);
+    
+    RShape[] returnShapes = new RShape[2];
+    returnShapes[0] = theShape.diff(halfs[0]);
+    returnShapes[1] = theShape.diff(halfs[1]);
+    return returnShapes;
   }
 
   // Get Shape Type

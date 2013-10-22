@@ -6,8 +6,15 @@ class Sample {
   ColorScheme colorscheme;
   Composition composition;
 
-  // New from CSV String
+  // Constructors
   // ------------------------------------------------------
+
+  Sample()
+  {
+    ColorScheme newColorscheme = new ColorScheme();
+    Composition newComposition = new Composition();
+    fromObjects(newColorscheme, newComposition);
+  }
 
   Sample(String csvString)
   {
@@ -22,19 +29,6 @@ class Sample {
     fromFeatureVector(newFeatureVector);
     label = Integer.parseInt(nums[nums.length - 1]);
   }
-
-  // New Random
-  // ------------------------------------------------------
-
-  Sample()
-  {
-    ColorScheme newColorscheme = new ColorScheme();
-    Composition newComposition = new Composition();
-    fromObjects(newColorscheme, newComposition);
-  }
-
-  // New Existing
-  // ------------------------------------------------------
 
   Sample(double[] newFeatureVector)
   {
@@ -79,6 +73,8 @@ class Sample {
     composition.numShapes =                   (int) featureVector[19];
     composition.fullShapeRotation =           (int) featureVector[20];
     composition.positionType =                (int) featureVector[21];
+    composition.divide =                      (int) featureVector[22];
+    composition.divideRotation =              (int) featureVector[23];
   }
 
   // Objects to Feature
@@ -112,7 +108,9 @@ class Sample {
       (double) composition.shapeDisplacementY,
       (double) composition.numShapes,
       (double) composition.fullShapeRotation,
-      (double) composition.positionType
+      (double) composition.positionType,
+      (double) composition.divide,
+      (double) composition.divideRotation
     };
     featureVector = newFeatureVector;
   }

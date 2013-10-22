@@ -465,4 +465,9 @@ void compareTwo()
 
   Sample sample2 = new Sample(sample1.toString());
   compare2 = new ArtWork(sample2, (int) screenSize.x, (int) screenSize.y, (int) screenSize.x, 0);
+
+  String string1 = sample1.toString();
+  String string2 = sample2.toString();
+
+  if(!string1.equals(string2))  println("SOMETHING IS WRONG IN CSV CONVERSION");
 }

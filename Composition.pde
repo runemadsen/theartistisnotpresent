@@ -227,11 +227,7 @@ class Composition
     
     if(divide == 1)
     {
-      RShape[] divideShapes = divideShape(newShape);
-      for(int i = 0; i < divideShapes.length; i++)
-      {
-        parent.addChild(divideShapes[i]);  
-      }
+      divideAndAdd(parent, newShape);
     }
     else 
     {
@@ -242,19 +238,16 @@ class Composition
   // Divide Shape
   //----------------------------------------------------------------
 
-  RShape[] divideShape(RShape theShape)
+  void divideAndAdd(RShape parent, RShape theShape)
   {
     RPoint centroid = theShape.getCentroid();
     RShape eli = RShape.createEllipse(centroid.x, centroid.y, theShape.getWidth()*2, theShape.getWidth()*2);
 
     RShape[] halfs = eli.split(0.5);
     halfs[0].rotate(radians(divideRotation), centroid.x, centroid.y);
-    halfs[1].rotate(radians(divideRotation), centroid.x, centroid.y);
     
-    RShape[] returnShapes = new RShape[2];
-    returnShapes[0] = theShape.diff(halfs[0]);
-    returnShapes[1] = theShape.diff(halfs[1]);
-    return returnShapes;
+    parent.addChild(theShape);
+    parent.addChild(theShape.diff(halfs[0]));
   }
 
   // Get Shape Type

@@ -75,6 +75,7 @@ class ArtWork
     }
   
     backgroundShape.addChild(frontShape);  
+
     return backgroundShape;
   }
 

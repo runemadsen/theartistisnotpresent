@@ -134,11 +134,14 @@ class Sample {
   
   void mutate(float m)
   {
+    Sample mutant = new Sample();
+    mutant.fromFeatureVector(mutant.featureVector); // hack to set composition and colorscheme
+
     for(int i = 0; i < featureVector.length; i++)
     {
       if(random(1) < m)
       {
-        //featureVector[i] = 
+        featureVector[i] = mutant.featureVector[i];
       }
     }
   }

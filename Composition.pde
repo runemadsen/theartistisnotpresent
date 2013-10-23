@@ -14,6 +14,8 @@ class Composition
   int divide;
   int divideRotation;
 
+  RShape divideDiff;
+
   // Constructor
   //----------------------------------------------------------------
 
@@ -174,6 +176,8 @@ class Composition
     int scaledShapeSpacing        = round(scaledShapeSize * shapeSpacing);
     int scaleShapeDisplacementY   = round(scaledShapeSize * shapeDisplacementY);
 
+    divideDiff = RShape.createEllipse(0, 0, scaledShapeSize*3, scaledShapeSize*3).split(0.5)[0];
+
     if(positionType == HORIZONTAL)
     {
       for(int i = 0; i < numShapes; i++)
@@ -212,6 +216,8 @@ class Composition
   
     // rotate
     frontShape.rotate(radians(fullShapeRotation), new RPoint(frontShape.getX() + (frontShape.getWidth()/2), frontShape.getY() + (frontShape.getHeight ()/2)));
+
+    println(frontShape.children.length);
     
     return frontShape;
   }
@@ -241,13 +247,12 @@ class Composition
   void divideAndAdd(RShape parent, RShape theShape)
   {
     RPoint centroid = theShape.getCentroid();
-    RShape eli = RShape.createEllipse(centroid.x, centroid.y, theShape.getWidth()*2, theShape.getWidth()*2);
 
-    RShape[] halfs = eli.split(0.5);
-    halfs[0].rotate(radians(divideRotation), centroid.x, centroid.y);
+    divideDiff.translate(centroid.x, centroid.y);
+    divideDiff.rotate(radians(divideRotation), centroid.x, centroid.y);
     
     parent.addChild(theShape);
-    parent.addChild(theShape.diff(halfs[0]));
+    parent.addChild(theShape.diff(divideDiff));
   }
 
   // Get Shape Type

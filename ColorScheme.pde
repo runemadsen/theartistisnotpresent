@@ -165,7 +165,7 @@ class ColorScheme
   {
     WeightedRandomSet<Integer> ran = new WeightedRandomSet<Integer>();
     ran.add(DISTANCE_SORT, 10);
-    ran.add(RANDOM_SORT, 10);
+    ran.add(ODD_SORT, 10);
     ran.add(BRIGHTNESS_SORT, 10);
     ran.add(SATURATION_SORT, 10);
     sortMode = ran.getRandom();
@@ -198,6 +198,8 @@ class ColorScheme
 
   ColorList getColors()
   {
+    sortMode = ODD_SORT;
+
     ColorList colors = new ColorList();
 
     //--> Base Color
@@ -259,9 +261,16 @@ class ColorScheme
     {
       colors = colors.sortByDistance(sortReversed == 1);
     }
-    else if(sortMode == RANDOM_SORT)
+    else if(sortMode == ODD_SORT)
     {
-      colors = colors.sortByCriteria(new RandomAccessor(), sortReversed == 1);
+      ColorList sorted = colors.sortByDistance(sortReversed == 1);
+      ColorList odd = new ColorList();
+      for(int i = 0; i < sorted.size()/2; i++)
+      {
+        odd.add(sorted.get(i));
+        odd.add(sorted.get((sorted.size() - 1) - i));
+      }
+      colors = odd;
     }
     else if(sortMode == BRIGHTNESS_SORT)
     {

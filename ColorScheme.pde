@@ -187,7 +187,9 @@ class ColorScheme
     WeightedRandomSet<Integer> backgrounds = new WeightedRandomSet<Integer>();
     backgrounds.add(DARKEST, 1);
     backgrounds.add(BRIGHTEST, 1);
+    backgrounds.add(FIRST, 1);
     backgrounds.add(MIDDLE, 1);
+    backgrounds.add(LAST, 1);
     backgrounds.add(DARKGRAY, 1);
     backgrounds.add(WHITE, 1);
     backgroundMode = backgrounds.getRandom();
@@ -289,7 +291,9 @@ class ColorScheme
   {
     if(backgroundMode == DARKEST)         return (TColor) colors.getDarkest();
     else if(backgroundMode == BRIGHTEST)  return (TColor) colors.getLightest();
+    else if(backgroundMode == FIRST)      return (TColor) colors.get(0);
     else if(backgroundMode == MIDDLE)     return (TColor) colors.get(floor(colors.size() / 2));
+    else if(backgroundMode == LAST)       return (TColor) colors.get(colors.size() - 1);
     else if(backgroundMode == DARKGRAY)   return (TColor) TColor.newHSV(0, 0, 0.1);
     else                                  return (TColor) TColor.newHSV(0, 0, 1);
   }

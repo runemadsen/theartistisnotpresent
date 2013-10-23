@@ -30,11 +30,14 @@ int TRIANGLE = 0;
 int ELLIPSE = 1;
 int RECTANGLE = 2;
 
+
 int DARKEST = 0;
 int BRIGHTEST = 1;
-int MIDDLE = 2;
-int DARKGRAY = 3;
-int WHITE = 4;
+int FIRST = 2;
+int MIDDLE = 3;
+int LAST = 4;
+int DARKGRAY = 5;
+int WHITE = 6;
 
 int BRI = 0;
 int SAT = 1;

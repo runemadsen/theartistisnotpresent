@@ -21,6 +21,16 @@ int ODD_SORT = 1;
 int BRIGHTNESS_SORT = 2;
 int SATURATION_SORT = 3;
 
+int LINEAR = 0;
+int SINE_IN = 1;
+int SINE_OUT = 2;
+int QUAD_IN = 3;
+int QUAD_OUT = 4;
+int QUINT_IN = 5;
+int QUINT_OUT = 6;
+int QUART_IN = 7;
+int QUART_OUT = 8;
+
 int HORIZONTAL = 0;
 int GRID = 1;
 int CENTER = 2;

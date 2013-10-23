@@ -10,8 +10,8 @@ class ColorScheme
   int moreColorsMode;
   float moreColorsSaturationBase;
   float moreColorsBrightnessBase;
-  int moreColorsSatEasing;
-  int moreColorsBriEasing;
+  int moreColorsSaturationEasing;
+  int moreColorsBrightnessEasing;
   float saturationScale;
   float brightnessScale;
   int sortMode;
@@ -125,7 +125,17 @@ class ColorScheme
 
   void chooseMoreColorsSaturationEasing()
   {
-
+    WeightedRandomSet<Integer> easings = new WeightedRandomSet<Integer>();
+    easings.add(LINEAR, 1);
+    easings.add(SINE_IN, 1);
+    easings.add(SINE_OUT, 1);
+    easings.add(QUAD_IN, 1);
+    easings.add(QUAD_OUT, 1);
+    easings.add(QUINT_IN, 1);
+    easings.add(QUINT_OUT, 1);
+    easings.add(QUART_IN, 1);
+    easings.add(QUART_OUT, 1);
+    moreColorsSaturationEasing = easings.getRandom();
   }
 
   // Choose: More Colors Brightness Easing
@@ -133,7 +143,17 @@ class ColorScheme
 
   void chooseMoreColorsBrightnessEasing()
   {
-
+    WeightedRandomSet<Integer> easings = new WeightedRandomSet<Integer>();
+    easings.add(LINEAR, 1);
+    easings.add(SINE_IN, 1);
+    easings.add(SINE_OUT, 1);
+    easings.add(QUAD_IN, 1);
+    easings.add(QUAD_OUT, 1);
+    easings.add(QUINT_IN, 1);
+    easings.add(QUINT_OUT, 1);
+    easings.add(QUART_IN, 1);
+    easings.add(QUART_OUT, 1);
+    moreColorsSaturationEasing = easings.getRandom();
   }
 
   // Choose: Saturation Scale
@@ -227,13 +247,15 @@ class ColorScheme
 
         if(moreColorsMode == SAT || moreColorsMode == BRISAT)
         {
-          val = Ani.LINEAR.calcEasing(j, moreColorsSaturationBase, 1-moreColorsSaturationBase, moreColors);
+          Easing easing = getEasing(moreColorsSaturationEasing);
+          val = easing.calcEasing(j, moreColorsSaturationBase, 1-moreColorsSaturationBase, moreColors);
           newColor.setSaturation(val);
         }
   
         if(moreColorsMode == BRI || moreColorsMode == BRISAT)
         {
-          val = Ani.LINEAR.calcEasing(j, moreColorsBrightnessBase, 1-moreColorsBrightnessBase, moreColors);
+          Easing easing = getEasing(moreColorsBrightnessEasing);
+          val = easing.calcEasing(j, moreColorsBrightnessBase, 1-moreColorsBrightnessBase, moreColors);
           newColor.setSaturation(val);
         }
 
@@ -296,5 +318,21 @@ class ColorScheme
     else if(backgroundMode == LAST)       return (TColor) colors.get(colors.size() - 1);
     else if(backgroundMode == DARKGRAY)   return (TColor) TColor.newHSV(0, 0, 0.1);
     else                                  return (TColor) TColor.newHSV(0, 0, 1);
+  }
+
+  // Get Easing
+  //----------------------------------------------------------------
+
+  Easing getEasing(int easingNum)
+  {
+    if(easingNum == LINEAR)           return Ani.LINEAR;
+    else if(easingNum == SINE_IN )    return Ani.SINE_IN;
+    else if(easingNum == SINE_OUT)    return Ani.SINE_OUT;
+    else if(easingNum == QUAD_IN )    return Ani.QUAD_IN;
+    else if(easingNum == QUAD_OUT)    return Ani.QUAD_OUT;
+    else if(easingNum == QUINT_IN)    return Ani.QUINT_IN;
+    else if(easingNum == QUINT_OUT)   return Ani.QUINT_OUT;
+    else if(easingNum == QUART_IN)    return Ani.QUART_IN;
+    else                              return Ani.QUART_OUT;
   }
 }

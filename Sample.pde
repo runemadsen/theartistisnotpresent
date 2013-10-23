@@ -58,8 +58,8 @@ class Sample {
     colorscheme.moreColorsMode =              (int) featureVector[4];
     colorscheme.moreColorsSaturationBase =  (float) featureVector[5];
     colorscheme.moreColorsBrightnessBase =  (float) featureVector[6];
-    colorscheme.moreColorsSatEasing =         (int) featureVector[7];
-    colorscheme.moreColorsBriEasing =         (int) featureVector[8];
+    colorscheme.moreColorsSaturationEasing =  (int) featureVector[7];
+    colorscheme.moreColorsBrightnessEasing =  (int) featureVector[8];
     colorscheme.saturationScale =           (float) featureVector[9];
     colorscheme.brightnessScale =           (float) featureVector[10];
     colorscheme.sortMode =                    (int) featureVector[11];
@@ -94,8 +94,8 @@ class Sample {
       (double) colorscheme.moreColorsMode,
       (double) colorscheme.moreColorsSaturationBase,
       (double) colorscheme.moreColorsBrightnessBase,
-      (double) colorscheme.moreColorsSatEasing,
-      (double) colorscheme.moreColorsBriEasing,
+      (double) colorscheme.moreColorsSaturationEasing,
+      (double) colorscheme.moreColorsBrightnessEasing,
       (double) colorscheme.saturationScale,
       (double) colorscheme.brightnessScale,
       (double) colorscheme.sortMode,

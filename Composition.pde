@@ -174,7 +174,7 @@ class Composition
 
     int scaledShapeSize           = round(shapeSize * w);
     int scaledShapeSpacing        = round(scaledShapeSize * shapeSpacing);
-    int scaleShapeDisplacementY   = round(scaledShapeSize * shapeDisplacementY);
+    int scaledShapeDisplacementY  = round(scaledShapeSize * shapeDisplacementY);
 
     divideDiff = RShape.createEllipse(0, 0, scaledShapeSize*3, scaledShapeSize*3).split(0.5)[0];
 
@@ -183,7 +183,7 @@ class Composition
       for(int i = 0; i < numShapes; i++)
       {
         int x = (i * scaledShapeSize) + (i * scaledShapeSpacing);
-        int y = i * scaleShapeDisplacementY;
+        int y = i * scaledShapeDisplacementY;
         addNewShape(frontShape, x, y, scaledShapeSize, shapeRotation * i);
       }
     }
@@ -195,7 +195,7 @@ class Composition
         for(int j = 0; j < numShapes; j++)
         {
           int x = (i * scaledShapeSize) + (i * scaledShapeSpacing);
-          int y = (j * scaledShapeSize) + (j * scaledShapeSpacing);
+          int y = (j * scaledShapeSize) + (j * scaledShapeSpacing) + (j * scaledShapeDisplacementY);
           addNewShape(frontShape, x, y, scaledShapeSize, shapeRotation * i);
         }
       }

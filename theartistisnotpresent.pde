@@ -50,7 +50,7 @@ FSM fsm;
 State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault");
 State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
 State predictionState = new State(this, "enterPrediction", "drawPrediction", "exitPrediction");
-State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
+State gridState = new State(this, "enterGrid", "drawGrid", "exitGrid");
 State ledState = new State(this, "enterLed", "drawLed", "exitLed");
 State compareState = new State(this, "enterCompare", "drawCompare", "exitCompare");
 
@@ -130,13 +130,13 @@ void keyPressed()
 {
   if(key == 'r')  fsm.transitionTo(ratingState);
   if(key == 'p')  fsm.transitionTo(predictionState);
-  if(key == 'a')  fsm.transitionTo(artistState);
+  if(key == 'g')  fsm.transitionTo(gridState);
   if(key == 'l')  fsm.transitionTo(ledState);
   if(key == 'c')  fsm.transitionTo(compareState);
 
   if(fsm.currentState == ratingState)            keyPressedRatingMode();
   else if(fsm.currentState == predictionState)   keyPressedPredictionMode();
-  else if(fsm.currentState == artistState)       keyPressedArtistMode();
+  else if(fsm.currentState == gridState)       keyPressedArtistMode();
   else if(fsm.currentState == compareState)      keyPressedCompareMode();
 }
 
@@ -311,7 +311,7 @@ void parsePredictionSCV(File selection)
 // Artist Mode
 //----------------------------------------------------------------
 
-void enterArtist()
+void enterGrid()
 {
   selectInput("Select a file to process:", "parseArtistSCV");
 }
@@ -338,7 +338,7 @@ void parseArtistSCV(File selection)
   csvLoaded = true;
 }
 
-void drawArtist()
+void drawGrid()
 {
   if(csvLoaded)
   {
@@ -354,7 +354,7 @@ void drawArtist()
   }
 }
 
-void exitArtist()
+void exitGrid()
 {
 
 }

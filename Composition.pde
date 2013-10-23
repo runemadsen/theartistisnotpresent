@@ -216,8 +216,6 @@ class Composition
   
     // rotate
     frontShape.rotate(radians(fullShapeRotation), new RPoint(frontShape.getX() + (frontShape.getWidth()/2), frontShape.getY() + (frontShape.getHeight ()/2)));
-
-    println(frontShape.children.length);
     
     return frontShape;
   }

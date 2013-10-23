@@ -32,7 +32,7 @@ int RECTANGLE = 2;
 
 int DARKEST = 0;
 int BRIGHTEST = 1;
-int RANDOM = 2;
+int MIDDLE = 2;
 int DARKGRAY = 3;
 int WHITE = 4;
 

@@ -246,9 +246,7 @@ void parsePredictionSCV(File selection)
     ArrayList<Sample> trainingSamples = new ArrayList<Sample>();
     ArrayList<Sample> predictionSamples = new ArrayList<Sample>();
 
-    println("length: " + csvData.length);
     int splitInteger = round(predictionSplit * csvData.length);
-    println("splitInteger: " + splitInteger);
 
     for(int i = 0; i < csvData.length; i++)
     {

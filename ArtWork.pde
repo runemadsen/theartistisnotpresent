@@ -49,7 +49,6 @@ class ArtWork
     ColorList colors = sample.colorscheme.getColors();
 
     TColor bgColor = sample.colorscheme.getBackgroundColor(colors);
-    println("bgColor: " + bgColor.toString());
     RShape frontShape = sample.composition.getShape(w, h);
 
     RShape backgroundShape = RShape.createRectangle(0, 0, w, h);

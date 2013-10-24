@@ -16,6 +16,9 @@ int RATINGMODE = 1;
 int PREDICTIONMODE = 2;
 int ARTISTMODE = 3;
 
+int STROKE = 0;
+int FILL = 1;
+
 int DISTANCE_SORT = 0;
 int ODD_SORT = 1;
 int BRIGHTNESS_SORT = 2;

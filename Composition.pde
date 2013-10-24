@@ -13,6 +13,7 @@ class Composition
   int positionType;
   int divide;
   int divideRotation;
+  int fillMode;
 
   RShape divideDiff;
 
@@ -31,6 +32,7 @@ class Composition
     chooseFullShapeRotation();
     chooseDivide();
     chooseDivideRotation();
+    chooseFillMode();
   }
 
   // Choose: Num Shapes
@@ -110,6 +112,17 @@ class Composition
     rotations.add(315, 1);
     rotations.add(round(random(360)), 2);
     shapeRotation = rotations.getRandom();
+  }
+
+  // Choose: Fill Mode
+  //----------------------------------------------------------------
+  
+  void chooseFillMode()
+  {
+    WeightedRandomSet<Integer> fills = new WeightedRandomSet<Integer>();
+    fills.add(FILL, 3);
+    fills.add(STROKE, 1);
+    fillMode = fills.getRandom();
   }
   
   // Choose: Position

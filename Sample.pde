@@ -75,6 +75,7 @@ class Sample {
     composition.positionType =                (int) featureVector[21];
     composition.divide =                      (int) featureVector[22];
     composition.divideRotation =              (int) featureVector[23];
+    composition.fillMode =                    (int) featureVector[24];
   }
 
   // Objects to Feature
@@ -110,7 +111,8 @@ class Sample {
       (double) composition.fullShapeRotation,
       (double) composition.positionType,
       (double) composition.divide,
-      (double) composition.divideRotation
+      (double) composition.divideRotation,
+      (double) composition.fillMode
     };
     featureVector = newFeatureVector;
   }

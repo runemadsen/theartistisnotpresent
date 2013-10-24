@@ -74,8 +74,19 @@ class ArtWork
     for(int i = 0; i < frontShape.children.length; i++)
     {
       TColor col = frontColors.get(i % frontColors.size());
-      frontShape.children[i].setFill(col.toARGB());
-      frontShape.children[i].setStroke(false);
+
+      if(sample.composition.fillMode == FILL)
+      {
+        frontShape.children[i].setFill(col.toARGB());
+        frontShape.children[i].setStroke(false);
+      }
+      else
+      {
+        frontShape.children[i].setStrokeWeight(3);
+        frontShape.children[i].setStroke(col.toARGB());
+        frontShape.children[i].setFill(false);
+      }
+      
     }
   
     backgroundShape.addChild(frontShape); 

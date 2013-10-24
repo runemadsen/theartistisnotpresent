@@ -120,8 +120,7 @@ class Composition
     WeightedRandomSet<Integer> positions = new WeightedRandomSet<Integer>();
     positions.add(HORIZONTAL, 1);
     positions.add(GRID, 1);
-    //positions.add(CENTER, 1);
-    //positions.add(ROTATION, 1);
+    positions.add(CENTER, 1);
     positionType = positions.getRandom();
   }
   
@@ -203,14 +202,21 @@ class Composition
   
     else if(positionType == CENTER)
     {
-  
+      int reversedShapedSpacing = round((1 - shapeSpacing) * scaledShapeSize);
+      int radius = reversedShapedSpacing * 3;
+      float deg = (360.0 / numShapes);
+
+      for(int i = 0; i < numShapes; i++)
+      {
+        int x = round(cos(radians(deg * i)) * radius);
+        int y = round(sin(radians(deg * i)) * radius);
+        addNewShape(frontShape, x, y, scaledShapeSize, int((deg * i) + (shapeRotation * 1)));
+      }
+
+      // move to center because of cos sin
+      frontShape.translate((frontShape.getWidth()/2) - (scaledShapeSize/2), (frontShape.getHeight()/2) - (scaledShapeSize/2));
     }
-  
-    else if(positionType == ROTATION)
-    {
-  
-    }
-  
+
     // place in center of screen - important this happens before rotation!
     frontShape.translate((w/2) - (frontShape.getWidth()/2), (h/2) - (frontShape.getHeight()/2));
   

@@ -97,7 +97,8 @@ Population population;
 //----------------------------------------------------------------
 
 boolean saveImages = false;
-String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
+String saveImagesPath = "testimages";//"/Users/rmadsen/Dropbox/Public";
+string saveImageFolder;
 
 int showPopulationNum = 10;
 long lastMillis = 0;

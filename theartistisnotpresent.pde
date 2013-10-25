@@ -88,23 +88,24 @@ String csvFile = "ratings/ratings.csv";
 
 float mutationRate = 0.05;
 int populationNum = 30;
-int showPopulationNum = 10;
-
 Population population;
 
 // Artist Mode
 //----------------------------------------------------------------
 
+boolean saveImages = false;
+String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
+
+int showPopulationNum = 10;
 long lastMillis = 0;
 int animationTime = 700;
 int timeOnScreen = 4000;
 
-boolean saveImages = false;
-String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
-
 int generationNum;
+PGraphics artistCanvas;
 ArtWork[] art = new ArtWork[showPopulationNum];
 int curArtWork;
+boolean displayArtist = false;
 
 // Grid Mode
 //----------------------------------------------------------------
@@ -159,6 +160,7 @@ void draw()
 {
   background(1);
   fsm.update();
+  //println("Framerate: " + frameRate);
 }
 
 void keyPressed()
@@ -200,17 +202,20 @@ void enterArtist()
 {
   generationNum = 0;
   curArtWork = 0;
-
-  // generate a new population and all that
-  // new Population(mutationRate, populationNum);
-
-  //showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), 0);
-
+  population = new Population(mutationRate, populationNum);
+  populationToArtistCanvas(population);
   lastMillis = millis();
+  displayArtist = true;
 }
 
 void drawArtist()
 {
+  if(!displayArtist) return;
+
+  image(artistCanvas, 0, 0);
+
+
+
   //pushMatrix();
   //translate((int) ledPosition.x, (int) ledPosition.y);
   //  showArt.display();
@@ -236,13 +241,32 @@ void exitArtist()
 
 }
 
+void populationToArtistCanvas(Population p)
+{
+  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * showPopulationNum);
+
+  // GET THE 10 HIGHEST RATED SAMPLES!!!!!!!!!!!
+
+  artistCanvas.beginDraw();
+  artistCanvas.colorMode(HSB, 1, 1, 1, 1);
+  //artistCanvas.smooth();
+
+  for(int i = 0; i < showPopulationNum; i++)
+  {
+    gridArt[i] = new ArtWork(p.population[i], (int) screenSize.x, (int) screenSize.y);
+    artistCanvas.image(gridArt[i].canvas, 0, i * screenSize.y);
+  }
+
+  artistCanvas.endDraw();
+}
+
 // Grid Mode
 //----------------------------------------------------------------
 
 void enterGrid()
 {
   population = new Population(mutationRate, populationNum);
-  populationToArtWork(population);
+  populationToGridArt(population);
   labelPopulation(population);
   displayGrid = true;
 }
@@ -253,12 +277,15 @@ void drawGrid()
 
   for(int i = 0; i < gridArt.length; i++)
   {
-    gridArt[i].display();
+    PGraphics canvas = gridArt[i].canvas;
+    int x = int((i % 6) * canvas.width);
+    int y = int(((i / 6) % 6) * canvas.height);
+    image(canvas, x, y);
     textSize(32);
     fill(0);
-    text(population.population[i].label, gridArt[i].loc.x + 5, gridArt[i].loc.y + 37);
+    text(population.population[i].label, x + 5, y + 37);
     fill(1);
-    text(population.population[i].label, gridArt[i].loc.x + 7, gridArt[i].loc.y + 37);
+    text(population.population[i].label, x + 7, y + 37);
   }
 }
 
@@ -273,21 +300,18 @@ void keyPressedGridMode()
   {
     population.selection();
     population.reproduction();
-    populationToArtWork(population);
+    populationToGridArt(population);
     labelPopulation(population);
   }
 }
 
-void populationToArtWork(Population p)
+void populationToGridArt(Population p)
 {
-  for(int i = 0; i < populationNum; i++)
+  for(int i = 0; i < population.population.length; i++)
   {
     int w = (int) screenSize.x / 2;
     int h = (int) screenSize.y / 2;
-    int x = int((i % 6) * w);
-    int y = int(((i / 6) % 6) * h);
-
-    gridArt[i] = new ArtWork(p.population[i], w, h, x, y);
+    gridArt[i] = new ArtWork(population.population[i], w, h);
   }
 }
 
@@ -309,10 +333,10 @@ void enterRating()
 
 void drawRating()
 {
-  pushMatrix();
-  translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y/2));
-  rateArtwork.display();
-  popMatrix();
+  //pushMatrix();
+  //translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y/2));
+  //rateArtwork.display();
+  //popMatrix();
 }
 
 void exitRating()
@@ -347,8 +371,8 @@ void keyPressedRatingMode()
 
 void newRandom()
 {
-  rateSample = new Sample();
-  rateArtwork = new ArtWork(rateSample, (int) screenSize.x, (int) screenSize.y, 0, 0);
+  //rateSample = new Sample();
+  //rateArtwork = new ArtWork(rateSample, (int) screenSize.x, (int) screenSize.y, 0, 0);
 }
 
 // Prediction Mode
@@ -386,9 +410,9 @@ void enterCompare()
 
 void drawCompare()
 {
-  translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y + 5));
-  compare1.display();
-  compare2.display();
+  //translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y + 5));
+  //compare1.display();
+  //compare2.display();
 }
 
 void exitCompare()
@@ -406,17 +430,17 @@ void keyPressedCompareMode()
 
 void compareTwo()
 {
-  Sample sample1 = new Sample();
-  sample1.label = 9;
-  compare1 = new ArtWork(sample1, (int) screenSize.x, (int) screenSize.y, 0, 0);
-
-  Sample sample2 = new Sample(sample1.toString());
-  compare2 = new ArtWork(sample2, (int) screenSize.x, (int) screenSize.y, 0, (int) screenSize.y + 10);
-
-  String string1 = sample1.toString();
-  String string2 = sample2.toString();
-
-  if(!string1.equals(string2))  println("SOMETHING IS WRONG IN CSV CONVERSION");
+  //Sample sample1 = new Sample();
+  //sample1.label = 9;
+  //compare1 = new ArtWork(sample1, (int) screenSize.x, (int) screenSize.y, 0, 0);
+//
+  //Sample sample2 = new Sample(sample1.toString());
+  //compare2 = new ArtWork(sample2, (int) screenSize.x, (int) screenSize.y, 0, (int) screenSize.y + 10);
+//
+  //String string1 = sample1.toString();
+  //String string2 = sample2.toString();
+//
+  //if(!string1.equals(string2))  println("SOMETHING IS WRONG IN CSV CONVERSION");
 }
 
 // CSV Parsing
@@ -435,7 +459,7 @@ void loadAndParseCSVAsTrainingSamples()
   forest.train();
 
   //population = new Population(mutationRate, populationNum);
-  //populationToArtWork(population);
+  //populationToGridArt(population);
   //labelPopulation(population);
 }
 

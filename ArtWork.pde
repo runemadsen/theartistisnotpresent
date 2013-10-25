@@ -3,46 +3,42 @@ class ArtWork
   // Properties
   //----------------------------------------------------------------
 
-  Ani easing;
-  PVector loc;
+  Sample sample;
   RShape art;
   PGraphics canvas;
+  int w;
+  int h;
 
   // Constructor
   //----------------------------------------------------------------
 
-  ArtWork(Sample sample, int w, int h, int x, int y)
+  ArtWork(Sample _sample, int _w, int _h)
   {
-    loc = new PVector(x, y);
-    art = sampleToShape(sample, w, h);
+    w = _w;
+    h = _h;
+    
+    sample = _sample;
     canvas = createGraphics(w, h);
+    art = getShape();
 
     // draw art to canvas
     canvas.beginDraw();
     canvas.colorMode(HSB, 1, 1, 1, 1);
-    canvas.smooth();  
+    //canvas.smooth();  
     art.draw(canvas);
     canvas.endDraw();
   }
 
-  // Display
-  //----------------------------------------------------------------
-
-  void display()
-  {
-    image(canvas, loc.x, loc.y); 
-  }
-
-  void moveTo(int x, int y, int sec)
-  {
-    Ani.to(loc, sec, "x", x, Ani.QUAD_OUT);
-    Ani.to(loc, sec, "y", y, Ani.QUAD_OUT);
-  }
+  //void moveTo(int x, int y, int sec)
+  //{
+  //  Ani.to(loc, sec, "x", x, Ani.QUAD_OUT);
+  //  Ani.to(loc, sec, "y", y, Ani.QUAD_OUT);
+  //}
 
   // Sample to RShape
   //----------------------------------------------------------------
   
-  RShape sampleToShape(Sample sample, int w, int h)
+  RShape getShape()
   {
     //--> Setup
 
@@ -97,7 +93,7 @@ class ArtWork
   // Saving
   //----------------------------------------------------------------
 
-  void saveSVG(String filename, int w, int h)
+  void saveSVG(String filename, RShape art, int w, int h)
   {
     RG.saveShape(filename, art);
 

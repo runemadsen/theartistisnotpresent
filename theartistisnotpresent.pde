@@ -65,9 +65,9 @@ RandomForest forest;
 FSM fsm;
 State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault");
 State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
+State gridState = new State(this, "enterGrid", "drawGrid", "exitGrid");
 State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
 State predictionState = new State(this, "enterPrediction", "drawPrediction", "exitPrediction");
-State gridState = new State(this, "enterGrid", "drawGrid", "exitGrid");
 State compareState = new State(this, "enterCompare", "drawCompare", "exitCompare");
 
 PVector screenSize = new PVector(480, 288);
@@ -81,6 +81,27 @@ float downScale =  ledSize.y / screenSize.y;
 PVector smallSize = new PVector(screenSize.x * downScale, screenSize.y * downScale);
 float smallWidthDiff =  smallSize.x - ledSize.x;
 
+// Shared Modes
+//----------------------------------------------------------------
+
+String csvFile = "ratings/ratings.csv";
+
+float mutationRate = 0.05;
+int populationNum = 30;
+int showPopulationNum = 10;
+
+Population population;
+ArtWork[] populationArt = new ArtWork[showPopulationNum];
+
+// Artist Mode
+//----------------------------------------------------------------
+
+ArtWork showArt;
+ArtWork outArt;
+long lastMillis = 0;
+int animationTime = 700;
+int timeOnScreen = 4000;
+
 // Rating Mode
 //----------------------------------------------------------------
 
@@ -93,24 +114,11 @@ ArrayList<String> ratings = new ArrayList<String>();
 
 float predictionSplit = 0.7;
 
-// Artist Mode
+// Grid Mode
 //----------------------------------------------------------------
 
-boolean csvLoaded = false;
-float mutationRate = 0.05;
-int populationNum = 30;
-Population population;
-ArtWork[] populationArt = new ArtWork[populationNum];
 boolean saveImages = false;
 String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
-
-// Test Mode
-//----------------------------------------------------------------
-
-ArtWork showArt;
-ArtWork outArt;
-long lastMillis = 0;
-int timeOnScreen = 3000;
 
 // Compare Mode
 //----------------------------------------------------------------
@@ -128,12 +136,17 @@ void setup()
   background(0);
   //smooth();
   noStroke();
+
+  // preload all samples into random forest
+  OpenCV opencv = new OpenCV(this, "test.jpg");
+  forest = new RandomForest();
+  loadAndParseCSVAsTrainingSamples();
   
   fsm = new FSM(defaultState);
   RG.init(this);
   Ani.init(this);
-  OpenCV opencv = new OpenCV(this, "test.jpg");
-  forest = new RandomForest();
+
+  ledMask = loadImage("mask.png");
 }
 
 void draw()
@@ -152,7 +165,7 @@ void keyPressed()
 
   if(fsm.currentState == ratingState)            keyPressedRatingMode();
   else if(fsm.currentState == predictionState)   keyPressedPredictionMode();
-  else if(fsm.currentState == gridState)       keyPressedArtistMode();
+  else if(fsm.currentState == gridState)         keyPressedGridMode();
   else if(fsm.currentState == compareState)      keyPressedCompareMode();
 }
 
@@ -179,11 +192,11 @@ void exitDefault()
 
 void enterArtist()
 {
-  lastMillis = millis();
-  curtain = new Mask();
-  curtain.addWindow((int) ledPosition.x, (int) ledPosition.y, (int) ledSize.x, (int) ledSize.y);
-  ledMask = loadImage("mask.png");
-  showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), 0);
+  //lastMillis = millis();
+  //curtain = new Mask();
+  //curtain.addWindow((int) ledPosition.x, (int) ledPosition.y, (int) ledSize.x, (int) ledSize.y);
+  //
+  //showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), 0);
 }
 
 void drawArtist()
@@ -211,6 +224,63 @@ void drawArtist()
 void exitArtist()
 {
 
+}
+
+// Grid Mode
+//----------------------------------------------------------------
+
+void enterGrid()
+{
+}
+
+void drawGrid()
+{
+  for(int i = 0; i < populationNum; i++)
+  {
+    populationArt[i].display();
+    textSize(32);
+    fill(0);
+    text(population.population[i].label, populationArt[i].loc.x + 5, populationArt[i].loc.y + 37);
+    fill(1);
+    text(population.population[i].label, populationArt[i].loc.x + 7, populationArt[i].loc.y + 37);
+  }
+}
+
+void exitGrid()
+{
+
+}
+
+void keyPressedGridMode()
+{
+  if(key == 'n')
+  {
+    population.selection();
+    population.reproduction();
+    populationToArtWork(population);
+    labelPopulation(population);
+  }
+}
+
+void populationToArtWork(Population p)
+{
+  for(int i = 0; i < populationNum; i++)
+  {
+    int w = (int) screenSize.x / 2;
+    int h = (int) screenSize.y / 2;
+    int x = int((i % 6) * w);
+    int y = int(((i / 6) % 6) * h);
+
+    populationArt[i] = new ArtWork(p.population[i], w, h, x, y);
+  }
+}
+
+void labelPopulation(Population p)
+{
+  for(int i = 0; i < populationNum; i++)
+  {
+    p.population[i].label = (int) forest.predict(p.population[i]);
+  }
 }
 
 // Rating Mode
@@ -270,7 +340,9 @@ void newRandom()
 
 void enterPrediction()
 {
-  selectInput("Select a file to process:", "parsePredictionSCV");
+  // reset random forest with split
+  forest = new RandomForest();
+  loadAndParseCSVAsTrainingAndPredictionSamples();
 }
 
 void drawPrediction()
@@ -286,162 +358,6 @@ void exitPrediction()
 void keyPressedPredictionMode()
 {
 
-}
-
-void parsePredictionSCV(File selection)
-{
-  if (selection != null)
-  {
-    //--> Split up data
-
-    String[] csvData = loadStrings(selection.getAbsolutePath());
-    ArrayList<Sample> trainingSamples = new ArrayList<Sample>();
-    ArrayList<Sample> predictionSamples = new ArrayList<Sample>();
-
-    int splitInteger = round(predictionSplit * csvData.length);
-
-    for(int i = 0; i < csvData.length; i++)
-    {
-      Sample sample = new Sample(csvData[i]);
-
-      if(i < splitInteger)      trainingSamples.add(sample);
-      else                      predictionSamples.add(sample);
-    }
-    
-    //--> Train
-
-    for(int i = 0; i < trainingSamples.size(); i++)
-    {
-      forest.addTrainingSample(trainingSamples.get(i));
-    }
-    forest.train();
-
-    //--> Predict
-
-    int correctAnswers = 0;
-    int wrongAnswers = 0;
-    int combinedDiff = 0;
-    int[] diffByrating = new int[10];
-    int[] missesByrating = new int[10];
-
-    for(int i = 0; i < predictionSamples.size(); i++)
-    {
-      Sample sample = predictionSamples.get(i);
-      double prediction = forest.predict(sample);
-      println("Prediction: " + prediction + ", Label: " + sample.label);
-
-      int diff = abs(((int) prediction) - sample.label);
-
-      if(diff > 0)
-      {
-        wrongAnswers++;
-        combinedDiff += diff;
-        missesByrating[sample.label]++;
-        diffByrating[sample.label] += diff;
-      }
-      else
-      {
-        correctAnswers++;
-      }
-    }
-
-    println("**************************************************");
-    println("Overall Results of Prediction");
-
-    for (int i = 0; i < diffByrating.length; i++)
-    {
-      if(missesByrating[i] > 0)
-        println("The rating " + i + " had " + missesByrating[i] + " wrong predictions with an average of " + (diffByrating[i] / missesByrating[i]));
-    }
-
-    println("Overall prediction difference average: " + (combinedDiff/predictionSamples.size()));
-    println("Overall correct answers: " + correctAnswers + " (" + (double) correctAnswers*100/predictionSamples.size() + " percent)");
-    println("Overall Wrong answers: " + wrongAnswers + " (" + (double) wrongAnswers*100/predictionSamples.size() + " percent)");
-    println("**************************************************");
-  }
-}
-
-// Grid Mode
-//----------------------------------------------------------------
-
-void enterGrid()
-{
-  selectInput("Select a file to process:", "parseArtistSCV");
-}
-
-void parseArtistSCV(File selection)
-{
-  if (selection != null)
-  {
-    String[] csvData = loadStrings(selection.getAbsolutePath());
-    
-    for(int i = 0; i < csvData.length; i++)
-    {
-      Sample sample = new Sample(csvData[i]);
-      forest.addTrainingSample(sample);
-    }
-
-    forest.train();
-
-    population = new Population(mutationRate, populationNum);
-    populationToArtWork(population);
-    labelPopulation(population);
-  }
-
-  csvLoaded = true;
-}
-
-void drawGrid()
-{
-  if(csvLoaded)
-  {
-    for(int i = 0; i < populationNum; i++)
-    {
-      populationArt[i].display();
-      textSize(32);
-      fill(0);
-      text(population.population[i].label, populationArt[i].loc.x + 5, populationArt[i].loc.y + 37);
-      fill(1);
-      text(population.population[i].label, populationArt[i].loc.x + 7, populationArt[i].loc.y + 37);
-    }
-  }
-}
-
-void exitGrid()
-{
-
-}
-
-void keyPressedArtistMode()
-{
-  if(key == 'n')
-  {
-    population.selection();
-    population.reproduction();
-    populationToArtWork(population);
-    labelPopulation(population);
-  }
-}
-
-void populationToArtWork(Population p)
-{
-  for(int i = 0; i < populationNum; i++)
-  {
-    int w = (int) screenSize.x / 2;
-    int h = (int) screenSize.y / 2;
-    int x = int((i % 6) * w);
-    int y = int(((i / 6) % 6) * h);
-
-    populationArt[i] = new ArtWork(p.population[i], w, h, x, y);
-  }
-}
-
-void labelPopulation(Population p)
-{
-  for(int i = 0; i < populationNum; i++)
-  {
-    p.population[i].label = (int) forest.predict(p.population[i]);
-  }
 }
 
 // Compare Mode
@@ -484,4 +400,94 @@ void compareTwo()
   String string2 = sample2.toString();
 
   if(!string1.equals(string2))  println("SOMETHING IS WRONG IN CSV CONVERSION");
+}
+
+// CSV Parsing
+//----------------------------------------------------------------
+
+void loadAndParseCSVAsTrainingSamples()
+{
+  String[] csvData = loadStrings(csvFile);
+    
+  for(int i = 0; i < csvData.length; i++)
+  {
+    Sample sample = new Sample(csvData[i]);
+    forest.addTrainingSample(sample);
+  }
+
+  forest.train();
+
+  //population = new Population(mutationRate, populationNum);
+  //populationToArtWork(population);
+  //labelPopulation(population);
+}
+
+void loadAndParseCSVAsTrainingAndPredictionSamples()
+{
+  //--> Split up data
+
+  String[] csvData = loadStrings(csvFile);
+  ArrayList<Sample> trainingSamples = new ArrayList<Sample>();
+  ArrayList<Sample> predictionSamples = new ArrayList<Sample>();
+
+  int splitInteger = round(predictionSplit * csvData.length);
+
+  for(int i = 0; i < csvData.length; i++)
+  {
+    Sample sample = new Sample(csvData[i]);
+
+    if(i < splitInteger)      trainingSamples.add(sample);
+    else                      predictionSamples.add(sample);
+  }
+  
+  //--> Train
+
+  for(int i = 0; i < trainingSamples.size(); i++)
+  {
+    forest.addTrainingSample(trainingSamples.get(i));
+  }
+  forest.train();
+
+  //--> Predict
+
+  int correctAnswers = 0;
+  int wrongAnswers = 0;
+  int combinedDiff = 0;
+  int[] diffByrating = new int[10];
+  int[] missesByrating = new int[10];
+
+  for(int i = 0; i < predictionSamples.size(); i++)
+  {
+    Sample sample = predictionSamples.get(i);
+    double prediction = forest.predict(sample);
+    println("Prediction: " + prediction + ", Label: " + sample.label);
+
+    int diff = abs(((int) prediction) - sample.label);
+
+    if(diff > 0)
+    {
+      wrongAnswers++;
+      combinedDiff += diff;
+      missesByrating[sample.label]++;
+      diffByrating[sample.label] += diff;
+    }
+    else
+    {
+      correctAnswers++;
+    }
+  }
+
+  println("**************************************************");
+  println("Overall Results of Prediction");
+
+  for (int i = 0; i < diffByrating.length; i++)
+  {
+    if(missesByrating[i] > 0)
+      println("The rating " + i + " had " + missesByrating[i] + " wrong predictions with an average of " + (diffByrating[i] / missesByrating[i]));
+  }
+
+  println("Overall prediction difference average: " + (combinedDiff/predictionSamples.size()));
+  println("Overall correct answers: " + correctAnswers + " (" + (double) correctAnswers*100/predictionSamples.size() + " percent)");
+  println("Overall Wrong answers: " + wrongAnswers + " (" + (double) wrongAnswers*100/predictionSamples.size() + " percent)");
+  println("**************************************************");
 }

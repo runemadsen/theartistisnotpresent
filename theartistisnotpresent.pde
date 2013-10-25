@@ -91,16 +91,26 @@ int populationNum = 30;
 int showPopulationNum = 10;
 
 Population population;
-ArtWork[] populationArt = new ArtWork[showPopulationNum];
 
 // Artist Mode
 //----------------------------------------------------------------
 
-ArtWork showArt;
-ArtWork outArt;
 long lastMillis = 0;
 int animationTime = 700;
 int timeOnScreen = 4000;
+
+boolean saveImages = false;
+String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
+
+int generationNum;
+ArtWork[] art = new ArtWork[showPopulationNum];
+int curArtWork;
+
+// Grid Mode
+//----------------------------------------------------------------
+
+ArtWork[] gridArt = new ArtWork[populationNum];
+boolean displayGrid = false;
 
 // Rating Mode
 //----------------------------------------------------------------
@@ -113,12 +123,6 @@ ArrayList<String> ratings = new ArrayList<String>();
 //----------------------------------------------------------------
 
 float predictionSplit = 0.7;
-
-// Grid Mode
-//----------------------------------------------------------------
-
-boolean saveImages = false;
-String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
 
 // Compare Mode
 //----------------------------------------------------------------
@@ -147,6 +151,8 @@ void setup()
   Ani.init(this);
 
   ledMask = loadImage("mask.png");
+  curtain = new Mask();
+  curtain.addWindow((int) ledPosition.x, (int) ledPosition.y, (int) ledSize.x, (int) ledSize.y);
 }
 
 void draw()
@@ -192,33 +198,37 @@ void exitDefault()
 
 void enterArtist()
 {
-  //lastMillis = millis();
-  //curtain = new Mask();
-  //curtain.addWindow((int) ledPosition.x, (int) ledPosition.y, (int) ledSize.x, (int) ledSize.y);
-  //
+  generationNum = 0;
+  curArtWork = 0;
+
+  // generate a new population and all that
+  // new Population(mutationRate, populationNum);
+
   //showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), 0);
+
+  lastMillis = millis();
 }
 
 void drawArtist()
 {
-  pushMatrix();
-  translate((int) ledPosition.x, (int) ledPosition.y);
-    showArt.display();
-    if(outArt != null)  outArt.display();
-    image(ledMask, 0, 0);
-  popMatrix();
-  curtain.display();
-
-  if(millis() - lastMillis > timeOnScreen)
-  {
-    lastMillis = millis();
-    
-    outArt = showArt;
-    outArt.moveTo(-int(smallWidthDiff/2), int(screenSize.y * downScale), 1);
-    
-    showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), -int(smallSize.y));
-    showArt.moveTo(-int(smallWidthDiff/2), 0, 1);
-  }
+  //pushMatrix();
+  //translate((int) ledPosition.x, (int) ledPosition.y);
+  //  showArt.display();
+  //  if(outArt != null)  outArt.display();
+  //  image(ledMask, 0, 0);
+  //popMatrix();
+  //curtain.display();
+//
+  //if(millis() - lastMillis > timeOnScreen)
+  //{
+  //  lastMillis = millis();
+  //  
+  //  outArt = showArt;
+  //  outArt.moveTo(-int(smallWidthDiff/2), int(screenSize.y * downScale), 1);
+  //  
+  //  showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), -int(smallSize.y));
+  //  showArt.moveTo(-int(smallWidthDiff/2), 0, 1);
+  //}
 }
 
 void exitArtist()
@@ -231,18 +241,24 @@ void exitArtist()
 
 void enterGrid()
 {
+  population = new Population(mutationRate, populationNum);
+  populationToArtWork(population);
+  labelPopulation(population);
+  displayGrid = true;
 }
 
 void drawGrid()
 {
-  for(int i = 0; i < populationNum; i++)
+  if(!displayGrid) return;
+
+  for(int i = 0; i < gridArt.length; i++)
   {
-    populationArt[i].display();
+    gridArt[i].display();
     textSize(32);
     fill(0);
-    text(population.population[i].label, populationArt[i].loc.x + 5, populationArt[i].loc.y + 37);
+    text(population.population[i].label, gridArt[i].loc.x + 5, gridArt[i].loc.y + 37);
     fill(1);
-    text(population.population[i].label, populationArt[i].loc.x + 7, populationArt[i].loc.y + 37);
+    text(population.population[i].label, gridArt[i].loc.x + 7, gridArt[i].loc.y + 37);
   }
 }
 
@@ -271,7 +287,7 @@ void populationToArtWork(Population p)
     int x = int((i % 6) * w);
     int y = int(((i / 6) % 6) * h);
 
-    populationArt[i] = new ArtWork(p.population[i], w, h, x, y);
+    gridArt[i] = new ArtWork(p.population[i], w, h, x, y);
   }
 }
 

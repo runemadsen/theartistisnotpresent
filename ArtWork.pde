@@ -16,12 +16,11 @@ class ArtWork
   {
     w = _w;
     h = _h;
-    
+
     sample = _sample;
     canvas = createGraphics(w, h);
     art = getShape();
 
-    // draw art to canvas
     canvas.beginDraw();
     canvas.colorMode(HSB, 1, 1, 1, 1);
     //canvas.smooth();  

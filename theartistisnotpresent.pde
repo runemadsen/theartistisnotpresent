@@ -333,10 +333,10 @@ void enterRating()
 
 void drawRating()
 {
-  //pushMatrix();
-  //translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y/2));
-  //rateArtwork.display();
-  //popMatrix();
+  pushMatrix();
+  translate((width/2) - (rateArtwork.canvas.width/2), (height/2) - (rateArtwork.canvas.height/2));
+  image(rateArtwork.canvas, 0, 0);
+  popMatrix();
 }
 
 void exitRating()
@@ -371,8 +371,8 @@ void keyPressedRatingMode()
 
 void newRandom()
 {
-  //rateSample = new Sample();
-  //rateArtwork = new ArtWork(rateSample, (int) screenSize.x, (int) screenSize.y, 0, 0);
+  rateSample = new Sample();
+  rateArtwork = new ArtWork(rateSample, (int) screenSize.x, (int) screenSize.y);
 }
 
 // Prediction Mode
@@ -457,10 +457,6 @@ void loadAndParseCSVAsTrainingSamples()
   }
 
   forest.train();
-
-  //population = new Population(mutationRate, populationNum);
-  //populationToGridArt(population);
-  //labelPopulation(population);
 }
 
 void loadAndParseCSVAsTrainingAndPredictionSamples()

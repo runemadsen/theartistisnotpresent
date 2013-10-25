@@ -386,6 +386,7 @@ void enterCompare()
 
 void drawCompare()
 {
+  translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y + 5));
   compare1.display();
   compare2.display();
 }
@@ -410,7 +411,7 @@ void compareTwo()
   compare1 = new ArtWork(sample1, (int) screenSize.x, (int) screenSize.y, 0, 0);
 
   Sample sample2 = new Sample(sample1.toString());
-  compare2 = new ArtWork(sample2, (int) screenSize.x, (int) screenSize.y, (int) screenSize.x, 0);
+  compare2 = new ArtWork(sample2, (int) screenSize.x, (int) screenSize.y, 0, (int) screenSize.y + 10);
 
   String string1 = sample1.toString();
   String string2 = sample2.toString();

@@ -70,16 +70,17 @@ State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
 State predictionState = new State(this, "enterPrediction", "drawPrediction", "exitPrediction");
 State compareState = new State(this, "enterCompare", "drawCompare", "exitCompare");
 
+PVector screen1Loc = new PVector(280, 10);
+PVector screen2Loc = new PVector(280, 310);
 PVector screenSize = new PVector(480, 288);
 
-PVector ledPosition = new PVector(36, 258);
-PVector ledSize = new PVector(215, 168);
-PImage  ledMask;
+PVector buildingLoc = new PVector(36, 258);
+PVector buildingSize = new PVector(215, 168);
+PImage  buildingMask;
 
-float downScale =  ledSize.y / screenSize.y;
-
+float downScale =  buildingSize.y / screenSize.y;
 PVector smallSize = new PVector(screenSize.x * downScale, screenSize.y * downScale);
-float smallWidthDiff =  smallSize.x - ledSize.x;
+float smallWidthDiff =  smallSize.x - buildingSize.x;
 
 // Shared Modes
 //----------------------------------------------------------------
@@ -151,9 +152,11 @@ void setup()
   RG.init(this);
   Ani.init(this);
 
-  ledMask = loadImage("mask.png");
+  buildingMask = loadImage("mask.png");
   curtain = new Mask();
-  curtain.addWindow((int) ledPosition.x, (int) ledPosition.y, (int) ledSize.x, (int) ledSize.y);
+  curtain.addWindow((int) buildingLoc.x, (int) buildingLoc.y, (int) buildingSize.x, (int) buildingSize.y);
+  curtain.addWindow((int) screen1Loc.x, (int) screen1Loc.y, (int) screenSize.x, (int) screenSize.y);
+  curtain.addWindow((int) screen2Loc.x, (int) screen2Loc.y, (int) screenSize.x, (int) screenSize.y);
 }
 
 void draw()
@@ -212,15 +215,16 @@ void drawArtist()
 {
   if(!displayArtist) return;
 
-  image(artistCanvas, 0, 0);
+  //image(artistCanvas, 0, 0);
 
-
+  //image(buildingMask, 0, 0);
+  curtain.display();
 
   //pushMatrix();
-  //translate((int) ledPosition.x, (int) ledPosition.y);
+  //translate((int) buildingLoc.x, (int) buildingLoc.y);
   //  showArt.display();
   //  if(outArt != null)  outArt.display();
-  //  image(ledMask, 0, 0);
+  //  image(buildingMask, 0, 0);
   //popMatrix();
   //curtain.display();
 //

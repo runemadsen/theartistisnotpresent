@@ -64,10 +64,10 @@ RandomForest forest;
 
 FSM fsm;
 State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault");
+State artistState = new State(this, "enterArtist", "drawArtist", "exitArtist");
 State ratingState = new State(this, "enterRating", "drawRating", "exitRating");
 State predictionState = new State(this, "enterPrediction", "drawPrediction", "exitPrediction");
 State gridState = new State(this, "enterGrid", "drawGrid", "exitGrid");
-State ledState = new State(this, "enterLed", "drawLed", "exitLed");
 State compareState = new State(this, "enterCompare", "drawCompare", "exitCompare");
 
 PVector screenSize = new PVector(480, 288);
@@ -98,7 +98,7 @@ float predictionSplit = 0.7;
 
 boolean csvLoaded = false;
 float mutationRate = 0.05;
-int populationNum = 10;
+int populationNum = 30;
 Population population;
 ArtWork[] populationArt = new ArtWork[populationNum];
 boolean saveImages = false;
@@ -147,7 +147,7 @@ void keyPressed()
   if(key == 'r')  fsm.transitionTo(ratingState);
   if(key == 'p')  fsm.transitionTo(predictionState);
   if(key == 'g')  fsm.transitionTo(gridState);
-  if(key == 'l')  fsm.transitionTo(ledState);
+  if(key == 'a')  fsm.transitionTo(artistState);
   if(key == 'c')  fsm.transitionTo(compareState);
 
   if(fsm.currentState == ratingState)            keyPressedRatingMode();
@@ -170,6 +170,45 @@ void drawDefault()
 }
 
 void exitDefault()
+{
+
+}
+
+// Artist Mode
+//----------------------------------------------------------------
+
+void enterArtist()
+{
+  lastMillis = millis();
+  curtain = new Mask();
+  curtain.addWindow((int) ledPosition.x, (int) ledPosition.y, (int) ledSize.x, (int) ledSize.y);
+  ledMask = loadImage("mask.png");
+  showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), 0);
+}
+
+void drawArtist()
+{
+  pushMatrix();
+  translate((int) ledPosition.x, (int) ledPosition.y);
+    showArt.display();
+    if(outArt != null)  outArt.display();
+    image(ledMask, 0, 0);
+  popMatrix();
+  curtain.display();
+
+  if(millis() - lastMillis > timeOnScreen)
+  {
+    lastMillis = millis();
+    
+    outArt = showArt;
+    outArt.moveTo(-int(smallWidthDiff/2), int(screenSize.y * downScale), 1);
+    
+    showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), -int(smallSize.y));
+    showArt.moveTo(-int(smallWidthDiff/2), 0, 1);
+  }
+}
+
+void exitArtist()
 {
 
 }
@@ -322,7 +361,7 @@ void parsePredictionSCV(File selection)
   }
 }
 
-// Artist Mode
+// Grid Mode
 //----------------------------------------------------------------
 
 void enterGrid()
@@ -388,10 +427,10 @@ void populationToArtWork(Population p)
 {
   for(int i = 0; i < populationNum; i++)
   {
-    int w = (int) screenSize.x;
-    int h = (int) screenSize.y;
-    int x = int((i % 3) * (screenSize.x + 5));
-    int y = int(((i / 3) % 3) * (screenSize.y + 5));
+    int w = (int) screenSize.x / 2;
+    int h = (int) screenSize.y / 2;
+    int x = int((i % 6) * w);
+    int y = int(((i / 6) % 6) * h);
 
     populationArt[i] = new ArtWork(p.population[i], w, h, x, y);
   }
@@ -403,45 +442,6 @@ void labelPopulation(Population p)
   {
     p.population[i].label = (int) forest.predict(p.population[i]);
   }
-}
-
-// Test Mode
-//----------------------------------------------------------------
-
-void enterLed()
-{
-  lastMillis = millis();
-  curtain = new Mask();
-  curtain.addWindow((int) ledPosition.x, (int) ledPosition.y, (int) ledSize.x, (int) ledSize.y);
-  ledMask = loadImage("mask.png");
-  showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), 0);
-}
-
-void drawLed()
-{
-  pushMatrix();
-  translate((int) ledPosition.x, (int) ledPosition.y);
-    showArt.display();
-    if(outArt != null)  outArt.display();
-    image(ledMask, 0, 0);
-  popMatrix();
-  curtain.display();
-
-  if(millis() - lastMillis > timeOnScreen)
-  {
-    lastMillis = millis();
-    
-    outArt = showArt;
-    outArt.moveTo(-int(smallWidthDiff/2), int(screenSize.y * downScale), 1);
-    
-    showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), -int(smallSize.y));
-    showArt.moveTo(-int(smallWidthDiff/2), 0, 1);
-  }
-}
-
-void exitLed()
-{
-
 }
 
 // Compare Mode

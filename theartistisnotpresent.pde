@@ -410,9 +410,9 @@ void enterCompare()
 
 void drawCompare()
 {
-  //translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y + 5));
-  //compare1.display();
-  //compare2.display();
+  translate((width/2) - (screenSize.x/2), (height/2) - (screenSize.y + 5));
+  image(compare1.canvas, 0, 0);
+  image(compare2.canvas, 0, compare1.canvas.height + 10);
 }
 
 void exitCompare()
@@ -430,17 +430,17 @@ void keyPressedCompareMode()
 
 void compareTwo()
 {
-  //Sample sample1 = new Sample();
-  //sample1.label = 9;
-  //compare1 = new ArtWork(sample1, (int) screenSize.x, (int) screenSize.y, 0, 0);
-//
-  //Sample sample2 = new Sample(sample1.toString());
-  //compare2 = new ArtWork(sample2, (int) screenSize.x, (int) screenSize.y, 0, (int) screenSize.y + 10);
-//
-  //String string1 = sample1.toString();
-  //String string2 = sample2.toString();
-//
-  //if(!string1.equals(string2))  println("SOMETHING IS WRONG IN CSV CONVERSION");
+  Sample sample1 = new Sample();
+  sample1.label = 9;
+  compare1 = new ArtWork(sample1, (int) screenSize.x, (int) screenSize.y);
+
+  Sample sample2 = new Sample(sample1.toString());
+  compare2 = new ArtWork(sample2, (int) screenSize.x, (int) screenSize.y);
+
+  String string1 = sample1.toString();
+  String string2 = sample2.toString();
+
+  if(!string1.equals(string2))  println("SOMETHING IS WRONG IN CSV CONVERSION");
 }
 
 // CSV Parsing

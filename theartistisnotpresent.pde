@@ -101,6 +101,7 @@ int showPopulationNum = 10;
 long lastMillis = 0;
 int animationTime = 700;
 int timeOnScreen = 4000;
+int fontSize = 80;
 
 int generationNum;
 PGraphics artistCanvas;
@@ -203,7 +204,7 @@ void exitDefault()
 
 void enterArtist()
 {
-  generationNum = 0;
+  generationNum = 1;
   curArtWork = 0;
   population = new Population(mutationRate, populationNum);
   populationToArtistCanvas(population);
@@ -215,10 +216,10 @@ void drawArtist()
 {
   if(!displayArtist) return;
 
-  //image(artistCanvas, 0, 0);
+  image(artistCanvas, 0, 0);
 
   //image(buildingMask, 0, 0);
-  curtain.display();
+  //curtain.display();
 
   //pushMatrix();
   //translate((int) buildingLoc.x, (int) buildingLoc.y);
@@ -247,18 +248,27 @@ void exitArtist()
 
 void populationToArtistCanvas(Population p)
 {
-  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * showPopulationNum);
-
-  // GET THE 10 HIGHEST RATED SAMPLES!!!!!!!!!!!
+  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 1));
 
   artistCanvas.beginDraw();
   artistCanvas.colorMode(HSB, 1, 1, 1, 1);
   //artistCanvas.smooth();
 
+  // write generation num to first spot
+  artistCanvas.fill(0);
+  artistCanvas.noStroke();
+  artistCanvas.rect(0, 0, screenSize.x, screenSize.y);
+  artistCanvas.textSize(fontSize);
+  artistCanvas.fill(1);
+  artistCanvas.noStroke();
+  float tWidth = artistCanvas.textWidth("" + generationNum);
+  artistCanvas.text("" + generationNum, (artistCanvas.width/2)-(tWidth/2), (screenSize.y/2)+(fontSize/3));
+
+  // then draw artists
   for(int i = 0; i < showPopulationNum; i++)
   {
     gridArt[i] = new ArtWork(p.population[i], (int) screenSize.x, (int) screenSize.y);
-    artistCanvas.image(gridArt[i].canvas, 0, i * screenSize.y);
+    artistCanvas.image(gridArt[i].canvas, 0, (i + 1) * screenSize.y);
   }
 
   artistCanvas.endDraw();

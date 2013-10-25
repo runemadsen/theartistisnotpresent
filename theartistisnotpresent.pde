@@ -79,8 +79,10 @@ PVector buildingSize = new PVector(215, 168);
 PImage  buildingMask;
 
 float downScale =  buildingSize.y / screenSize.y;
-PVector smallSize = new PVector(screenSize.x * downScale, screenSize.y * downScale);
-float smallWidthDiff =  smallSize.x - buildingSize.x;
+PVector buildingCanvasSize = new PVector(screenSize.x * downScale, screenSize.y * downScale);
+PVector buildingCanvasLoc = new PVector(buildingLoc.x - ((buildingCanvasSize.x - buildingSize.x) / 2), buildingLoc.y);
+
+float smallWidthDiff =  buildingCanvasSize.x - buildingSize.x;
 
 // Shared Modes
 //----------------------------------------------------------------
@@ -216,7 +218,9 @@ void drawArtist()
 {
   if(!displayArtist) return;
 
-  image(artistCanvas, 0, 0);
+  image(artistCanvas, screen1Loc.x, screen1Loc.y);
+  image(artistCanvas, screen2Loc.x, screen2Loc.y);
+  image(artistCanvas, buildingCanvasLoc.x, buildingCanvasLoc.y, buildingCanvasSize.x, buildingCanvasSize.y * (showPopulationNum+1));
 
   //image(buildingMask, 0, 0);
   //curtain.display();
@@ -236,7 +240,7 @@ void drawArtist()
   //  outArt = showArt;
   //  outArt.moveTo(-int(smallWidthDiff/2), int(screenSize.y * downScale), 1);
   //  
-  //  showArt = new ArtWork(new Sample(), (int) smallSize.x, (int) smallSize.y, -int(smallWidthDiff/2), -int(smallSize.y));
+  //  showArt = new ArtWork(new Sample(), (int) buildingCanvasSize.x, (int) buildingCanvasSize.y, -int(smallWidthDiff/2), -int(buildingCanvasSize.y));
   //  showArt.moveTo(-int(smallWidthDiff/2), 0, 1);
   //}
 }

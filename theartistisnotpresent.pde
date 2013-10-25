@@ -98,7 +98,7 @@ Population population;
 
 boolean saveImages = false;
 String saveImagesPath = "testimages";//"/Users/rmadsen/Dropbox/Public";
-string saveImageFolder;
+String saveImageFolder;
 
 int showPopulationNum = 10;
 long lastMillis = 0;
@@ -108,6 +108,7 @@ int fontSize = 80;
 
 int generationNum;
 PGraphics artistCanvas;
+PGraphics screenCanvas;
 ArtWork[] art = new ArtWork[showPopulationNum];
 int curArtWork;
 boolean displayArtist = false;
@@ -167,7 +168,7 @@ void draw()
 {
   background(1);
   fsm.update();
-  //println("Framerate: " + frameRate);
+  println("Framerate: " + frameRate);
 }
 
 void keyPressed()
@@ -219,9 +220,14 @@ void drawArtist()
 {
   if(!displayArtist) return;
 
-  image(artistCanvas, screen1Loc.x, screen1Loc.y);
-  image(artistCanvas, screen2Loc.x, screen2Loc.y);
-  image(artistCanvas, buildingCanvasLoc.x, buildingCanvasLoc.y, buildingCanvasSize.x, buildingCanvasSize.y * (showPopulationNum+1));
+  // draw into screen graphics
+  screenCanvas.beginDraw();
+  screenCanvas.image(artistCanvas, 0, 0); // this can be updated to tween the location
+  screenCanvas.endDraw();
+
+  image(screenCanvas, screen1Loc.x, screen1Loc.y);
+  image(screenCanvas, screen2Loc.x, screen2Loc.y);
+  image(screenCanvas, buildingCanvasLoc.x, buildingCanvasLoc.y, buildingCanvasSize.x, buildingCanvasSize.y);
 
   //image(buildingMask, 0, 0);
   //curtain.display();
@@ -253,8 +259,12 @@ void exitArtist()
 
 void populationToArtistCanvas(Population p)
 {
-  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 1));
+  screenCanvas = createGraphics((int) screenSize.x, (int) screenSize.y);
+  screenCanvas.beginDraw();
+  screenCanvas.colorMode(HSB, 1, 1, 1, 1);
+  screenCanvas.endDraw();
 
+  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 1));
   artistCanvas.beginDraw();
   artistCanvas.colorMode(HSB, 1, 1, 1, 1);
   //artistCanvas.smooth();

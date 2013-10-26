@@ -97,7 +97,7 @@ Population population;
 
 boolean saveImages = false;
 String saveImagesPath = "testimages";//"/Users/rmadsen/Dropbox/Public";
-String saveImageFolder;
+String runFolder;
 
 int showPopulationNum = 10;
 float animationTimeGen = 1;
@@ -162,6 +162,8 @@ void setup()
   fsm = new FSM(defaultState);
   RG.init(this);
   Ani.init(this);
+
+  runFolder = year() + "_" + month()+ "_" + day() + "_" + hour() + "_" + minute() + "_" + second();
 
   buildingMask = loadImage("mask.png");
 }
@@ -266,6 +268,7 @@ void enterArtist()
 
   population = new Population(mutationRate, populationNum);
   populationToArtistCanvas(population);
+  saveGenerationToSVGs(art);
   
   displayArtist = true;
   animation.start();
@@ -298,6 +301,7 @@ void generationAnimationFinished()
   population.reproduction();
   generationNum++;
   populationToArtistCanvas(population);
+  saveGenerationToSVGs(art);
   animation.start();
 }
 
@@ -324,8 +328,8 @@ void populationToArtistCanvas(Population p)
   // then draw artists
   for(int i = 0; i < showPopulationNum; i++)
   {
-    gridArt[i] = new ArtWork(p.population[i], (int) screenSize.x, (int) screenSize.y);
-    artistCanvas.image(gridArt[i].canvas, 0, (i + 1) * screenSize.y);
+    art[i] = new ArtWork(p.population[i], (int) screenSize.x, (int) screenSize.y);
+    artistCanvas.image(art[i].canvas, 0, (i + 1) * screenSize.y);
   }
 
   artistCanvas.endDraw();
@@ -514,6 +518,15 @@ void runPredictionOnPopulationSamples(Population p)
   for(int i = 0; i < p.population.length; i++)
   {
     p.population[i].label = (int) forest.predict(p.population[i]);
+  }
+}
+
+void saveGenerationToSVGs(ArtWork[] artToSave)
+{
+  for(int i = 0; i < artToSave.length; i++)
+  {
+    String filename = saveImagesPath + "/" + runFolder + "/" + generationNum + "-" + i + ".svg";
+    artToSave[i].saveSVG(filename);
   }
 }
 

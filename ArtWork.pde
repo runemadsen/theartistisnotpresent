@@ -86,7 +86,7 @@ class ArtWork
   // Saving
   //----------------------------------------------------------------
 
-  void saveSVG(String filename, RShape art, int w, int h)
+  void saveSVG(String filename)
   {
     RG.saveShape(filename, art);
 

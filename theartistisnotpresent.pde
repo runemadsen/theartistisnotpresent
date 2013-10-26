@@ -59,7 +59,6 @@ int BRISAT = 2;
 // Setup
 //----------------------------------------------------------------
 
-Mask curtain;
 RandomForest forest;
 
 FSM fsm;
@@ -101,9 +100,11 @@ String saveImagesPath = "testimages";//"/Users/rmadsen/Dropbox/Public";
 String saveImageFolder;
 
 int showPopulationNum = 10;
-long lastMillis = 0;
-int animationTime = 700;
-int timeOnScreen = 4000;
+float animationTimeGen = 1;
+float animationTimeArt = 1;
+float animationTimeFall = 4;
+float screenTimeGen = 4;
+float screenTimeArt = 2;
 int fontSize = 80;
 
 int generationNum;
@@ -112,6 +113,9 @@ PGraphics screenCanvas;
 ArtWork[] art = new ArtWork[showPopulationNum];
 int curArtWork;
 boolean displayArtist = false;
+
+PVector animationLoc = new PVector(0, screenSize.y);
+AniSequence animation;
 
 // Grid Mode
 //----------------------------------------------------------------
@@ -158,17 +162,27 @@ void setup()
   Ani.init(this);
 
   buildingMask = loadImage("mask.png");
-  curtain = new Mask();
-  curtain.addWindow((int) buildingLoc.x, (int) buildingLoc.y, (int) buildingSize.x, (int) buildingSize.y);
-  curtain.addWindow((int) screen1Loc.x, (int) screen1Loc.y, (int) screenSize.x, (int) screenSize.y);
-  curtain.addWindow((int) screen2Loc.x, (int) screen2Loc.y, (int) screenSize.x, (int) screenSize.y);
+
+  animation = new AniSequence(this);
+  animation.beginSequence();
+  // num
+  animation.add(Ani.to(animationLoc, animationTimeGen, 0, "y", 0, Ani.CUBIC_IN_OUT));
+  // art
+  for(int i = 0; i < showPopulationNum; i++)
+  {
+    float delayTime = i == 0 ? screenTimeGen : screenTimeArt;
+    animation.add(Ani.to(animationLoc, animationTimeArt, delayTime, "y", -(screenSize.y * (i+1)), Ani.CUBIC_IN_OUT));
+  }
+  // fall
+  animation.add(Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN));
+  animation.endSequence();
 }
 
 void draw()
 {
   background(1);
   fsm.update();
-  println("Framerate: " + frameRate);
+  //println("Framerate: " + frameRate);
 }
 
 void keyPressed()
@@ -183,6 +197,7 @@ void keyPressed()
   else if(fsm.currentState == predictionState)   keyPressedPredictionMode();
   else if(fsm.currentState == gridState)         keyPressedGridMode();
   else if(fsm.currentState == compareState)      keyPressedCompareMode();
+  else if(fsm.currentState == artistState)       keyPressedArtistMode();
 }
 
 // Default State
@@ -212,7 +227,6 @@ void enterArtist()
   curArtWork = 0;
   population = new Population(mutationRate, populationNum);
   populationToArtistCanvas(population);
-  lastMillis = millis();
   displayArtist = true;
 }
 
@@ -222,7 +236,8 @@ void drawArtist()
 
   // draw into screen graphics
   screenCanvas.beginDraw();
-  screenCanvas.image(artistCanvas, 0, 0); // this can be updated to tween the location
+  screenCanvas.background(0);
+  screenCanvas.image(artistCanvas, animationLoc.x, animationLoc.y);
   screenCanvas.endDraw();
 
   image(screenCanvas, screen1Loc.x, screen1Loc.y);
@@ -230,7 +245,7 @@ void drawArtist()
   image(screenCanvas, buildingCanvasLoc.x, buildingCanvasLoc.y, buildingCanvasSize.x, buildingCanvasSize.y);
 
   //image(buildingMask, 0, 0);
-  //curtain.display();
+  
 
   //pushMatrix();
   //translate((int) buildingLoc.x, (int) buildingLoc.y);
@@ -238,7 +253,7 @@ void drawArtist()
   //  if(outArt != null)  outArt.display();
   //  image(buildingMask, 0, 0);
   //popMatrix();
-  //curtain.display();
+
 //
   //if(millis() - lastMillis > timeOnScreen)
   //{
@@ -255,6 +270,14 @@ void drawArtist()
 void exitArtist()
 {
 
+}
+
+void keyPressedArtistMode()
+{
+  if(key == ' ')
+  {
+    animation.start();  
+  }
 }
 
 void populationToArtistCanvas(Population p)

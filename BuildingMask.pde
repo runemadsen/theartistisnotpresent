@@ -66,39 +66,39 @@ class BuildingMask
 
     //--> Move the pixels baby!
 
-    //maskeCanvas.loadPixels();
-//
-    //for(int y = 0; y < maske.height; y++)
-    //{
-    //  // left mask
-//
-    //  int numPixelsToDisplace = blackPixelStopLeft[y] - numBlackPixelsLeft[y];
-//
-    //  for(int x = 0; x < numPixelsToDisplace; x++)
-    //  {
-    //    int oldX = blackPixelStopLeft[y] - (numPixelsToDisplace - x);
-    //    int oldIndex = oldX + y * maskeCanvas.width;
-    //    int newIndex = x + y * maskeCanvas.width;
-    //    maskeCanvas.pixels[newIndex] = maskeCanvas.pixels[oldIndex];
-    //  }
-//
-    //  // right mask
-//
-    //  numPixelsToDisplace = maskeCanvas.width - blackPixelStopRight[y];
-//
-    //  for(int x = maskeCanvas.width - 1; x > maskeCanvas.width - 1 - numPixelsToDisplace; x--)
-    //  {
-    //    int oldX = x - numBlackPixelsRight[y];
-    //    int oldIndex = oldX + y * maskeCanvas.width;
-    //    int newIndex = x + y * maskeCanvas.width;
-    //    maskeCanvas.pixels[newIndex] = maskeCanvas.pixels[oldIndex];
-    //  }
-    //}
-//
-    //maskeCanvas.updatePixels();
-//
-    //maskeCanvas.beginDraw();
-    //maskeCanvas.image(maske, 0, 0);
-    //maskeCanvas.endDraw();    
+    maskeCanvas.loadPixels();
+
+    for(int y = 0; y < maske.height; y++)
+    {
+      // left mask
+    
+      int numPixelsToDisplace = blackPixelStopLeft[y] - numBlackPixelsLeft[y];
+    
+      for(int x = 0; x < numPixelsToDisplace; x++)
+      {
+        int oldX = blackPixelStopLeft[y] - (numPixelsToDisplace - x);
+        int oldIndex = oldX + y * maskeCanvas.width;
+        int newIndex = x + y * maskeCanvas.width;
+        maskeCanvas.pixels[newIndex] = maskeCanvas.pixels[oldIndex];
+      }
+    
+      // right mask
+    
+      numPixelsToDisplace = maskeCanvas.width - blackPixelStopRight[y];
+    
+      for(int x = maskeCanvas.width - 1; x > maskeCanvas.width - 1 - numPixelsToDisplace; x--)
+      {
+        int oldX = x - numBlackPixelsRight[y];
+        int oldIndex = oldX + y * maskeCanvas.width;
+        int newIndex = x + y * maskeCanvas.width;
+        maskeCanvas.pixels[newIndex] = maskeCanvas.pixels[oldIndex];
+      }
+    }
+    
+    maskeCanvas.updatePixels();
+    
+    maskeCanvas.beginDraw();
+    maskeCanvas.image(maske, 0, 0);
+    maskeCanvas.endDraw();    
   }
 }

@@ -289,11 +289,12 @@ void drawArtist()
   buildingMask.applyCanvas(screenCanvas);
   image(buildingMask.maskeCanvas, buildingLoc.x, buildingLoc.y);
 
-  // DOING THIS AGAIN FIXES IT!!!!!!
+  // THIS SHOULD REALLY NOT BE NECESSARY!!!!!
   screenCanvas.beginDraw();
   screenCanvas.background(0);
   screenCanvas.image(artistCanvas, animationLoc.x, animationLoc.y);
   screenCanvas.endDraw();
+  // THIS SHOULD REALLY NOT BE NECESSARY!!!!!
 
   image(screenCanvas, screen1Loc.x, screen1Loc.y);
   image(screenCanvas, screen2Loc.x, screen2Loc.y);

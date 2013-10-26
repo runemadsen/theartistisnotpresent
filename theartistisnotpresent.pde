@@ -76,14 +76,6 @@ PVector screen2Loc = new PVector(280, 310);
 PVector screenSize = new PVector(480, 288);
 
 PVector buildingLoc = new PVector(36, 258);
-PVector buildingSize = new PVector(215, 168);
-PImage  buildingMask;
-
-float downScale =  buildingSize.y / screenSize.y;
-PVector buildingCanvasSize = new PVector(screenSize.x * downScale, screenSize.y * downScale);
-PVector buildingCanvasLoc = new PVector(buildingLoc.x - ((buildingCanvasSize.x - buildingSize.x) / 2), buildingLoc.y);
-
-float smallWidthDiff =  buildingCanvasSize.x - buildingSize.x;
 
 // Shared Modes
 //----------------------------------------------------------------
@@ -96,6 +88,8 @@ Population population;
 
 // Artist Mode
 //----------------------------------------------------------------
+
+BuildingMask buildingMask;
 
 boolean saveImages = false;
 String saveImagesPath = "testimages";//"/Users/rmadsen/Dropbox/Public";
@@ -150,6 +144,7 @@ ArtWork compare2;
 void setup()
 {
   size(1024, 768);
+  frameRate(24);
   //size(1458, 880);
   colorMode(HSB, 1, 1, 1, 1);
   background(0);
@@ -169,8 +164,6 @@ void setup()
   Ani.init(this);
 
   runFolder = year() + "_" + month()+ "_" + day() + "_" + hour() + "_" + minute() + "_" + second();
-
-  buildingMask = loadImage("mask.png");
 }
 
 void draw()
@@ -230,6 +223,8 @@ void enterArtist()
 {
   generationNum = 1;
   curArtWork = 0;
+
+  buildingMask = new BuildingMask("mask.png");
 
   //--> Create Big PGraphics to hold all artworks in generation
 
@@ -291,9 +286,11 @@ void drawArtist()
   screenCanvas.image(artistCanvas, animationLoc.x, animationLoc.y);
   screenCanvas.endDraw();
 
+  buildingMask.applyCanvas(screenCanvas);
+
+  image(buildingMask.maskeCanvas, buildingLoc.x, buildingLoc.y);
   image(screenCanvas, screen1Loc.x, screen1Loc.y);
   image(screenCanvas, screen2Loc.x, screen2Loc.y);
-  image(screenCanvas, buildingCanvasLoc.x, buildingCanvasLoc.y, buildingCanvasSize.x, buildingCanvasSize.y);
 }
 
 void exitArtist()
@@ -344,11 +341,6 @@ void populationToArtistCanvas(Population p)
   }
 
   artistCanvas.endDraw();
-
-  for(int i = 0; i < p.population.length; i++)
-  {
-    println("label: " + p.population[i].label);
-  }
 }
 
 // Grid Mode

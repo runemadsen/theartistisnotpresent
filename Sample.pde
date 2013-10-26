@@ -1,4 +1,4 @@
-class Sample {
+class Sample implements Comparable {
   
   double[] featureVector;
   int label;
@@ -154,6 +154,14 @@ class Sample {
   void setLabel(int label)
   {
     this.label = label;
+  }
+
+  int compareTo(Object o)
+  {
+    Sample other = (Sample) o;
+    if(other.label > label)     return -1;
+    if(other.label == label)    return 0;
+    else                        return 1;
   }
 
   // To String

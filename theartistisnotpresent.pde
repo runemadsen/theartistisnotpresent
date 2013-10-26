@@ -1,6 +1,7 @@
 // Imports
 //----------------------------------------------------------------
 
+import java.util.Arrays;
 import toxi.color.*;
 import toxi.util.datatypes.*;
 import de.looksgood.ani.*;
@@ -105,7 +106,7 @@ float animationTimeGen = 1;
 float animationTimeArt = 1;
 float animationTimeFall = 4;
 float screenTimeGen = 4;
-float screenTimeArt = 2;
+float screenTimeArt = 0.5;
 int fontSize = 80;
 int fake = 0;
 
@@ -271,6 +272,8 @@ void enterArtist()
   //--> Create population
 
   population = new Population(mutationRate, populationNum);
+  runPredictionOnPopulationSamples(population);
+  Arrays.sort(population.population);
   populationToArtistCanvas(population);
   saveGenerationToSVGs(art);
   
@@ -300,9 +303,10 @@ void exitArtist()
 
 void generationAnimationFinished()
 {
-  runPredictionOnPopulationSamples(population);
   population.selection();
   population.reproduction();
+  runPredictionOnPopulationSamples(population);
+  Arrays.sort(population.population);
   generationNum++;
   populationToArtistCanvas(population);
   saveGenerationToSVGs(art);
@@ -333,11 +337,18 @@ void populationToArtistCanvas(Population p)
   // then draw artists
   for(int i = 0; i < showPopulationNum; i++)
   {
-    art[i] = new ArtWork(p.population[i], (int) screenSize.x, (int) screenSize.y);
+    // get from bottom because they are sorted by label min > max
+    int index = (p.population.length-1) - i;
+    art[i] = new ArtWork(p.population[index], (int) screenSize.x, (int) screenSize.y);
     artistCanvas.image(art[i].canvas, 0, (i + 1) * screenSize.y);
   }
 
   artistCanvas.endDraw();
+
+  for(int i = 0; i < p.population.length; i++)
+  {
+    println("label: " + p.population[i].label);
+  }
 }
 
 // Grid Mode
@@ -522,7 +533,8 @@ void runPredictionOnPopulationSamples(Population p)
 {
   for(int i = 0; i < p.population.length; i++)
   {
-    p.population[i].label = (int) forest.predict(p.population[i]);
+    double prediction = forest.predict(p.population[i]);
+    p.population[i].label = (int) prediction;
   }
 }
 

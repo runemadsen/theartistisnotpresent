@@ -104,8 +104,9 @@ float animationTimeGen = 1;
 float animationTimeArt = 1;
 float animationTimeFall = 4;
 float screenTimeGen = 4;
-float screenTimeArt = 2;
+float screenTimeArt = 0.5;
 int fontSize = 80;
+int fake = 0;
 
 int generationNum;
 PGraphics artistCanvas;
@@ -146,7 +147,8 @@ ArtWork compare2;
 
 void setup()
 {
-  size(1458, 880);
+  size(1024, 768);
+  //size(1458, 880);
   colorMode(HSB, 1, 1, 1, 1);
   background(0);
   //smooth();
@@ -162,25 +164,11 @@ void setup()
   Ani.init(this);
 
   buildingMask = loadImage("mask.png");
-
-  animation = new AniSequence(this);
-  animation.beginSequence();
-  // num
-  animation.add(Ani.to(animationLoc, animationTimeGen, 0, "y", 0, Ani.CUBIC_IN_OUT));
-  // art
-  for(int i = 0; i < showPopulationNum; i++)
-  {
-    float delayTime = i == 0 ? screenTimeGen : screenTimeArt;
-    animation.add(Ani.to(animationLoc, animationTimeArt, delayTime, "y", -(screenSize.y * (i+1)), Ani.CUBIC_IN_OUT));
-  }
-  // fall
-  animation.add(Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN));
-  animation.endSequence();
 }
 
 void draw()
 {
-  background(1);
+  background(0);
   fsm.update();
   //println("Framerate: " + frameRate);
 }
@@ -190,14 +178,15 @@ void keyPressed()
   if(key == 'r')  fsm.transitionTo(ratingState);
   if(key == 'p')  fsm.transitionTo(predictionState);
   if(key == 'g')  fsm.transitionTo(gridState);
-  if(key == 'a')  fsm.transitionTo(artistState);
   if(key == 'c')  fsm.transitionTo(compareState);
 
-  if(fsm.currentState == ratingState)            keyPressedRatingMode();
+  if(fsm.currentState == defaultState)           keyPressedDefaultMode();
+  else if(fsm.currentState == artistState)       keyPressedArtistMode();
+  else if(fsm.currentState == ratingState)       keyPressedRatingMode();
   else if(fsm.currentState == predictionState)   keyPressedPredictionMode();
   else if(fsm.currentState == gridState)         keyPressedGridMode();
   else if(fsm.currentState == compareState)      keyPressedCompareMode();
-  else if(fsm.currentState == artistState)       keyPressedArtistMode();
+  
 }
 
 // Default State
@@ -210,12 +199,21 @@ void enterDefault()
 
 void drawDefault()
 {
-
+  textSize(18);
+  text("Press the space bar to start software", 5, height-8);
 }
 
 void exitDefault()
 {
 
+}
+
+void keyPressedDefaultMode()
+{
+  if(key == ' ')
+  {
+    fsm.transitionTo(artistState);
+  }
 }
 
 // Artist Mode
@@ -225,9 +223,52 @@ void enterArtist()
 {
   generationNum = 1;
   curArtWork = 0;
+
+  //--> Create Big PGraphics to hold all artworks in generation
+
+  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 1));
+  artistCanvas.beginDraw();
+  artistCanvas.colorMode(HSB, 1, 1, 1, 1);
+  artistCanvas.background(0);
+  artistCanvas.endDraw();
+  
+  //--> Create Screen Mask PGraphics
+
+  screenCanvas = createGraphics((int) screenSize.x, (int) screenSize.y);
+  screenCanvas.beginDraw();
+  screenCanvas.colorMode(HSB, 1, 1, 1, 1);
+  screenCanvas.background(0);
+  screenCanvas.endDraw();
+
+  //--> Create Animation Sequence
+
+  animation = new AniSequence(this);
+  animation.beginSequence();
+
+  // show generation num
+  animation.add(Ani.to(animationLoc, animationTimeGen, 0, "y", 0, Ani.CUBIC_IN_OUT));
+
+  // show each artwork
+  for(int i = 0; i < showPopulationNum; i++)
+  {
+    float delayTime = i == 0 ? screenTimeGen : screenTimeArt;
+    animation.add(Ani.to(animationLoc, animationTimeArt, delayTime, "y", -(screenSize.y * (i+1)), Ani.CUBIC_IN_OUT));
+  }
+
+  // fall all artworks
+  animation.add(Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN));
+
+  // fake animation to call onEnd method
+  animation.add(Ani.to(this, 0, "fake", 0, Ani.CUBIC_IN, "onEnd:generationAnimationFinished"));
+  animation.endSequence();
+
+  //--> Create population
+
   population = new Population(mutationRate, populationNum);
   populationToArtistCanvas(population);
+  
   displayArtist = true;
+  animation.start();
 }
 
 void drawArtist()
@@ -243,28 +284,6 @@ void drawArtist()
   image(screenCanvas, screen1Loc.x, screen1Loc.y);
   image(screenCanvas, screen2Loc.x, screen2Loc.y);
   image(screenCanvas, buildingCanvasLoc.x, buildingCanvasLoc.y, buildingCanvasSize.x, buildingCanvasSize.y);
-
-  //image(buildingMask, 0, 0);
-  
-
-  //pushMatrix();
-  //translate((int) buildingLoc.x, (int) buildingLoc.y);
-  //  showArt.display();
-  //  if(outArt != null)  outArt.display();
-  //  image(buildingMask, 0, 0);
-  //popMatrix();
-
-//
-  //if(millis() - lastMillis > timeOnScreen)
-  //{
-  //  lastMillis = millis();
-  //  
-  //  outArt = showArt;
-  //  outArt.moveTo(-int(smallWidthDiff/2), int(screenSize.y * downScale), 1);
-  //  
-  //  showArt = new ArtWork(new Sample(), (int) buildingCanvasSize.x, (int) buildingCanvasSize.y, -int(smallWidthDiff/2), -int(buildingCanvasSize.y));
-  //  showArt.moveTo(-int(smallWidthDiff/2), 0, 1);
-  //}
 }
 
 void exitArtist()
@@ -272,22 +291,22 @@ void exitArtist()
 
 }
 
+void generationAnimationFinished()
+{
+  runPredictionOnPopulationSamples(population);
+  population.selection();
+  population.reproduction();
+  generationNum++;
+  populationToArtistCanvas(population);
+  animation.start();
+}
+
 void keyPressedArtistMode()
 {
-  if(key == ' ')
-  {
-    animation.start();  
-  }
 }
 
 void populationToArtistCanvas(Population p)
 {
-  screenCanvas = createGraphics((int) screenSize.x, (int) screenSize.y);
-  screenCanvas.beginDraw();
-  screenCanvas.colorMode(HSB, 1, 1, 1, 1);
-  screenCanvas.endDraw();
-
-  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 1));
   artistCanvas.beginDraw();
   artistCanvas.colorMode(HSB, 1, 1, 1, 1);
   //artistCanvas.smooth();
@@ -319,7 +338,7 @@ void enterGrid()
 {
   population = new Population(mutationRate, populationNum);
   populationToGridArt(population);
-  labelPopulation(population);
+  runPredictionOnPopulationSamples(population);
   displayGrid = true;
 }
 
@@ -353,7 +372,7 @@ void keyPressedGridMode()
     population.selection();
     population.reproduction();
     populationToGridArt(population);
-    labelPopulation(population);
+    runPredictionOnPopulationSamples(population);
   }
 }
 
@@ -364,14 +383,6 @@ void populationToGridArt(Population p)
     int w = (int) screenSize.x / 2;
     int h = (int) screenSize.y / 2;
     gridArt[i] = new ArtWork(population.population[i], w, h);
-  }
-}
-
-void labelPopulation(Population p)
-{
-  for(int i = 0; i < populationNum; i++)
-  {
-    p.population[i].label = (int) forest.predict(p.population[i]);
   }
 }
 
@@ -493,6 +504,17 @@ void compareTwo()
   String string2 = sample2.toString();
 
   if(!string1.equals(string2))  println("SOMETHING IS WRONG IN CSV CONVERSION");
+}
+
+// Helpers
+//----------------------------------------------------------------
+
+void runPredictionOnPopulationSamples(Population p)
+{
+  for(int i = 0; i < p.population.length; i++)
+  {
+    p.population[i].label = (int) forest.predict(p.population[i]);
+  }
 }
 
 // CSV Parsing

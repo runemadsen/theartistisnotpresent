@@ -28,12 +28,6 @@ class ArtWork
     canvas.endDraw();
   }
 
-  //void moveTo(int x, int y, int sec)
-  //{
-  //  Ani.to(loc, sec, "x", x, Ani.QUAD_OUT);
-  //  Ani.to(loc, sec, "y", y, Ani.QUAD_OUT);
-  //}
-
   // Sample to RShape
   //----------------------------------------------------------------
   

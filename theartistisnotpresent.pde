@@ -258,7 +258,7 @@ void enterArtist()
   }
 
   // fall all artworks
-  animation.add(Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN));
+  animation.add(Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN_OUT));
 
   // fake animation to call onEnd method
   animation.add(Ani.to(this, 0, "fake", 0, Ani.CUBIC_IN, "onEnd:generationAnimationFinished"));
@@ -287,8 +287,14 @@ void drawArtist()
   screenCanvas.endDraw();
 
   buildingMask.applyCanvas(screenCanvas);
-
   image(buildingMask.maskeCanvas, buildingLoc.x, buildingLoc.y);
+
+  // DOING THIS AGAIN FIXES IT!!!!!!
+  screenCanvas.beginDraw();
+  screenCanvas.background(0);
+  screenCanvas.image(artistCanvas, animationLoc.x, animationLoc.y);
+  screenCanvas.endDraw();
+
   image(screenCanvas, screen1Loc.x, screen1Loc.y);
   image(screenCanvas, screen2Loc.x, screen2Loc.y);
 }
@@ -532,10 +538,13 @@ void runPredictionOnPopulationSamples(Population p)
 
 void saveGenerationToSVGs(ArtWork[] artToSave)
 {
-  for(int i = 0; i < artToSave.length; i++)
+  if(saveImages)
   {
-    String filename = saveImagesPath + "/" + runFolder + "/" + generationNum + "-" + i + ".svg";
-    artToSave[i].saveSVG(filename);
+    for(int i = 0; i < artToSave.length; i++)
+    {
+      String filename = saveImagesPath + "/" + runFolder + "/" + generationNum + "-" + i + ".svg";
+      artToSave[i].saveSVG(filename);
+    }
   }
 }
 

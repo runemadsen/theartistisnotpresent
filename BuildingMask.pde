@@ -59,11 +59,10 @@ class BuildingMask
 
     //--> draw to maskeCanvas
 
-    //maskeCanvas.beginDraw();
+    maskeCanvas.beginDraw();
     //maskeCanvas.noSmooth();
-    //maskeCanvas.background(1);
-    //maskeCanvas.image(copyCanvas, 0, 0, newWidth, newHeight);
-    //maskeCanvas.endDraw();
+    maskeCanvas.image(copyCanvas, (maskeCanvas.width/2)-(newWidth/2), (maskeCanvas.height/2)-(newHeight/2), newWidth, newHeight);
+    maskeCanvas.endDraw();
 
     //--> Move the pixels baby!
 

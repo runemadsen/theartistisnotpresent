@@ -60,6 +60,7 @@ int BRISAT = 2;
 //----------------------------------------------------------------
 
 RandomForest forest;
+PFont helvetica;
 
 FSM fsm;
 State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault");
@@ -104,7 +105,7 @@ float animationTimeGen = 1;
 float animationTimeArt = 1;
 float animationTimeFall = 4;
 float screenTimeGen = 4;
-float screenTimeArt = 0.5;
+float screenTimeArt = 2;
 int fontSize = 80;
 int fake = 0;
 
@@ -151,8 +152,11 @@ void setup()
   //size(1458, 880);
   colorMode(HSB, 1, 1, 1, 1);
   background(0);
-  //smooth();
+  smooth();
   noStroke();
+
+  helvetica = loadFont("HelveticaNeue-Bold-80.vlw");
+  textFont(helvetica);
 
   // preload all samples into random forest
   OpenCV opencv = new OpenCV(this, "test.jpg");
@@ -201,7 +205,7 @@ void enterDefault()
 
 void drawDefault()
 {
-  textSize(18);
+  textSize(20);
   text("Press the space bar to start software", 5, height-8);
 }
 
@@ -313,7 +317,7 @@ void populationToArtistCanvas(Population p)
 {
   artistCanvas.beginDraw();
   artistCanvas.colorMode(HSB, 1, 1, 1, 1);
-  //artistCanvas.smooth();
+  //artistCanvas.noSmooth();
 
   // write generation num to first spot
   artistCanvas.fill(0);
@@ -322,6 +326,7 @@ void populationToArtistCanvas(Population p)
   artistCanvas.textSize(fontSize);
   artistCanvas.fill(1);
   artistCanvas.noStroke();
+  artistCanvas.textFont(helvetica);
   float tWidth = artistCanvas.textWidth("" + generationNum);
   artistCanvas.text("" + generationNum, (artistCanvas.width/2)-(tWidth/2), (screenSize.y/2)+(fontSize/3));
 

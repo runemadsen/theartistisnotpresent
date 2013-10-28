@@ -215,13 +215,6 @@ void exitDefault()
 
 void keyPressedDefaultMode()
 {
-  // TEST. REMOOOOOVE!!!!
-  if(key == 't')
-  {
-    runTimeInMinutes = 1;
-    fsm.transitionTo(artistState);
-  }
-
   if(key == '1')
   {
     runTimeInMinutes = 15;

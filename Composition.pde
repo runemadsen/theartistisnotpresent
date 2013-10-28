@@ -120,7 +120,7 @@ class Composition
   void chooseFillMode()
   {
     WeightedRandomSet<Integer> fills = new WeightedRandomSet<Integer>();
-    fills.add(FILL, 3);
+    fills.add(FILL, 5);
     fills.add(STROKE, 1);
     fillMode = fills.getRandom();
   }
@@ -270,6 +270,9 @@ class Composition
     
     parent.addChild(theShape);
     parent.addChild(theShape.diff(divideDiff));
+
+    // translate back to reset diff
+    divideDiff.translate(-centroid.x, -centroid.y);
   }
 
   // Get Shape Type

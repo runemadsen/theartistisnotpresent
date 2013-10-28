@@ -62,6 +62,7 @@ int BRISAT = 2;
 
 RandomForest forest;
 PFont helvetica;
+PFont helveticaSmall;
 
 FSM fsm;
 State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault");
@@ -92,8 +93,11 @@ Population population;
 BuildingMask buildingMask;
 
 boolean saveImages = false;
-String saveImagesPath = "testimages";//"/Users/rmadsen/Dropbox/Public";
+String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
 String runFolder;
+
+int runTimeInMinutes = 15;
+long runTimeStart;
 
 int showPopulationNum = 10;
 float animationTimeGen = 1;
@@ -151,8 +155,9 @@ void setup()
   smooth();
   noStroke();
 
+  helveticaSmall = loadFont("HelveticaNeue-Bold-20.vlw");
   helvetica = loadFont("HelveticaNeue-Bold-80.vlw");
-  textFont(helvetica);
+  textFont(helveticaSmall);
 
   // preload all samples into random forest
   OpenCV opencv = new OpenCV(this, "test.jpg");
@@ -200,7 +205,7 @@ void enterDefault()
 void drawDefault()
 {
   textSize(20);
-  text("Press the space bar to start software", 5, height-8);
+  text("Press '1' to run 15 minute sequence, '5' to run 5 minute sequence, or '0' to run with no stop time", 5, height-8);
 }
 
 void exitDefault()
@@ -210,8 +215,28 @@ void exitDefault()
 
 void keyPressedDefaultMode()
 {
-  if(key == ' ')
+  // TEST. REMOOOOOVE!!!!
+  if(key == 't')
   {
+    runTimeInMinutes = 1;
+    fsm.transitionTo(artistState);
+  }
+
+  if(key == '1')
+  {
+    runTimeInMinutes = 15;
+    // ALSO SET VARS SO THEY WORK BETTER WITH THIS TIME
+    fsm.transitionTo(artistState);
+  }
+  else if(key == '5')
+  {
+    runTimeInMinutes = 5;
+    // ALSO SET VARS SO THEY WORK BETTER WITH THIS TIME
+    fsm.transitionTo(artistState);
+  }
+  else if(key == '0')
+  {
+    runTimeInMinutes = 0;
     fsm.transitionTo(artistState);
   }
 }
@@ -221,6 +246,7 @@ void keyPressedDefaultMode()
 
 void enterArtist()
 {
+  runTimeStart = millis();
   generationNum = 1;
   curArtWork = 0;
 
@@ -307,6 +333,11 @@ void exitArtist()
 
 void generationAnimationFinished()
 {
+  if(runTimeInMinutes > 0 && millis() - runTimeStart > (runTimeInMinutes * 60 * 1000))
+  {
+    return;
+  }
+
   population.selection();
   population.reproduction();
   runPredictionOnPopulationSamples(population);
@@ -541,11 +572,15 @@ void saveGenerationToSVGs(ArtWork[] artToSave)
 {
   if(saveImages)
   {
+    String folder = saveImagesPath + "/" + runFolder;
+
     for(int i = 0; i < artToSave.length; i++)
     {
-      String filename = saveImagesPath + "/" + runFolder + "/" + generationNum + "-" + i + ".svg";
+      String filename = folder + "/" + generationNum + "-" + i + ".svg";
       artToSave[i].saveSVG(filename);
     }
+
+    artToSave[artToSave.length-1].saveSVG(folder + "/latest.svg");
   }
 }
 

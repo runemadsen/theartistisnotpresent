@@ -182,9 +182,6 @@ class Composition
 
   RShape getShape(int w, int h)
   {
-    numShapes = 8;
-    positionType = GRID;
-
     RShape frontShape = new RShape();
 
     int scaledShapeSize           = round(shapeSize * w);

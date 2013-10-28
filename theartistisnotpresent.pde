@@ -214,6 +214,13 @@ void exitDefault()
 
 void keyPressedDefaultMode()
 {
+  if(key == 't')
+  {
+    runTimeInMinutes = 1;
+    // ALSO SET VARS SO THEY WORK BETTER WITH THIS TIME
+    fsm.transitionTo(artistState);
+  }
+
   if(key == '1')
   {
     runTimeInMinutes = 15;
@@ -275,11 +282,8 @@ void enterArtist()
     animation.add(Ani.to(animationLoc, animationTimeArt, delayTime, "y", -(screenSize.y * (i+1)), Ani.CUBIC_IN_OUT));
   }
 
-  // fall all artworks
-  animation.add(Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN_OUT));
-
   // fake animation to call onEnd method
-  animation.add(Ani.to(this, 0, "fake", 0, Ani.CUBIC_IN, "onEnd:generationAnimationFinished"));
+  animation.add(Ani.to(this, 0, "fake", 0, Ani.CUBIC_IN, "onEnd:fallOrFinish"));
   animation.endSequence();
 
   //--> Create population
@@ -323,13 +327,20 @@ void exitArtist()
 
 }
 
-void generationAnimationFinished()
+void fallOrFinish()
 {
   if(runTimeInMinutes > 0 && millis() - runTimeStart > (runTimeInMinutes * 60 * 1000))
   {
-    return;
+    // fade up
   }
+  else {
+    Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN_OUT);
+    Ani.to(this, animationTimeFall, screenTimeArt, "fake", screenSize.y, Ani.CUBIC_IN_OUT, "onEnd:animateNewGeneration");
+  }
+}
 
+void animateNewGeneration()
+{
   population.selection();
   population.reproduction();
   runPredictionOnPopulationSamples(population);
@@ -394,7 +405,8 @@ void drawGrid()
     int x = int((i % 6) * canvas.width);
     int y = int(((i / 6) % 6) * canvas.height);
     image(canvas, x, y);
-    textSize(32);
+    textSize(20);
+    textFont(helveticaSmall);
     fill(0);
     text(population.population[i].label, x + 5, y + 37);
     fill(1);

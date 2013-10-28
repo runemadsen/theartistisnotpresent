@@ -76,7 +76,8 @@ class Composition
     spacings.add(0.0, 1);
     spacings.add(0.5, 1);
     spacings.add(1.0, 1);
-    spacings.add(random(1), 1);
+    spacings.add(-0.5, 1);
+    spacings.add(random(-0.5, 1), 1);
     shapeSpacing = spacings.getRandom();
   }
   
@@ -143,7 +144,7 @@ class Composition
   void chooseFullShapeRotation()
   {
     WeightedRandomSet<Integer> rotations = new WeightedRandomSet<Integer>();
-    rotations.add(0, 15);
+    rotations.add(0, 10);
     rotations.add(45, 1);
     rotations.add(90, 1);
     rotations.add(135, 1);
@@ -302,5 +303,23 @@ class Composition
     }
   
     return returnShape;
+  }
+
+  // Print Vars
+  //----------------------------------------------------------------
+
+  void printVars()
+  {
+    println("shapeType: " + shapeType);
+    println("shapeSize: " + shapeSize);
+    println("shapeSpacing: " + shapeSpacing);
+    println("shapeRotation: " + shapeRotation);
+    println("shapeDisplacementY: " + shapeDisplacementY);
+    println("numShapes: " + numShapes);
+    println("fullShapeRotation: " + fullShapeRotation);
+    println("positionType: " + positionType);
+    println("divide: " + divide);
+    println("divideRotation: " + divideRotation);
+    println("fillMode: " + fillMode);
   }
 }

@@ -71,7 +71,7 @@ class ArtWork
       }
       else
       {
-        frontShape.children[i].setStrokeWeight(3);
+        frontShape.children[i].setStrokeWeight(4);
         frontShape.children[i].setStroke(col.toARGB());
         frontShape.children[i].setFill(false);
       }

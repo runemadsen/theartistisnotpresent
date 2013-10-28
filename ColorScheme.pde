@@ -63,12 +63,7 @@ class ColorScheme
 
   void chooseColorDistance()
   {
-    WeightedRandomSet<Float> distances = new WeightedRandomSet<Float>();
-    distances.add(180.0 / 360.0, 1);
-    distances.add(random(5, 90) / 360.0, 1);
-    distances.add(random(90, 175) / 360.0, 1);
-    distances.add(random(5, 180) / 360.0, 5);
-    colorDistance = distances.getRandom();
+    colorDistance = random(10, 180) / 360.0;
   }
 
   // Choose: More Colors
@@ -100,8 +95,8 @@ class ColorScheme
   void chooseMoreColorsSaturationBase()
   {
     WeightedRandomSet<Float> bases = new WeightedRandomSet<Float>();
-    bases.add(0.2, 5);
-    bases.add(0.3, 4);
+    //bases.add(0.2, 5);
+    //bases.add(0.3, 4);
     bases.add(0.5, 3);
     bases.add(0.6, 2);
     moreColorsSaturationBase = bases.getRandom();
@@ -113,8 +108,8 @@ class ColorScheme
   void chooseMoreColorsBrightnessBase()
   {
     WeightedRandomSet<Float> bases = new WeightedRandomSet<Float>();
-    bases.add(0.2, 5);
-    bases.add(0.3, 4);
+    //bases.add(0.2, 5);
+    //bases.add(0.3, 4);
     bases.add(0.5, 3);
     bases.add(0.6, 2);
     moreColorsBrightnessBase = bases.getRandom();
@@ -163,7 +158,7 @@ class ColorScheme
   {
     WeightedRandomSet<Float> scales = new WeightedRandomSet<Float>();
     scales.add(1.0, 1);
-    scales.add(random(0.4, 1), 4);
+    scales.add(random(0.4, 1), 1);
     saturationScale = scales.getRandom();
   }
 
@@ -334,5 +329,26 @@ class ColorScheme
     else if(easingNum == QUINT_OUT)   return Ani.QUINT_OUT;
     else if(easingNum == QUART_IN)    return Ani.QUART_IN;
     else                              return Ani.QUART_OUT;
+  }
+
+  // Print Vars
+  //----------------------------------------------------------------
+
+  void printVars()
+  {
+    println("hue: " + hue);
+    println("numColors: " + numColors);
+    println("colorDistance: " + colorDistance);
+    println("moreColors: " + moreColors);
+    println("moreColorsMode: " + moreColorsMode);
+    println("moreColorsSaturationBase: " + moreColorsSaturationBase);
+    println("moreColorsBrightnessBase: " + moreColorsBrightnessBase);
+    println("moreColorsSaturationEasing: " + moreColorsSaturationEasing);
+    println("moreColorsBrightnessEasing: " + moreColorsBrightnessEasing);
+    println("saturationScale: " + saturationScale);
+    println("brightnessScale: " + brightnessScale);
+    println("sortMode: " + sortMode);
+    println("sortReversed: " + sortReversed);
+    println("backgroundMode: " + backgroundMode);
   }
 }

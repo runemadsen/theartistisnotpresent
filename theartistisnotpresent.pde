@@ -44,7 +44,6 @@ int TRIANGLE = 0;
 int ELLIPSE = 1;
 int RECTANGLE = 2;
 
-
 int DARKEST = 0;
 int BRIGHTEST = 1;
 int FIRST = 2;
@@ -458,6 +457,13 @@ void keyPressedRatingMode()
     rateSample.setLabel(rating);
     ratings.add(rateSample.toString());
     newRandom();
+  }
+
+  if(key == 'i')
+  {
+    println("****** VARIABLES *******");
+    rateSample.colorscheme.printVars();
+    rateSample.composition.printVars();
   }
 
   if(key == 's')

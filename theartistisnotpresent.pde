@@ -102,7 +102,7 @@ int showPopulationNum = 10;
 float animationTimeGen = 1;
 float animationTimeArt = 1;
 float animationTimeFall = 4;
-float screenTimeGen = 4;
+float screenTimeGen = 3;
 float screenTimeArt = 0.5;
 int fontSize = 80;
 int fake = 0;
@@ -245,6 +245,8 @@ void keyPressedDefaultMode()
 
 void enterArtist()
 {
+  printGenerationAnimationtime();
+
   runTimeStart = millis();
   generationNum = 1;
   curArtWork = 0;
@@ -331,7 +333,7 @@ void fallOrFinish()
 {
   if(runTimeInMinutes > 0 && millis() - runTimeStart > (runTimeInMinutes * 60 * 1000))
   {
-    // fade up
+    // just stay still on screen
   }
   else {
     Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN_OUT);
@@ -382,6 +384,14 @@ void populationToArtistCanvas(Population p)
   }
 
   artistCanvas.endDraw();
+}
+
+void printGenerationAnimationtime()
+{
+  float secs = animationTimeGen + screenTimeGen + (showPopulationNum * animationTimeArt) + (showPopulationNum * screenTimeArt);
+  println(secs + " seconds");
+  println(((5.0 * 60.0) / secs) + " generations for 5 minute run");
+  println(((15.0 * 60.0) / secs) + " generations for 15 minute run");
 }
 
 // Grid Mode

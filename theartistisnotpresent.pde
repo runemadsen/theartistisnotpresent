@@ -161,6 +161,7 @@ void setup()
   // preload all samples into random forest
   OpenCV opencv = new OpenCV(this, "test.jpg");
   forest = new RandomForest();
+
   loadAndParseCSVAsTrainingSamples();
   
   fsm = new FSM(defaultState);
@@ -499,6 +500,7 @@ void keyPressedRatingMode()
 
     String filename = year() + "-" + month()+ "-" + day() + "-" + hour() + "-" + minute() + "-" + second() + "-" + millis();
     saveStrings("ratings/" + filename + ".csv", csvData);
+    ratings.clear();
     println("Saved CSV");
   }
 }
@@ -618,7 +620,10 @@ void loadAndParseCSVAsTrainingSamples()
     forest.addTrainingSample(sample);
   }
 
-  forest.train();
+  if(csvData.length > 0)
+  {
+    forest.train();
+  }
 }
 
 void loadAndParseCSVAsTrainingAndPredictionSamples()

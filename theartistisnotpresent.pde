@@ -477,6 +477,7 @@ void keyPressedRatingMode()
   if(keyCode >= 48 && keyCode <= 57)
   {
     int rating = keyCode - 48;
+    println("rated: " + rating);
     rateSample.setLabel(rating);
     ratings.add(rateSample.toString());
     newRandom();

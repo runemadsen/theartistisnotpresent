@@ -77,7 +77,7 @@ PVector screen2Loc = new PVector(280, 310);
 PVector screenSize = new PVector(480, 288);
 
 PVector buildingLoc = new PVector(36, 258);
-PVector syphonSize = new PVector(1024, 758);
+PVector syphonSize = new PVector(1024, 768);
 
 // Shared Modes
 //----------------------------------------------------------------
@@ -113,6 +113,7 @@ int generationNum;
 PGraphics artistCanvas;
 PGraphics screenCanvas;
 PGraphics syphonCanvas;
+PGraphics syphonCanvasFlip;
 ArtWork[] art = new ArtWork[showPopulationNum];
 int curArtWork;
 boolean displayArtist = false;
@@ -266,6 +267,12 @@ void enterArtist()
   syphonCanvas.background(0);
   syphonCanvas.endDraw();
 
+  syphonCanvasFlip = createGraphics((int) syphonSize.x, (int) syphonSize.y);
+  syphonCanvasFlip.beginDraw();
+  syphonCanvasFlip.colorMode(HSB, 1, 1, 1, 1);
+  syphonCanvasFlip.background(0);
+  syphonCanvasFlip.endDraw();
+
   //--> Create Big PGraphics to hold all artworks in generation
 
   artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 1));
@@ -346,7 +353,8 @@ void drawArtist()
   syphonCanvas.endDraw();
 
   image(syphonCanvas, 0, 0);
-  server.sendImage(syphonCanvas);
+  flipIt();
+  server.sendImage(syphonCanvasFlip);
 }
 
 void exitArtist()
@@ -631,6 +639,24 @@ void saveGenerationToSVGs(ArtWork[] artToSave)
     artToSave[artToSave.length-1].saveSVG(folder + "/latest.svg");
   }
 }
+
+void flipIt()
+{
+  syphonCanvas.loadPixels();
+  syphonCanvasFlip.loadPixels();
+ 
+  for(int y = 0; y < syphonCanvas.height; y++)
+  {
+    for(int x = 1; x < syphonCanvas.width; x++)
+    {
+      int oldIndex = x + y * syphonCanvas.width;
+      int newY = syphonCanvas.height - 1 - y;
+      int newIndex = x + newY * syphonCanvas.width;
+      syphonCanvasFlip.pixels[newIndex] = syphonCanvas.pixels[oldIndex];
+    }
+  }
+  syphonCanvasFlip.updatePixels();
+} 
 
 // CSV Parsing
 //----------------------------------------------------------------

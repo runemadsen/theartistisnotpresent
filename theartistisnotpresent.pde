@@ -78,6 +78,7 @@ PVector screen2Loc = new PVector(280, 310);
 PVector screenSize = new PVector(480, 288);
 
 PVector buildingLoc = new PVector(36, 258);
+PVector syphonSize = new PVector(1024, 758);
 
 // Shared Modes
 //----------------------------------------------------------------
@@ -112,6 +113,7 @@ int fake = 0;
 int generationNum;
 PGraphics artistCanvas;
 PGraphics screenCanvas;
+PGraphics syphonCanvas;
 ArtWork[] art = new ArtWork[showPopulationNum];
 int curArtWork;
 boolean displayArtist = false;
@@ -258,6 +260,13 @@ void enterArtist()
 
   buildingMask = new BuildingMask("mask.png");
 
+  //--> Create Syphon output graphics
+  syphonCanvas = createGraphics((int) syphonSize.x, (int) syphonSize.y);
+  syphonCanvas.beginDraw();
+  syphonCanvas.colorMode(HSB, 1, 1, 1, 1);
+  syphonCanvas.background(0);
+  syphonCanvas.endDraw();
+
   //--> Create Big PGraphics to hold all artworks in generation
 
   artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 1));
@@ -316,8 +325,7 @@ void drawArtist()
   screenCanvas.endDraw();
 
   buildingMask.applyCanvas(screenCanvas);
-  image(buildingMask.maskeCanvas, buildingLoc.x, buildingLoc.y);
-
+  
   // THIS SHOULD REALLY NOT BE NECESSARY!!!!!
   screenCanvas.beginDraw();
   screenCanvas.background(0);
@@ -325,8 +333,20 @@ void drawArtist()
   screenCanvas.endDraw();
   // THIS SHOULD REALLY NOT BE NECESSARY!!!!!
 
-  image(screenCanvas, screen1Loc.x, screen1Loc.y);
-  image(screenCanvas, screen2Loc.x, screen2Loc.y);
+  // BEFORE SYPHON
+  //image(buildingMask.maskeCanvas, buildingLoc.x, buildingLoc.y);
+  //image(screenCanvas, screen1Loc.x, screen1Loc.y);
+  //image(screenCanvas, screen2Loc.x, screen2Loc.y);
+
+  // AFTER SYPHON
+  syphonCanvas.beginDraw();
+  screenCanvas.background(0);
+  syphonCanvas.image(buildingMask.maskeCanvas, buildingLoc.x, buildingLoc.y);
+  syphonCanvas.image(screenCanvas, screen1Loc.x, screen1Loc.y);
+  syphonCanvas.image(screenCanvas, screen2Loc.x, screen2Loc.y);
+  syphonCanvas.endDraw();
+
+  image(syphonCanvas, 0, 0);
 
   //server.sendImage(canvas);
 }

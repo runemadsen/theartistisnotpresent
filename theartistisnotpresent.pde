@@ -7,7 +7,6 @@ import toxi.util.datatypes.*;
 import de.looksgood.ani.*;
 import de.looksgood.ani.easing.*;
 import geomerative.*;
-import controlP5.*;
 import codeanticode.syphon.*;
 
 // Constants

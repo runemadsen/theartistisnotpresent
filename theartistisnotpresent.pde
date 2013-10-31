@@ -347,8 +347,7 @@ void drawArtist()
   syphonCanvas.endDraw();
 
   image(syphonCanvas, 0, 0);
-
-  //server.sendImage(canvas);
+  server.sendImage(syphonCanvas);
 }
 
 void exitArtist()

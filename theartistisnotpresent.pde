@@ -93,8 +93,8 @@ Population population;
 
 BuildingMask buildingMask;
 
-boolean saveImages = false;
-String saveImagesPath = "/Users/rmadsen/Dropbox/Public";
+boolean saveImages = true;
+String saveImagesPath = "/Users/Images/Dropbox/Public";
 String runFolder;
 
 int runTimeInMinutes = 15;

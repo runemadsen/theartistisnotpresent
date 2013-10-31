@@ -8,6 +8,7 @@ import de.looksgood.ani.*;
 import de.looksgood.ani.easing.*;
 import geomerative.*;
 import controlP5.*;
+import codeanticode.syphon.*;
 
 // Constants
 //----------------------------------------------------------------
@@ -59,6 +60,7 @@ int BRISAT = 2;
 // Setup
 //----------------------------------------------------------------
 
+SyphonServer server;
 RandomForest forest;
 PFont helvetica;
 PFont helveticaSmall;
@@ -146,7 +148,7 @@ ArtWork compare2;
 
 void setup()
 {
-  size(1024, 768);
+  size(1024, 768, P2D);
   frameRate(24);
   //size(1458, 880);
   colorMode(HSB, 1, 1, 1, 1);
@@ -161,6 +163,8 @@ void setup()
   // preload all samples into random forest
   OpenCV opencv = new OpenCV(this, "test.jpg");
   forest = new RandomForest();
+
+  server = new SyphonServer(this, "Processing Syphon");
 
   loadAndParseCSVAsTrainingSamples();
   
@@ -323,6 +327,8 @@ void drawArtist()
 
   image(screenCanvas, screen1Loc.x, screen1Loc.y);
   image(screenCanvas, screen2Loc.x, screen2Loc.y);
+
+  //server.sendImage(canvas);
 }
 
 void exitArtist()

@@ -92,6 +92,7 @@ PVector syphonSize = new PVector(1024, 768);
 //----------------------------------------------------------------
 
 boolean saveImages;
+boolean saveImagesData;
 String saveImagesPath;
 String csvFile;
 
@@ -185,8 +186,9 @@ void loadConfig()
 {
   String[] configData = loadStrings("theartistisnotpresent.config");
   saveImages = parseBoolean(configData[0]);
-  saveImagesPath = configData[1];
-  csvFile = configData[2];
+  saveImagesData = parseBoolean(configData[1]);
+  saveImagesPath = configData[2];
+  csvFile = configData[3];
 }
 
 void draw()
@@ -644,8 +646,16 @@ void saveGenerationToSVGs(ArtWork[] artToSave)
 
     for(int i = 0; i < artToSave.length; i++)
     {
-      String filename = folder + "/" + generationNum + "-" + i + ".svg";
-      artToSave[i].saveSVG(filename);
+      String filename = folder + "/" + generationNum + "-" + i;
+
+      // SAVE SVG
+      artToSave[i].saveSVG(filename + ".svg");
+
+      // SAVE JSON
+      if(saveImagesData)
+      {
+        artToSave[i].sample.saveJSON(filename + ".json");
+      }
     }
 
     artToSave[artToSave.length-1].saveSVG(folder + "/latest.svg");

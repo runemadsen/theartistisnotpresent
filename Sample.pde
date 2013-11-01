@@ -117,6 +117,45 @@ class Sample implements Comparable {
     featureVector = newFeatureVector;
   }
 
+  void saveJSON(String filename)
+  {
+    // MAKE SURE THESE ALWAYS FIT WITH ORDER FROM ABOVE
+    String[] featureNames = {
+      "colorscheme_hue",
+      "colorscheme_numColors",
+      "colorscheme_colorDistance",
+      "colorscheme_moreColors",
+      "colorscheme_moreColorsMode",
+      "colorscheme_moreColorsSaturationBase",
+      "colorscheme_moreColorsBrightnessBase",
+      "colorscheme_moreColorsSaturationEasing",
+      "colorscheme_moreColorsBrightnessEasing",
+      "colorscheme_saturationScale",
+      "colorscheme_brightnessScale",
+      "colorscheme_sortMode",
+      "colorscheme_sortReversed",
+      "colorscheme_backgroundMode",
+      "composition_shapeType",
+      "composition_shapeSize",
+      "composition_shapeSpacing",
+      "composition_shapeRotation",
+      "composition_shapeDisplacementY",
+      "composition_numShapes",
+      "composition_fullShapeRotation",
+      "composition_positionType",
+      "composition_divide",
+      "composition_divideRotation",
+      "composition_fillMode"
+    };
+
+    JSONObject json = new JSONObject();
+    for(int i = 0; i < featureNames.length; i++)
+    {
+      json.setFloat(featureNames[i], (float) featureVector[i]);
+    }
+    saveJSONObject(json, filename);
+  }
+
   // Mutants! Oh Mutants!
   // ------------------------------------------------------
 

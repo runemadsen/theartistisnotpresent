@@ -1,3 +1,8 @@
+// TODO
+//
+// - Use arraycopy and PImages for stuff where it's possible. Check speed before / after
+// - Put config in a config file
+
 // Imports
 //----------------------------------------------------------------
 
@@ -252,7 +257,7 @@ void keyPressedDefaultMode()
 
 void enterArtist()
 {
-  printGenerationAnimationtime();
+  //printGenerationAnimationtime();
 
   runTimeStart = millis();
   generationNum = 1;

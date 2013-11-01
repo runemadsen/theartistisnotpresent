@@ -64,10 +64,14 @@ int BRISAT = 2;
 // Setup
 //----------------------------------------------------------------
 
+float mutationRate = 0.05;
+int populationNum = 30;
+
 SyphonServer server;
 RandomForest forest;
 PFont helvetica;
 PFont helveticaSmall;
+Population population;
 
 FSM fsm;
 State defaultState = new State(this, "enterDefault", "drawDefault", "exitDefault");
@@ -84,22 +88,17 @@ PVector screenSize = new PVector(480, 288);
 PVector buildingLoc = new PVector(36, 258);
 PVector syphonSize = new PVector(1024, 768);
 
-// Shared Modes
+// Overwritten By Config
 //----------------------------------------------------------------
 
-String csvFile = "ratings/ratings.csv";
-
-float mutationRate = 0.05;
-int populationNum = 30;
-Population population;
+boolean saveImages;
+String saveImagesPath;
+String csvFile;
 
 // Artist Mode
 //----------------------------------------------------------------
 
 BuildingMask buildingMask;
-
-boolean saveImages = true;
-String saveImagesPath = "/Users/Images/Dropbox/Public";
 String runFolder;
 
 int runTimeInMinutes = 15;
@@ -157,11 +156,11 @@ void setup()
 {
   size(1024, 768, P2D);
   frameRate(24);
-  //size(1458, 880);
   colorMode(HSB, 1, 1, 1, 1);
   background(0);
   smooth();
   noStroke();
+  loadConfig();
 
   helveticaSmall = loadFont("HelveticaNeue-Bold-20.vlw");
   helvetica = loadFont("HelveticaNeue-Bold-80.vlw");
@@ -180,6 +179,14 @@ void setup()
   Ani.init(this);
 
   runFolder = year() + "_" + month()+ "_" + day() + "_" + hour() + "_" + minute() + "_" + second();
+}
+
+void loadConfig()
+{
+  String[] configData = loadStrings("theartistisnotpresent.config");
+  saveImages = parseBoolean(configData[0]);
+  saveImagesPath = configData[1];
+  csvFile = configData[2];
 }
 
 void draw()

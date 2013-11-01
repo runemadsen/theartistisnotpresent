@@ -158,7 +158,7 @@ class ColorScheme
   {
     WeightedRandomSet<Float> scales = new WeightedRandomSet<Float>();
     scales.add(1.0, 1);
-    scales.add(random(0.4, 1), 1);
+    //scales.add(random(0.4, 1), 1);
     saturationScale = scales.getRandom();
   }
 
@@ -169,7 +169,7 @@ class ColorScheme
   {
     WeightedRandomSet<Float> scales = new WeightedRandomSet<Float>();
     scales.add(1.0, 1);
-    scales.add(random(0.4, 1), 1);
+    //scales.add(random(0.4, 1), 1);
     brightnessScale = scales.getRandom();
   }
 

@@ -130,7 +130,7 @@ class ColorScheme
     //easings.add(QUINT_IN, 1);
     //easings.add(QUINT_OUT, 1);
     //easings.add(QUART_IN, 1);
-    easings.add(QUART_OUT, 1);
+    //easings.add(QUART_OUT, 1);
     moreColorsSaturationEasing = easings.getRandom();
   }
 

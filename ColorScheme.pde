@@ -73,7 +73,8 @@ class ColorScheme
   {
     WeightedRandomSet<Integer> nums = new WeightedRandomSet<Integer>();
     nums.add(0, 1);
-    nums.add(round(random(2, 10)), 1);
+    nums.add(round(random(2, 3)), 1);
+    //nums.add(round(random(2, 10)), 1);
     moreColors = nums.getRandom();
   }
 
@@ -122,13 +123,13 @@ class ColorScheme
   {
     WeightedRandomSet<Integer> easings = new WeightedRandomSet<Integer>();
     easings.add(LINEAR, 1);
-    easings.add(SINE_IN, 1);
-    easings.add(SINE_OUT, 1);
-    easings.add(QUAD_IN, 1);
-    easings.add(QUAD_OUT, 1);
-    easings.add(QUINT_IN, 1);
-    easings.add(QUINT_OUT, 1);
-    easings.add(QUART_IN, 1);
+    //easings.add(SINE_IN, 1);
+    //easings.add(SINE_OUT, 1);
+    //easings.add(QUAD_IN, 1);
+    //easings.add(QUAD_OUT, 1);
+    //easings.add(QUINT_IN, 1);
+    //easings.add(QUINT_OUT, 1);
+    //easings.add(QUART_IN, 1);
     easings.add(QUART_OUT, 1);
     moreColorsSaturationEasing = easings.getRandom();
   }

@@ -60,7 +60,7 @@ int BRISAT = 2;
 //----------------------------------------------------------------
 
 float mutationRate = 0.05;
-int populationNum = 30;
+int populationNum = 80;
 
 SyphonServer server;
 RandomForest forest;
@@ -101,11 +101,11 @@ int runTimeInMinutes = 15;
 long runTimeStart;
 
 int showPopulationNum = 10;
-float animationTimeGen = 1;
-float animationTimeArt = 1;
-float animationTimeFall = 4;
+float animationTimeGen = 1.5;
+float animationTimeArt = 1.5;
+float animationTimeFall = 6;
 float screenTimeGen = 3;
-float screenTimeArt = 0.5;
+float screenTimeArt = 0.7;
 int fontSize = 80;
 int fake = 0;
 
@@ -477,6 +477,7 @@ void keyPressedGridMode()
   {
     population.selection();
     population.reproduction();
+    Arrays.sort(population.population);
     populationToGridArt(population);
     runPredictionOnPopulationSamples(population);
   }
@@ -484,11 +485,13 @@ void keyPressedGridMode()
 
 void populationToGridArt(Population p)
 {
-  for(int i = 0; i < population.population.length; i++)
+  for(int i = 0; i < showPopulationNum; i++)
   {
+    // get from bottom because they are sorted by label min > max
+    int index = (p.population.length-1) - i;
     int w = (int) screenSize.x / 2;
     int h = (int) screenSize.y / 2;
-    gridArt[i] = new ArtWork(population.population[i], w, h);
+    gridArt[i] = new ArtWork(p.population[index], w, h);
   }
 }
 

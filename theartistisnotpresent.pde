@@ -65,7 +65,8 @@ int populationNum = 80;
 SyphonServer server;
 RandomForest forest;
 PFont helvetica;
-PFont helveticaSmall;
+PFont helvetica23;
+PFont helvetica14;
 Population population;
 
 FSM fsm;
@@ -103,7 +104,7 @@ long runTimeStart;
 int showPopulationNum = 10;
 float animationTimeGen = 1.5;
 float animationTimeArt = 1.5;
-float animationTimeFall = 6;
+float animationTimeFall = 7;
 float screenTimeGen = 3;
 float screenTimeArt = 0.7;
 int fontSize = 80;
@@ -158,9 +159,11 @@ void setup()
   noStroke();
   loadConfig();
 
-  helveticaSmall = loadFont("HelveticaNeue-Bold-20.vlw");
+  helvetica14 = loadFont("HelveticaNeue-Bold-14.vlw");
+  helvetica23 = loadFont("HelveticaNeue-Bold-23.vlw");
   helvetica = loadFont("HelveticaNeue-Bold-80.vlw");
-  textFont(helveticaSmall);
+
+  textFont(helvetica23);
 
   // preload all samples into random forest
   OpenCV opencv = new OpenCV(this, "test.jpg");
@@ -409,12 +412,19 @@ void populationToArtistCanvas(Population p)
   artistCanvas.fill(0);
   artistCanvas.noStroke();
   artistCanvas.rect(0, 0, screenSize.x, screenSize.y);
-  artistCanvas.textSize(fontSize);
   artistCanvas.fill(1);
   artistCanvas.noStroke();
-  artistCanvas.textFont(helvetica);
+
+  // generation number
+  artistCanvas.textFont(helvetica, fontSize);
   float tWidth = artistCanvas.textWidth("" + generationNum);
-  artistCanvas.text("" + generationNum, (artistCanvas.width/2)-(tWidth/2), (screenSize.y/2)+(fontSize/3));
+  float numY = (screenSize.y/2)+(fontSize/3);
+  artistCanvas.text("" + generationNum, (artistCanvas.width/2)-(tWidth/2), numY);
+
+  // "generation"
+  artistCanvas.textFont(helvetica23, 23);
+  tWidth = artistCanvas.textWidth("Generation");
+  artistCanvas.text("Generation", (artistCanvas.width/2)-(tWidth/2) + 5, numY + 43);
 
   // then draw artists
   for(int i = 0; i < showPopulationNum; i++)
@@ -458,7 +468,7 @@ void drawGrid()
     int y = int(((i / 6) % 6) * canvas.height);
     image(canvas, x, y);
     textSize(20);
-    textFont(helveticaSmall);
+    textFont(helvetica23);
     fill(0);
     text(population.population[i].label, x + 5, y + 37);
     fill(1);

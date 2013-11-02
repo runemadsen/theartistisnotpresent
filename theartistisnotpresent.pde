@@ -287,7 +287,7 @@ void enterArtist()
 
   //--> Create Big PGraphics to hold all artworks in generation
 
-  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 1));
+  artistCanvas = createGraphics((int) screenSize.x, (int) screenSize.y * (showPopulationNum + 2)); // 2 for gen num and url
   artistCanvas.beginDraw();
   artistCanvas.colorMode(HSB, 1, 1, 1, 1);
   artistCanvas.background(0);
@@ -378,7 +378,7 @@ void fallOrFinish()
 {
   if(runTimeInMinutes > 0 && millis() - runTimeStart > (runTimeInMinutes * 60 * 1000))
   {
-    Ani.to(animationLoc, animationTimeGen, screenTimeArt, "y", animationLoc.y - 100, Ani.CUBIC_IN_OUT);
+    Ani.to(animationLoc, animationTimeGen, screenTimeArt, "y", animationLoc.y - screenSize.y, Ani.CUBIC_IN_OUT);
   }
   else {
     Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN_OUT);
@@ -439,9 +439,9 @@ void populationToArtistCanvas(Population p)
 
   // bitly
   artistCanvas.textFont(helvetica23, 23);
-  String url = "bit.ly/spurban";
+  String url = "bit.ly/tainp";
   tWidth = artistCanvas.textWidth(url);
-  artistCanvas.text(url, (artistCanvas.width/2)-(tWidth/2) + 5, ((showPopulationNum + 1) * screenSize.y) + 100);
+  artistCanvas.text(url, (artistCanvas.width/2)-(tWidth/2), ((showPopulationNum + 1) * screenSize.y) + (screenSize.y * 0.8));
 
   artistCanvas.endDraw();
 }

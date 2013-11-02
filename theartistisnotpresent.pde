@@ -98,7 +98,7 @@ String csvFile;
 BuildingMask buildingMask;
 String runFolder;
 
-int runTimeInMinutes = 15;
+float runTimeInMinutes = 15;
 long runTimeStart;
 
 int showPopulationNum = 10;
@@ -235,7 +235,7 @@ void keyPressedDefaultMode()
 {
   if(key == 't')
   {
-    runTimeInMinutes = 1;
+    runTimeInMinutes = 0.5;
     // ALSO SET VARS SO THEY WORK BETTER WITH THIS TIME
     fsm.transitionTo(artistState);
   }
@@ -378,7 +378,7 @@ void fallOrFinish()
 {
   if(runTimeInMinutes > 0 && millis() - runTimeStart > (runTimeInMinutes * 60 * 1000))
   {
-    // just stay still on screen
+    Ani.to(animationLoc, animationTimeGen, screenTimeArt, "y", animationLoc.y - 100, Ani.CUBIC_IN_OUT);
   }
   else {
     Ani.to(animationLoc, animationTimeFall, screenTimeArt, "y", screenSize.y, Ani.CUBIC_IN_OUT);
@@ -423,8 +423,10 @@ void populationToArtistCanvas(Population p)
 
   // "generation"
   artistCanvas.textFont(helvetica23, 23);
-  tWidth = artistCanvas.textWidth("Generation");
-  artistCanvas.text("Generation", (artistCanvas.width/2)-(tWidth/2) + 5, numY + 43);
+  String label = "Generation";
+  if(generationNum > 1)  label += "s";
+  tWidth = artistCanvas.textWidth(label);
+  artistCanvas.text(label, (artistCanvas.width/2)-(tWidth/2) + 5, numY + 43);
 
   // then draw artists
   for(int i = 0; i < showPopulationNum; i++)
@@ -434,6 +436,12 @@ void populationToArtistCanvas(Population p)
     art[i] = new ArtWork(p.population[index], (int) screenSize.x, (int) screenSize.y);
     artistCanvas.image(art[i].canvas, 0, (i + 1) * screenSize.y);
   }
+
+  // bitly
+  artistCanvas.textFont(helvetica23, 23);
+  String url = "bit.ly/spurban";
+  tWidth = artistCanvas.textWidth(url);
+  artistCanvas.text(url, (artistCanvas.width/2)-(tWidth/2) + 5, ((showPopulationNum + 1) * screenSize.y) + 100);
 
   artistCanvas.endDraw();
 }

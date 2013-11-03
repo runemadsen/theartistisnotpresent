@@ -66,6 +66,7 @@ SyphonServer server;
 RandomForest forest;
 PFont helvetica;
 PFont helvetica23;
+PFont helveticaRegular23;
 PFont helvetica14;
 Population population;
 
@@ -161,6 +162,7 @@ void setup()
 
   helvetica14 = loadFont("HelveticaNeue-Bold-14.vlw");
   helvetica23 = loadFont("HelveticaNeue-Bold-23.vlw");
+  helveticaRegular23 = loadFont("HelveticaNeue-23.vlw");
   helvetica = loadFont("HelveticaNeue-Bold-80.vlw");
 
   textFont(helvetica23);
@@ -438,7 +440,7 @@ void populationToArtistCanvas(Population p)
   }
 
   // bitly
-  artistCanvas.textFont(helvetica23, 23);
+  artistCanvas.textFont(helveticaRegular23, 23);
   String url = "bit.ly/tainp";
   tWidth = artistCanvas.textWidth(url);
   artistCanvas.text(url, (artistCanvas.width/2)-(tWidth/2), ((showPopulationNum + 1) * screenSize.y) + (screenSize.y * 0.8));
